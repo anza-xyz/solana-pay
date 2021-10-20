@@ -1,6 +1,5 @@
 import { clusterApiUrl, Connection, Keypair } from '@solana/web3.js';
-import { createTransaction } from '../src/createTransaction';
-import { parseURL } from '../src/parseURL';
+import { createTransaction, parseURL } from '../src/wallet';
 
 const NATIVE_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId1234';
 const USDC_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';

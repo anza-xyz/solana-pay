@@ -1,4 +1,11 @@
-import { ASSOCIATED_TOKEN_PROGRAM_ID, MintLayout, Token, TOKEN_PROGRAM_ID } from '@solana/spl-token';
+import {
+    AccountLayout,
+    ASSOCIATED_TOKEN_PROGRAM_ID,
+    MintLayout,
+    Token,
+    TOKEN_PROGRAM_ID,
+    u64,
+} from '@solana/spl-token';
 import {
     Connection,
     LAMPORTS_PER_SOL,
@@ -8,6 +15,7 @@ import {
     TransactionInstruction,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import BN from 'bn.js';
 
 export enum CreateTransactionError {
     PAYER_NOT_FOUND = 'PAYER_NOT_FOUND',
@@ -20,12 +28,18 @@ export enum CreateTransactionError {
     PAYER_ATA_NOT_FOUND = 'PAYER_ATA_NOT_FOUND',
     RECIPIENT_ATA_NOT_FOUND = 'RECIPIENT_ATA_NOT_FOUND',
     PAYER_INSUFFICIENT_FUNDS = 'PAYER_INSUFFICIENT_FUNDS',
+    PAYER_ATA_INSUFFICIENT_FUNDS = 'PAYER_ATA_INSUFFICIENT_FUNDS',
 }
 
 const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 const SOL_DECIMALS = 9;
 const TEN = new BigNumber(10);
+
+export interface CreateTransactionResult {
+    transaction: Transaction;
+    amount: BigNumber;
+}
 
 export async function createTransaction(
     connection: Connection,
@@ -34,7 +48,7 @@ export async function createTransaction(
     amount: BigNumber,
     memo: string,
     token?: PublicKey,
-): Promise<Transaction> {
+): Promise<CreateTransactionResult> {
     const payerInfo = await connection.getAccountInfo(payer);
     if (!payerInfo) throw new Error(CreateTransactionError.PAYER_NOT_FOUND);
 
@@ -43,18 +57,19 @@ export async function createTransaction(
 
     const transaction = new Transaction();
 
-    // If no SPL token mint is provided, transfer lamports
+    // If no SPL token mint is provided, transfer native SOL
     if (!token) {
         // Check that the amount provided doesn't have greater precision than SOL
         if (amount.decimalPlaces() > SOL_DECIMALS) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
 
-        // @TODO: convert to u64 instead of JS number
-        // Convert input decimal amount to lamports
-        const lamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR).toNumber();
+        // Convert input decimal amount to integer lamports
+        amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
         // Check that the payer has enough lamports
+        const lamports = amount.toNumber();
         if (lamports > payerInfo.lamports) throw new Error(CreateTransactionError.PAYER_INSUFFICIENT_FUNDS);
 
+        // Add instruction to transfer native SOL
         transaction.add(
             SystemProgram.transfer({
                 fromPubkey: payer,
@@ -78,6 +93,9 @@ export async function createTransaction(
         const decimals: number = mint.decimals;
         if (amount.decimalPlaces() > decimals) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
 
+        // Convert input decimal amount to tokens according to the mint decimals
+        amount = amount.times(TEN.pow(decimals)).integerValue(BigNumber.ROUND_FLOOR);
+
         // Get the payer's ATA and check that it exists
         const payerATA = await Token.getAssociatedTokenAddress(
             ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -87,6 +105,11 @@ export async function createTransaction(
         );
         const payerATAInfo = await connection.getAccountInfo(payerATA);
         if (!payerATAInfo) throw new Error(CreateTransactionError.PAYER_ATA_NOT_FOUND);
+
+        // Get the payer's token balance and check that it's enough to transfer
+        const { amount: balance } = AccountLayout.decode(payerATAInfo.data) as { amount: BN };
+        const tokens = new u64(String(amount));
+        if (tokens.gt(balance)) throw new Error(CreateTransactionError.PAYER_ATA_INSUFFICIENT_FUNDS);
 
         // Get the recipient's ATA and check that it exists
         const recipientATA = await Token.getAssociatedTokenAddress(
@@ -98,10 +121,7 @@ export async function createTransaction(
         const recipientATAInfo = await connection.getAccountInfo(recipientATA);
         if (!recipientATAInfo) throw new Error(CreateTransactionError.RECIPIENT_ATA_NOT_FOUND);
 
-        // @TODO: convert to u64 instead of JS number
-        // Convert input decimal amount to tokens according to the mint decimals
-        const tokens = amount.times(TEN.pow(decimals)).integerValue(BigNumber.ROUND_FLOOR).toNumber();
-
+        // Add instruction to transfer SPL tokens
         transaction.add(
             Token.createTransferInstruction(
                 TOKEN_PROGRAM_ID,
@@ -123,7 +143,5 @@ export async function createTransaction(
         }),
     );
 
-    return transaction;
+    return { transaction, amount };
 }
-
-export {};
