@@ -42,7 +42,7 @@ export class MemoWatcherService {
   }
 
   private checkSignatures(signatures: ConfirmedSignatureInfo[]) {
-    signatures.forEach((signature) => console.log(signature.memo));
+    // signatures.forEach((signature) => console.log(signature.memo));
   }
 
   stop() {
