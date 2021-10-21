@@ -13,6 +13,8 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors();
+
   const config = new DocumentBuilder()
     .setTitle('Solana Payments API')
     .setVersion('1.0')

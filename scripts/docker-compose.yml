@@ -5,12 +5,15 @@ services:
     ports:
       - 6379:6379
 
-  mongo:
+  mongodb:
     image: mongo:latest
+    container_name: mongodb
+    restart: always
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: user
+        MONGO_INITDB_ROOT_PASSWORD: pass
+        MONGO_INITDB_DATABASE: payments
     ports:
-      - 27017:27017
+        - 27017:27017
     volumes:
-      - mongodb_data:/data/db
-
-volumes:
-  mongodb_data:
+        - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
