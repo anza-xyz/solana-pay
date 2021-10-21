@@ -4,16 +4,12 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
-  private redis: Redis;
+  readonly redis: Redis;
 
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     this.redis = new Redis({
       host: configService.get<string>('REDIS_HOST') || 'localhost',
       port: configService.get<string>('REDIS_PORT') || 6379,
     });
-  }
-
-  getRedis() {
-    return this.redis;
   }
 }

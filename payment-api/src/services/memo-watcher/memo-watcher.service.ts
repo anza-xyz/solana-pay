@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfirmedSignatureInfo, Connection, PublicKey } from '@solana/web3.js';
 import { ConnectionService } from 'src/services/connection/connection.service';
 import { RedisService } from 'src/services/redis/redis.service';
-import Redis from 'ioredis';
 
 const REDIS_SET = 'transactions';
 const MEMO_PROGRAM = new PublicKey(
@@ -12,36 +11,32 @@ const POLL_INTERVAL = 5000;
 
 @Injectable()
 export class MemoWatcherService {
-  connection: Connection;
-  redis: Redis;
-  interval;
-  lastSignature;
+  interval: NodeJS.Timeout;
+  lastSignature: string;
 
   constructor(
     private connectionService: ConnectionService,
     private redisService: RedisService,
   ) {
-    this.connection = connectionService.getConnection();
-    this.redis = redisService.getRedis();
-
-    this.redis.scard(REDIS_SET).then((cardinality) => {
-      if (cardinality > 0) {
-        this.start();
-      }
-    });
+    this.start();
   }
 
   start() {
     this.interval = setInterval(async () => {
-      let signatures = await this.connection.getSignaturesForAddress(
-        MEMO_PROGRAM,
-        {
-          until: this.lastSignature,
-        },
-      );
-      if (signatures.length > 0) {
-        this.lastSignature = signatures[0].signature;
-        this.checkSignatures(signatures);
+      try {
+        let signatures =
+          await this.connectionService.connection.getSignaturesForAddress(
+            MEMO_PROGRAM,
+            {
+              until: this.lastSignature,
+            },
+          );
+        if (signatures.length > 0) {
+          this.lastSignature = signatures[0].signature;
+          this.checkSignatures(signatures);
+        }
+      } catch (error) {
+        console.error(error);
       }
     }, POLL_INTERVAL);
   }
@@ -57,6 +52,6 @@ export class MemoWatcherService {
   }
 
   async watchTransactionId(transactionId: string) {
-    await this.redis.sadd(REDIS_SET, transactionId);
+    await this.redisService.redis.sadd(REDIS_SET, transactionId);
   }
 }
