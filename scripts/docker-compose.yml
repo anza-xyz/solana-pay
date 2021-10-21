@@ -4,3 +4,13 @@ services:
     image: redis
     ports:
       - 6379:6379
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

@@ -5,8 +5,10 @@ import { RedisService } from 'src/services/redis/redis.service';
 import Redis from 'ioredis';
 
 const REDIS_SET = 'transactions';
-const MEMO_PROGRAM = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
-const CHECK_INTERVAL = 5000;
+const MEMO_PROGRAM = new PublicKey(
+  'MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr',
+);
+const POLL_INTERVAL = 5000;
 
 @Injectable()
 export class MemoWatcherService {
@@ -29,23 +31,26 @@ export class MemoWatcherService {
     });
   }
 
-  private start() {
+  start() {
     this.interval = setInterval(async () => {
-      let signatures = await this.connection.getSignaturesForAddress(MEMO_PROGRAM, {
-        until: this.lastSignature
-      });
+      let signatures = await this.connection.getSignaturesForAddress(
+        MEMO_PROGRAM,
+        {
+          until: this.lastSignature,
+        },
+      );
       if (signatures.length > 0) {
         this.lastSignature = signatures[0].signature;
         this.checkSignatures(signatures);
       }
-    }, CHECK_INTERVAL);
+    }, POLL_INTERVAL);
   }
 
   private checkSignatures(signatures: ConfirmedSignatureInfo[]) {
-    signatures.forEach(signature => console.log(signature.memo));
+    signatures.forEach((signature) => console.log(signature.memo));
   }
 
-  private stop() {
+  stop() {
     if (this.interval) {
       clearInterval(this.interval);
     }

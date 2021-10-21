@@ -8,7 +8,7 @@ export class ConnectionService {
 
   constructor(private configService: ConfigService) {
     this.connection = new Connection(
-      configService.get<string>('API_ENDPOINT') || 'http://localhost:8899'
+      configService.get<string>('API_ENDPOINT') || 'http://localhost:8899',
     );
   }
 
