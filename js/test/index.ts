@@ -1,4 +1,5 @@
 import { clusterApiUrl, Connection, Keypair } from '@solana/web3.js';
+import { encodeURL } from '../src/app';
 import { createTransaction, parseURL } from '../src/wallet';
 
 const NATIVE_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId1234';
@@ -10,19 +11,23 @@ const USDC_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01
     const connection = new Connection(endpoint, 'confirmed');
 
     // Wallet gets URL from deep link / QR code
-    const { recipient, amount, memo, token } = parseURL(USDC_URL);
+    const { recipient, amount, token, references, label, message, memo } = parseURL(USDC_URL);
+
+    // Apps can encode the URL from the required and optional parameters
+    const url = encodeURL(recipient, amount, token, references, label, message, memo);
 
     // This just represents the wallet's keypair for testing, in practice it will have a way of signing already
     const wallet = Keypair.generate();
 
-    // Create a transaction to transfer the SOL or tokens
+    // Create a transaction to transfer native SOL or SPL tokens
     const transaction = await createTransaction(
         connection,
         wallet.publicKey,
         recipient,
         amount,
-        memo,
         token,
+        references,
+        memo,
     );
 
     // Sign and send the transaction
