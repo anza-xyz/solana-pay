@@ -36,26 +36,25 @@ const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfc
 const SOL_DECIMALS = 9;
 const TEN = new BigNumber(10);
 
-export interface CreateTransactionResult {
-    transaction: Transaction;
-    amount: BigNumber;
-}
-
 export async function createTransaction(
     connection: Connection,
     payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    memo: string,
     token?: PublicKey,
-): Promise<CreateTransactionResult> {
+    references?: PublicKey[],
+    memo?: string,
+): Promise<Transaction> {
     const payerInfo = await connection.getAccountInfo(payer);
     if (!payerInfo) throw new Error(CreateTransactionError.PAYER_NOT_FOUND);
 
     const recipientInfo = await connection.getAccountInfo(recipient);
     if (!recipientInfo) throw new Error(CreateTransactionError.RECIPIENT_NOT_FOUND);
 
-    const transaction = new Transaction();
+    // @TODO: check that the recipient is a native account (not owned by a program, not a PDA, or doesn't exist)
+    // @TODO: the token branch below checks that the recipient account exists, should the native branch do the same?
+
+    let instruction: TransactionInstruction;
 
     // If no SPL token mint is provided, transfer native SOL
     if (!token) {
@@ -69,17 +68,17 @@ export async function createTransaction(
         const lamports = amount.toNumber();
         if (lamports > payerInfo.lamports) throw new Error(CreateTransactionError.PAYER_INSUFFICIENT_FUNDS);
 
-        // Add instruction to transfer native SOL
-        transaction.add(
-            SystemProgram.transfer({
-                fromPubkey: payer,
-                toPubkey: recipient,
-                lamports,
-            }),
-        );
+        // Create an instruction to transfer native SOL
+        instruction = SystemProgram.transfer({
+            fromPubkey: payer,
+            toPubkey: recipient,
+            lamports,
+        });
     }
     // Otherwise, transfer SPL tokens from payer's ATA to recipient's ATA
     else {
+        // @TODO: replace manual deserialization and checks with new spl-token TS, remove bn.js + u64 usage
+
         // Check that the token provided is an initialized mint owned by the token program
         const tokenInfo = await connection.getAccountInfo(token);
         if (!tokenInfo) throw new Error(CreateTransactionError.TOKEN_NOT_FOUND);
@@ -121,27 +120,37 @@ export async function createTransaction(
         const recipientATAInfo = await connection.getAccountInfo(recipientATA);
         if (!recipientATAInfo) throw new Error(CreateTransactionError.RECIPIENT_ATA_NOT_FOUND);
 
-        // Add instruction to transfer SPL tokens
-        transaction.add(
-            Token.createTransferInstruction(
-                TOKEN_PROGRAM_ID,
-                payerATA,
-                recipientATA,
-                payer,
-                [],
-                tokens,
-            ),
+        // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
+        instruction = Token.createTransferCheckedInstruction(
+            TOKEN_PROGRAM_ID,
+            payerATA,
+            token,
+            recipientATA,
+            payer,
+            [],
+            tokens,
+            decimals,
         );
     }
 
-    // Add the memo to the transaction
-    transaction.add(
-        new TransactionInstruction({
-            programId: MEMO_PROGRAM_ID,
-            keys: [],
-            data: Buffer.from(memo, 'utf8'),
-        }),
-    );
+    // If reference accounts are provided, add them to the instruction
+    if (references?.length) {
+        instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+    }
 
-    return { transaction, amount };
+    // Create the transaction
+    const transaction = new Transaction().add(instruction);
+
+    // If a memo is provided, add it to the transaction
+    if (memo != null) {
+        transaction.add(
+            new TransactionInstruction({
+                programId: MEMO_PROGRAM_ID,
+                keys: [],
+                data: Buffer.from(memo, 'utf8'),
+            }),
+        );
+    }
+
+    return transaction;
 }
