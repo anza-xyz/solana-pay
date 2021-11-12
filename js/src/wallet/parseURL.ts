@@ -4,18 +4,11 @@ import BigNumber from 'bignumber.js';
 export interface ParsedURL {
     recipient: PublicKey;
     amount: BigNumber;
-    memo: string;
     token?: PublicKey;
-    label?: string;
-    message?: string;
-}
-
-export interface URLParams {
-    amount?: string;
+    references?: PublicKey[];
     label?: string;
     message?: string;
     memo?: string;
-    'spl-token'?: string;
 }
 
 export enum ParseError {
@@ -25,8 +18,8 @@ export enum ParseError {
     MISSING_AMOUNT = 'MISSING_AMOUNT',
     INVALID_AMOUNT = 'INVALID_AMOUNT',
     ZERO_AMOUNT = 'ZERO_AMOUNT',
-    MISSING_MEMO = 'MISSING_MEMO',
     INVALID_TOKEN = 'INVALID_TOKEN',
+    INVALID_REFERENCE = 'INVALID_REFERENCE',
 }
 
 export function parseURL(url: string): ParsedURL {
@@ -42,32 +35,45 @@ export function parseURL(url: string): ParsedURL {
         throw new Error(ParseError.INVALID_RECIPIENT);
     }
 
-    const params: URLParams = Object.fromEntries(searchParams.entries());
-    if (!params.amount) throw new Error(ParseError.MISSING_AMOUNT);
-    if (!/^\d+(\.\d+)?$/.test(params.amount)) throw new Error(ParseError.INVALID_AMOUNT);
+    const amountParam = searchParams.get('amount');
+    if (!amountParam) throw new Error(ParseError.MISSING_AMOUNT);
+    if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new Error(ParseError.INVALID_AMOUNT);
 
-    const amount = new BigNumber(params.amount);
+    const amount = new BigNumber(amountParam);
     if (amount.isNaN()) throw new Error(ParseError.INVALID_AMOUNT);
     if (amount.isZero()) throw new Error(ParseError.ZERO_AMOUNT);
 
-    const { memo, label, message } = params;
-    if (!memo) throw new Error(ParseError.MISSING_MEMO);
-
+    const tokenParam = searchParams.get('spl-token');
     let token: PublicKey | undefined;
-    if (params['spl-token']) {
+    if (tokenParam != null) {
         try {
-            token = new PublicKey(params['spl-token']);
+            token = new PublicKey(tokenParam);
         } catch (error) {
             throw new Error(ParseError.INVALID_TOKEN);
         }
     }
 
+    const referenceParam = searchParams.getAll('reference');
+    let references: PublicKey[] | undefined;
+    if (referenceParam.length) {
+        try {
+            references = referenceParam.map((reference) => new PublicKey(reference));
+        } catch (error) {
+            throw new Error(ParseError.INVALID_REFERENCE);
+        }
+    }
+
+    const label = searchParams.get('label') || undefined;
+    const message = searchParams.get('message') || undefined;
+    const memo = searchParams.get('memo') || undefined;
+
     return {
         recipient,
         amount,
-        memo,
         token,
+        references,
         label,
         message,
+        memo,
     };
 }
