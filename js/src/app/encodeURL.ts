@@ -13,25 +13,25 @@ export function encodeURL(
     let url = `solana:${String(recipient)}?amount=${String(amount)}`;
 
     if (token) {
-        url += `?spl-token=${String(token)}`;
+        url += `&spl-token=${String(token)}`;
     }
 
     if (references?.length) {
         for (const reference of references) {
-            url += `?reference=${String(reference)}`;
+            url += `&reference=${String(reference)}`;
         }
     }
 
     if (label) {
-        url += `?label=${String(label)}`;
+        url += `&label=${String(label)}`;
     }
 
     if (message) {
-        url += `?label=${String(message)}`;
+        url += `&message=${String(message)}`;
     }
 
     if (memo) {
-        url += `?label=${String(memo)}`;
+        url += `&memo=${String(memo)}`;
     }
 
     return url;
