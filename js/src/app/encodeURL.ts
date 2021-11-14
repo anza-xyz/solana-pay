@@ -10,28 +10,28 @@ export function encodeURL(
     message?: string,
     memo?: string,
 ): string {
-    let url = `solana:${String(recipient)}?amount=${String(amount)}`;
+    let url = `solana:${encodeURIComponent(String(recipient))}?amount=${encodeURIComponent(String(amount))}`;
 
     if (token) {
-        url += `&spl-token=${String(token)}`;
+        url += `&spl-token=${encodeURIComponent(String(token))}`;
     }
 
     if (references?.length) {
         for (const reference of references) {
-            url += `&reference=${String(reference)}`;
+            url += `&reference=${encodeURIComponent(String(reference))}`;
         }
     }
 
     if (label) {
-        url += `&label=${String(label)}`;
+        url += `&label=${encodeURIComponent(String(label))}`;
     }
 
     if (message) {
-        url += `&message=${String(message)}`;
+        url += `&message=${encodeURIComponent(String(message))}`;
     }
 
     if (memo) {
-        url += `&memo=${String(memo)}`;
+        url += `&memo=${encodeURIComponent(String(memo))}`;
     }
 
     return url;
