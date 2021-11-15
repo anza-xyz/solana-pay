@@ -41,9 +41,11 @@ export async function createTransaction(
     payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    token?: PublicKey,
-    references?: PublicKey[],
-    memo?: string,
+    { token, references, memo }: {
+        token?: PublicKey,
+        references?: PublicKey[],
+        memo?: string,
+    },
 ): Promise<Transaction> {
     const payerInfo = await connection.getAccountInfo(payer);
     if (!payerInfo) throw new Error(CreateTransactionError.PAYER_NOT_FOUND);

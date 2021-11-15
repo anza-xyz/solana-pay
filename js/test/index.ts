@@ -16,7 +16,7 @@ const USDC_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01
     const { recipient, amount, token, references, label, message, memo } = parseURL(originalURL);
 
     // Apps can encode the URL from the required and optional parameters
-    const encodedURL = encodeURL(recipient, amount, token, references, label, message, memo);
+    const encodedURL = encodeURL(recipient, amount, { token, references, label, message, memo });
 
     console.log(originalURL);
     console.log(encodedURL);
@@ -33,9 +33,7 @@ const USDC_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01
         wallet.publicKey,
         recipient,
         amount,
-        token,
-        references,
-        memo,
+        { token, references, memo },
     );
 
     // Sign and send the transaction
