@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, Transaction } from '@solana/web3.js';
 import { encodeURL } from '../src/app';
 import { createTransaction, parseURL } from '../src/wallet';
 
@@ -83,7 +83,13 @@ import { createTransaction, parseURL } from '../src/wallet';
     console.log(original.memo);
 
     // Merchant app should get the transaction to validate it
-    const tx = await connection.getTransaction(original.signature);
+    const response = await connection.getTransaction(original.signature);
+    if (!response?.transaction) return;
+
+    const tx = Transaction.populate(
+        response.transaction.message,
+        response.transaction.signatures
+    );
 
     console.log(tx);
 })();
