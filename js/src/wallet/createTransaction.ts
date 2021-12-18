@@ -1,11 +1,4 @@
-import {
-    AccountLayout,
-    ASSOCIATED_TOKEN_PROGRAM_ID,
-    MintLayout,
-    Token,
-    TOKEN_PROGRAM_ID,
-    u64,
-} from '@solana/spl-token';
+import { createTransferCheckedInstruction, getAccount, getAssociatedTokenAddress, getMint } from '@solana/spl-token';
 import {
     Connection,
     LAMPORTS_PER_SOL,
@@ -15,20 +8,17 @@ import {
     TransactionInstruction,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import BN from 'bn.js';
 
+// @TODO: replace with error classes
 export enum CreateTransactionError {
-    PAYER_NOT_FOUND = 'PAYER_NOT_FOUND',
-    RECIPIENT_NOT_FOUND = 'RECIPIENT_NOT_FOUND',
-    TOKEN_NOT_FOUND = 'TOKEN_NOT_FOUND',
-    TOKEN_INVALID_PROGRAM = 'TOKEN_INVALID_PROGRAM',
-    TOKEN_INVALID_LENGTH = 'TOKEN_INVALID_LENGTH',
-    TOKEN_MINT_NOT_INITIALIZED = 'TOKEN_MINT_NOT_INITIALIZED',
+    ACCOUNT_OWNER_INVALID = 'ACCOUNT_OWNER_INVALID',
+    ACCOUNT_EXECUTABLE_INVALID = 'ACCOUNT_EXECUTABLE_INVALID',
+    ACCOUNT_NOT_FOUND = 'ACCOUNT_NOT_FOUND',
+    MINT_NOT_INITIALIZED = 'MINT_NOT_INITIALIZED',
     AMOUNT_INVALID_DECIMALS = 'AMOUNT_INVALID_DECIMALS',
-    PAYER_ATA_NOT_FOUND = 'PAYER_ATA_NOT_FOUND',
-    RECIPIENT_ATA_NOT_FOUND = 'RECIPIENT_ATA_NOT_FOUND',
-    PAYER_INSUFFICIENT_FUNDS = 'PAYER_INSUFFICIENT_FUNDS',
-    PAYER_ATA_INSUFFICIENT_FUNDS = 'PAYER_ATA_INSUFFICIENT_FUNDS',
+    ACCOUNT_NOT_INITIALIZED = 'ACCOUNT_NOT_INITIALIZED',
+    ACCOUNT_FROZEN = 'ACCOUNT_FROZEN',
+    INSUFFICIENT_FUNDS = 'INSUFFICIENT_FUNDS',
 }
 
 const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
@@ -47,19 +37,24 @@ export async function createTransaction(
         memo?: string,
     },
 ): Promise<Transaction> {
+    // Check that the payer and recipient accounts exist
     const payerInfo = await connection.getAccountInfo(payer);
-    if (!payerInfo) throw new Error(CreateTransactionError.PAYER_NOT_FOUND);
+    if (!payerInfo) throw new Error(CreateTransactionError.ACCOUNT_NOT_FOUND);
 
     const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new Error(CreateTransactionError.RECIPIENT_NOT_FOUND);
+    if (!recipientInfo) throw new Error(CreateTransactionError.ACCOUNT_NOT_FOUND);
 
-    // @TODO: check that the recipient is a native account (not owned by a program, not a PDA, or doesn't exist)
-    // @TODO: the token branch below checks that the recipient account exists, should the native branch do the same?
-
+    // Either a native SOL or SPL token transfer instruction
     let instruction: TransactionInstruction;
 
     // If no SPL token mint is provided, transfer native SOL
     if (!token) {
+        // Check that the payer and recipient are valid native accounts
+        if (!payerInfo.owner.equals(SystemProgram.programId)) throw new Error(CreateTransactionError.ACCOUNT_OWNER_INVALID);
+        if (payerInfo.executable) throw new Error(CreateTransactionError.ACCOUNT_EXECUTABLE_INVALID);
+        if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new Error(CreateTransactionError.ACCOUNT_OWNER_INVALID);
+        if (recipientInfo.executable) throw new Error(CreateTransactionError.ACCOUNT_EXECUTABLE_INVALID);
+
         // Check that the amount provided doesn't have greater precision than SOL
         if (amount.decimalPlaces() > SOL_DECIMALS) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
 
@@ -68,7 +63,7 @@ export async function createTransaction(
 
         // Check that the payer has enough lamports
         const lamports = amount.toNumber();
-        if (lamports > payerInfo.lamports) throw new Error(CreateTransactionError.PAYER_INSUFFICIENT_FUNDS);
+        if (lamports > payerInfo.lamports) throw new Error(CreateTransactionError.INSUFFICIENT_FUNDS);
 
         // Create an instruction to transfer native SOL
         instruction = SystemProgram.transfer({
@@ -79,59 +74,40 @@ export async function createTransaction(
     }
     // Otherwise, transfer SPL tokens from payer's ATA to recipient's ATA
     else {
-        // @TODO: replace manual deserialization and checks with new spl-token TS, remove bn.js + u64 usage
-
-        // Check that the token provided is an initialized mint owned by the token program
-        const tokenInfo = await connection.getAccountInfo(token);
-        if (!tokenInfo) throw new Error(CreateTransactionError.TOKEN_NOT_FOUND);
-        if (!tokenInfo.owner.equals(TOKEN_PROGRAM_ID)) throw new Error(CreateTransactionError.TOKEN_INVALID_PROGRAM);
-        if (tokenInfo.data.length !== MintLayout.span) throw new Error(CreateTransactionError.TOKEN_INVALID_LENGTH);
-
-        const mint = MintLayout.decode(tokenInfo.data);
-        if (!mint.isInitialized) throw new Error(CreateTransactionError.TOKEN_MINT_NOT_INITIALIZED);
+        // Check that the token provided is an initialized mint
+        const mint = await getMint(connection, token);
+        if (!mint.isInitialized) throw new Error(CreateTransactionError.MINT_NOT_INITIALIZED);
 
         // Check that the amount provided doesn't have greater precision than the mint
-        const decimals: number = mint.decimals;
-        if (amount.decimalPlaces() > decimals) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
+        if (amount.decimalPlaces() > mint.decimals) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
 
-        // Convert input decimal amount to tokens according to the mint decimals
-        amount = amount.times(TEN.pow(decimals)).integerValue(BigNumber.ROUND_FLOOR);
+        // Convert input decimal amount to integer tokens according to the mint decimals
+        amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
 
-        // Get the payer's ATA and check that it exists
-        const payerATA = await Token.getAssociatedTokenAddress(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            token,
-            payer,
-        );
-        const payerATAInfo = await connection.getAccountInfo(payerATA);
-        if (!payerATAInfo) throw new Error(CreateTransactionError.PAYER_ATA_NOT_FOUND);
+        // Get the payer's ATA and check that the account exists and can send tokens
+        const payerATA = await getAssociatedTokenAddress(token, payer);
+        const payerAccount = await getAccount(connection, payerATA);
+        if (!payerAccount.isInitialized) throw new Error(CreateTransactionError.ACCOUNT_NOT_INITIALIZED);
+        if (payerAccount.isFrozen) throw new Error(CreateTransactionError.ACCOUNT_FROZEN);
 
-        // Get the payer's token balance and check that it's enough to transfer
-        const { amount: balance } = AccountLayout.decode(payerATAInfo.data) as { amount: BN };
-        const tokens = new u64(String(amount));
-        if (tokens.gt(balance)) throw new Error(CreateTransactionError.PAYER_ATA_INSUFFICIENT_FUNDS);
+        // Get the recipient's ATA and check that the account exists and can receive tokens
+        const recipientATA = await getAssociatedTokenAddress(token, recipient);
+        const recipientAccount = await getAccount(connection, recipientATA);
+        if (!recipientAccount.isInitialized) throw new Error(CreateTransactionError.ACCOUNT_NOT_INITIALIZED);
+        if (recipientAccount.isFrozen) throw new Error(CreateTransactionError.ACCOUNT_FROZEN);
 
-        // Get the recipient's ATA and check that it exists
-        const recipientATA = await Token.getAssociatedTokenAddress(
-            ASSOCIATED_TOKEN_PROGRAM_ID,
-            TOKEN_PROGRAM_ID,
-            token,
-            recipient,
-        );
-        const recipientATAInfo = await connection.getAccountInfo(recipientATA);
-        if (!recipientATAInfo) throw new Error(CreateTransactionError.RECIPIENT_ATA_NOT_FOUND);
+        // Check that the payer has enough tokens
+        const tokens = BigInt(String(amount));
+        if (tokens > payerAccount.amount) throw new Error(CreateTransactionError.INSUFFICIENT_FUNDS);
 
         // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
-        instruction = Token.createTransferCheckedInstruction(
-            TOKEN_PROGRAM_ID,
+        instruction = createTransferCheckedInstruction(
             payerATA,
             token,
             recipientATA,
             payer,
-            [],
             tokens,
-            decimals,
+            mint.decimals,
         );
     }
 
