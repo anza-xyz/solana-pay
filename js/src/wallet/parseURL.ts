@@ -11,6 +11,7 @@ export interface ParsedURL {
     memo?: string;
 }
 
+// @TODO: replace with error classes
 export enum ParseError {
     INVALID_URL = 'INVALID_URL',
     INVALID_PROTOCOL = 'INVALID_PROTOCOL',
