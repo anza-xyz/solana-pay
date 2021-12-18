@@ -14,7 +14,7 @@ export async function findTransactionSignature(
 
     const length = signatures.length;
     if (!length) throw new Error(FindError.NOT_FOUND);
-    if (length < 1000) return signatures[length - 1];
+    if (length < (options?.limit || 1000)) return signatures[length - 1];
 
     try {
         return await findTransactionSignature(connection, reference, options, finality);
