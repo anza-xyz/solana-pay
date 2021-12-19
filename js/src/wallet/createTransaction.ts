@@ -9,13 +9,13 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-export class CreateTransactionError extends Error {
-    name = 'CreateTransactionError';
-}
-
 const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 const SOL_DECIMALS = 9;
 const TEN = new BigNumber(10);
+
+export class CreateTransactionError extends Error {
+    name = 'CreateTransactionError';
+}
 
 export async function createTransaction(
     connection: Connection,
