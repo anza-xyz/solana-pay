@@ -11,38 +11,30 @@ export interface ParsedURL {
     memo?: string;
 }
 
-// @TODO: replace with error classes
-export enum ParseError {
-    INVALID_URL = 'INVALID_URL',
-    INVALID_PROTOCOL = 'INVALID_PROTOCOL',
-    INVALID_RECIPIENT = 'INVALID_RECIPIENT',
-    MISSING_AMOUNT = 'MISSING_AMOUNT',
-    INVALID_AMOUNT = 'INVALID_AMOUNT',
-    ZERO_AMOUNT = 'ZERO_AMOUNT',
-    INVALID_TOKEN = 'INVALID_TOKEN',
-    INVALID_REFERENCE = 'INVALID_REFERENCE',
+export class ParseURLError extends Error {
+    name = 'ParseURLError';
 }
 
 export function parseURL(url: string): ParsedURL {
-    if (url.length > 2048) throw new Error(ParseError.INVALID_URL);
+    if (url.length > 2048) throw new ParseURLError('length invalid');
 
     const { protocol, pathname, searchParams } = new URL(url);
-    if (protocol !== 'solana:') throw new Error(ParseError.INVALID_PROTOCOL);
+    if (protocol !== 'solana:') throw new ParseURLError('protocol invalid');
 
     let recipient: PublicKey;
     try {
         recipient = new PublicKey(pathname);
     } catch (error) {
-        throw new Error(ParseError.INVALID_RECIPIENT);
+        throw new ParseURLError('ParseURLError: recipient invalid');
     }
 
     const amountParam = searchParams.get('amount');
-    if (!amountParam) throw new Error(ParseError.MISSING_AMOUNT);
-    if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new Error(ParseError.INVALID_AMOUNT);
+    if (!amountParam) throw new ParseURLError('amount missing');
+    if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new ParseURLError('amount invalid');
 
     const amount = new BigNumber(amountParam);
-    if (amount.isNaN()) throw new Error(ParseError.INVALID_AMOUNT);
-    if (amount.isZero()) throw new Error(ParseError.ZERO_AMOUNT);
+    if (amount.isNaN()) throw new ParseURLError('amount NaN');
+    if (amount.isZero()) throw new ParseURLError('amount zero');
 
     const tokenParam = searchParams.get('spl-token');
     let token: PublicKey | undefined;
@@ -50,7 +42,7 @@ export function parseURL(url: string): ParsedURL {
         try {
             token = new PublicKey(tokenParam);
         } catch (error) {
-            throw new Error(ParseError.INVALID_TOKEN);
+            throw new ParseURLError('token invalid');
         }
     }
 
@@ -60,7 +52,7 @@ export function parseURL(url: string): ParsedURL {
         try {
             references = referenceParam.map((reference) => new PublicKey(reference));
         } catch (error) {
-            throw new Error(ParseError.INVALID_REFERENCE);
+            throw new ParseURLError('reference invalid');
         }
     }
 

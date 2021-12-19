@@ -1,19 +1,9 @@
 import { getAssociatedTokenAddress } from '@solana/spl-token';
-import {
-    ConfirmedSignatureInfo,
-    Connection,
-    Finality,
-    PublicKey,
-    TransactionResponse,
-    TransactionSignature,
-} from '@solana/web3.js';
+import { Connection, Finality, PublicKey, TransactionResponse, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-export enum ValidateError {
-    NOT_FOUND = 'NOT_FOUND',
-    MISSING_META = 'MISSING_META',
-    INVALID_RECIPIENT = 'INVALID_RECIPIENT',
-    INVALID_BALANCE = 'INVALID_BALANCE',
+export class ValidateTransactionSignatureError extends Error {
+    name = 'ValidateTransactionSignatureError';
 }
 
 const TEN = new BigNumber(10);
@@ -27,12 +17,12 @@ export async function validateTransactionSignature(
     finality?: Finality
 ): Promise<TransactionResponse> {
     const response = await connection.getTransaction(signature, { commitment: finality });
-    if (!response) throw new Error(ValidateError.NOT_FOUND);
-    if (!response.meta) throw new Error(ValidateError.MISSING_META);
+    if (!response) throw new ValidateTransactionSignatureError('not found');
+    if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
 
     if (!token) {
         const index = response.transaction.message.accountKeys.indexOf(recipient);
-        if (index === -1) throw new Error(ValidateError.INVALID_RECIPIENT);
+        if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
         const preBalance = new BigNumber(response.meta.preBalances[index]);
         const postBalance = new BigNumber(response.meta.postBalances[index]);
@@ -42,15 +32,15 @@ export async function validateTransactionSignature(
     else {
         const recipientATA = await getAssociatedTokenAddress(token, recipient);
         const index = response.transaction.message.accountKeys.indexOf(recipientATA);
-        if (index === -1) throw new Error(ValidateError.INVALID_RECIPIENT);
+        if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
         const mint = token.toBase58();
 
         const preBalance = response.meta.preTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
-        if (!preBalance) throw new Error(ValidateError.INVALID_BALANCE);
+        if (!preBalance) throw new ValidateTransactionSignatureError('balance not found');
 
         const postBalance = response.meta.postTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
-        if (!postBalance) throw new Error(ValidateError.INVALID_BALANCE);
+        if (!postBalance) throw new ValidateTransactionSignatureError('balance not found');
 
         const preAmount = new BigNumber(preBalance.uiTokenAmount.amount).div(TEN.pow(preBalance.uiTokenAmount.decimals));
         const postAmount = new BigNumber(postBalance.uiTokenAmount.amount).div(TEN.pow(postBalance.uiTokenAmount.decimals));

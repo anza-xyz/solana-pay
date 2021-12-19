@@ -9,20 +9,11 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-// @TODO: replace with error classes
-export enum CreateTransactionError {
-    ACCOUNT_OWNER_INVALID = 'ACCOUNT_OWNER_INVALID',
-    ACCOUNT_EXECUTABLE_INVALID = 'ACCOUNT_EXECUTABLE_INVALID',
-    ACCOUNT_NOT_FOUND = 'ACCOUNT_NOT_FOUND',
-    MINT_NOT_INITIALIZED = 'MINT_NOT_INITIALIZED',
-    AMOUNT_INVALID_DECIMALS = 'AMOUNT_INVALID_DECIMALS',
-    ACCOUNT_NOT_INITIALIZED = 'ACCOUNT_NOT_INITIALIZED',
-    ACCOUNT_FROZEN = 'ACCOUNT_FROZEN',
-    INSUFFICIENT_FUNDS = 'INSUFFICIENT_FUNDS',
+export class CreateTransactionError extends Error {
+    name = 'CreateTransactionError';
 }
 
 const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
-
 const SOL_DECIMALS = 9;
 const TEN = new BigNumber(10);
 
@@ -39,10 +30,10 @@ export async function createTransaction(
 ): Promise<Transaction> {
     // Check that the payer and recipient accounts exist
     const payerInfo = await connection.getAccountInfo(payer);
-    if (!payerInfo) throw new Error(CreateTransactionError.ACCOUNT_NOT_FOUND);
+    if (!payerInfo) throw new CreateTransactionError('payer not found');
 
     const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new Error(CreateTransactionError.ACCOUNT_NOT_FOUND);
+    if (!recipientInfo) throw new CreateTransactionError('recipient not found');
 
     // Either a native SOL or SPL token transfer instruction
     let instruction: TransactionInstruction;
@@ -50,20 +41,20 @@ export async function createTransaction(
     // If no SPL token mint is provided, transfer native SOL
     if (!token) {
         // Check that the payer and recipient are valid native accounts
-        if (!payerInfo.owner.equals(SystemProgram.programId)) throw new Error(CreateTransactionError.ACCOUNT_OWNER_INVALID);
-        if (payerInfo.executable) throw new Error(CreateTransactionError.ACCOUNT_EXECUTABLE_INVALID);
-        if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new Error(CreateTransactionError.ACCOUNT_OWNER_INVALID);
-        if (recipientInfo.executable) throw new Error(CreateTransactionError.ACCOUNT_EXECUTABLE_INVALID);
+        if (!payerInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('payer owner invalid');
+        if (payerInfo.executable) throw new CreateTransactionError('payer executable');
+        if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('recipient owner invalid');
+        if (recipientInfo.executable) throw new CreateTransactionError('recipient executable');
 
         // Check that the amount provided doesn't have greater precision than SOL
-        if (amount.decimalPlaces() > SOL_DECIMALS) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
+        if (amount.decimalPlaces() > SOL_DECIMALS) throw new CreateTransactionError('amount decimals invalid');
 
         // Convert input decimal amount to integer lamports
         amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
         // Check that the payer has enough lamports
         const lamports = amount.toNumber();
-        if (lamports > payerInfo.lamports) throw new Error(CreateTransactionError.INSUFFICIENT_FUNDS);
+        if (lamports > payerInfo.lamports) throw new CreateTransactionError('insufficient funds');
 
         // Create an instruction to transfer native SOL
         instruction = SystemProgram.transfer({
@@ -76,10 +67,10 @@ export async function createTransaction(
     else {
         // Check that the token provided is an initialized mint
         const mint = await getMint(connection, token);
-        if (!mint.isInitialized) throw new Error(CreateTransactionError.MINT_NOT_INITIALIZED);
+        if (!mint.isInitialized) throw new CreateTransactionError('mint not initialized');
 
         // Check that the amount provided doesn't have greater precision than the mint
-        if (amount.decimalPlaces() > mint.decimals) throw new Error(CreateTransactionError.AMOUNT_INVALID_DECIMALS);
+        if (amount.decimalPlaces() > mint.decimals) throw new CreateTransactionError('amount decimals invalid');
 
         // Convert input decimal amount to integer tokens according to the mint decimals
         amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
@@ -87,18 +78,18 @@ export async function createTransaction(
         // Get the payer's ATA and check that the account exists and can send tokens
         const payerATA = await getAssociatedTokenAddress(token, payer);
         const payerAccount = await getAccount(connection, payerATA);
-        if (!payerAccount.isInitialized) throw new Error(CreateTransactionError.ACCOUNT_NOT_INITIALIZED);
-        if (payerAccount.isFrozen) throw new Error(CreateTransactionError.ACCOUNT_FROZEN);
+        if (!payerAccount.isInitialized) throw new CreateTransactionError('payer not initialized');
+        if (payerAccount.isFrozen) throw new CreateTransactionError('payer frozen');
 
         // Get the recipient's ATA and check that the account exists and can receive tokens
         const recipientATA = await getAssociatedTokenAddress(token, recipient);
         const recipientAccount = await getAccount(connection, recipientATA);
-        if (!recipientAccount.isInitialized) throw new Error(CreateTransactionError.ACCOUNT_NOT_INITIALIZED);
-        if (recipientAccount.isFrozen) throw new Error(CreateTransactionError.ACCOUNT_FROZEN);
+        if (!recipientAccount.isInitialized) throw new CreateTransactionError('recipient not initialized');
+        if (recipientAccount.isFrozen) throw new CreateTransactionError('recipient frozen');
 
         // Check that the payer has enough tokens
         const tokens = BigInt(String(amount));
-        if (tokens > payerAccount.amount) throw new Error(CreateTransactionError.INSUFFICIENT_FUNDS);
+        if (tokens > payerAccount.amount) throw new CreateTransactionError('insufficient funds');
 
         // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
         instruction = createTransferCheckedInstruction(
