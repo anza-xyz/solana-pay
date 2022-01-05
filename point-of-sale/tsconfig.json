@@ -1,0 +1,21 @@
+{
+    "include": ["src", "types"],
+    "exclude": ["node_modules"],
+    "compilerOptions": {
+        "target": "esnext",
+        "module": "esnext",
+        "outDir": "lib/esm",
+        "noEmit": true,
+        "declaration": true,
+        "sourceMap": true,
+        "noEmitOnError": true,
+        "stripInternal": true,
+        "moduleResolution": "node",
+        "jsx": "react",
+        "strict": true,
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "typeRoots": ["node_modules/@types"]
+    }
+}
