@@ -22,11 +22,15 @@ export async function createTransaction(
     payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    { token, references, memo }: {
-        token?: PublicKey,
-        references?: PublicKey[],
-        memo?: string,
-    },
+    {
+        token,
+        references,
+        memo,
+    }: {
+        token?: PublicKey;
+        references?: PublicKey[];
+        memo?: string;
+    }
 ): Promise<Transaction> {
     // Check that the payer and recipient accounts exist
     const payerInfo = await connection.getAccountInfo(payer);
@@ -43,7 +47,8 @@ export async function createTransaction(
         // Check that the payer and recipient are valid native accounts
         if (!payerInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('payer owner invalid');
         if (payerInfo.executable) throw new CreateTransactionError('payer executable');
-        if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('recipient owner invalid');
+        if (!recipientInfo.owner.equals(SystemProgram.programId))
+            throw new CreateTransactionError('recipient owner invalid');
         if (recipientInfo.executable) throw new CreateTransactionError('recipient executable');
 
         // Check that the amount provided doesn't have greater precision than SOL
@@ -92,14 +97,7 @@ export async function createTransaction(
         if (tokens > payerAccount.amount) throw new CreateTransactionError('insufficient funds');
 
         // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
-        instruction = createTransferCheckedInstruction(
-            payerATA,
-            token,
-            recipientATA,
-            payer,
-            tokens,
-            mint.decimals,
-        );
+        instruction = createTransferCheckedInstruction(payerATA, token, recipientATA, payer, tokens, mint.decimals);
     }
 
     // If reference accounts are provided, add them to the instruction
@@ -117,7 +115,7 @@ export async function createTransaction(
                 programId: MEMO_PROGRAM_ID,
                 keys: [],
                 data: Buffer.from(memo, 'utf8'),
-            }),
+            })
         );
     }
 

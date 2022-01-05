@@ -2,7 +2,7 @@ import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, Transaction } fro
 import { encodeURL } from '../src/app';
 import { createTransaction, parseURL } from '../src/wallet';
 
-(async function() {
+(async function () {
     const cluster = 'devnet';
     const endpoint = clusterApiUrl(cluster);
     const connection = new Connection(endpoint, 'confirmed');
@@ -10,20 +10,24 @@ import { createTransaction, parseURL } from '../src/wallet';
     // Merchant app generates a random public key to reference in the transaction, in order to locate it after it's sent
     const reference = Keypair.generate().publicKey;
 
-    const NATIVE_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'
-        + '?amount=0.01'
-        + '&reference=' + encodeURIComponent(String(reference))
-        + '&label=Michael'
-        + '&message=Thanks%20for%20all%20the%20fish'
-        + '&memo=OrderId5678';
+    const NATIVE_URL =
+        'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN' +
+        '?amount=0.01' +
+        '&reference=' +
+        encodeURIComponent(String(reference)) +
+        '&label=Michael' +
+        '&message=Thanks%20for%20all%20the%20fish' +
+        '&memo=OrderId5678';
 
-    const USDC_URL = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'
-        + '?amount=0.01'
-        + '&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v'
-        + '&reference=' + encodeURIComponent(String(reference))
-        + '&label=Michael'
-        + '&message=Thanks%20for%20all%20the%20fish'
-        + '&memo=OrderId5678';
+    const USDC_URL =
+        'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN' +
+        '?amount=0.01' +
+        '&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v' +
+        '&reference=' +
+        encodeURIComponent(String(reference)) +
+        '&label=Michael' +
+        '&message=Thanks%20for%20all%20the%20fish' +
+        '&memo=OrderId5678';
 
     const originalURL = NATIVE_URL;
 
@@ -43,13 +47,11 @@ import { createTransaction, parseURL } from '../src/wallet';
     await new Promise((resolve) => setTimeout(resolve, 2000));
 
     // Create a transaction to transfer native SOL or SPL tokens
-    const transaction = await createTransaction(
-        connection,
-        wallet.publicKey,
-        recipient,
-        amount,
-        { token, references, memo },
-    );
+    const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount, {
+        token,
+        references,
+        memo,
+    });
 
     // Sign and send the transaction
     transaction.feePayer = wallet.publicKey;
@@ -86,11 +88,7 @@ import { createTransaction, parseURL } from '../src/wallet';
     const response = await connection.getTransaction(original.signature);
     if (!response?.transaction) return;
 
-    const tx = Transaction.populate(
-        response.transaction.message,
-        response.transaction.signatures
-    );
+    const tx = Transaction.populate(response.transaction.message, response.transaction.signatures);
 
     console.log(tx);
 })();
-

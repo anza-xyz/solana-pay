@@ -28,8 +28,7 @@ export async function validateTransactionSignature(
         const postAmount = new BigNumber(response.meta.postBalances[index]);
 
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
-    }
-    else {
+    } else {
         const recipientATA = await getAssociatedTokenAddress(token, recipient);
         const index = response.transaction.message.accountKeys.indexOf(recipientATA);
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
@@ -42,8 +41,12 @@ export async function validateTransactionSignature(
         const postBalance = response.meta.postTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
         if (!postBalance) throw new ValidateTransactionSignatureError('balance not found');
 
-        const preAmount = new BigNumber(preBalance.uiTokenAmount.amount).div(TEN.pow(preBalance.uiTokenAmount.decimals));
-        const postAmount = new BigNumber(postBalance.uiTokenAmount.amount).div(TEN.pow(postBalance.uiTokenAmount.decimals));
+        const preAmount = new BigNumber(preBalance.uiTokenAmount.amount).div(
+            TEN.pow(preBalance.uiTokenAmount.decimals)
+        );
+        const postAmount = new BigNumber(postBalance.uiTokenAmount.amount).div(
+            TEN.pow(postBalance.uiTokenAmount.decimals)
+        );
 
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
 

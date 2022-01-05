@@ -8,7 +8,7 @@ export async function findTransactionSignature(
     connection: Connection,
     reference: PublicKey,
     options?: SignaturesForAddressOptions,
-    finality?: Finality,
+    finality?: Finality
 ): Promise<ConfirmedSignatureInfo> {
     const signatures = await connection.getSignaturesForAddress(reference, options, finality);
 

@@ -4,13 +4,19 @@ import BigNumber from 'bignumber.js';
 export function encodeURL(
     recipient: PublicKey,
     amount: BigNumber,
-    { token, references, label, message, memo }: {
-        token?: PublicKey,
-        references?: PublicKey[],
-        label?: string,
-        message?: string,
-        memo?: string,
-    },
+    {
+        token,
+        references,
+        label,
+        message,
+        memo,
+    }: {
+        token?: PublicKey;
+        references?: PublicKey[];
+        label?: string;
+        message?: string;
+        memo?: string;
+    }
 ): string {
     let url = `solana:${encodeURIComponent(String(recipient))}?amount=${encodeURIComponent(String(amount))}`;
 
