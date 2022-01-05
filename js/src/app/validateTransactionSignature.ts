@@ -24,10 +24,10 @@ export async function validateTransactionSignature(
         const index = response.transaction.message.accountKeys.indexOf(recipient);
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
-        const preBalance = new BigNumber(response.meta.preBalances[index]);
-        const postBalance = new BigNumber(response.meta.postBalances[index]);
+        const preAmount = new BigNumber(response.meta.preBalances[index]);
+        const postAmount = new BigNumber(response.meta.postBalances[index]);
 
-        // TODO: validate balance change with amount
+        if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
     }
     else {
         const recipientATA = await getAssociatedTokenAddress(token, recipient);
@@ -45,7 +45,9 @@ export async function validateTransactionSignature(
         const preAmount = new BigNumber(preBalance.uiTokenAmount.amount).div(TEN.pow(preBalance.uiTokenAmount.decimals));
         const postAmount = new BigNumber(postBalance.uiTokenAmount.amount).div(TEN.pow(postBalance.uiTokenAmount.decimals));
 
-        // TODO: validate balance change with amount -- but what if a token was used to pay for gas?
+        if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
+
+        // TODO: what if a token was used to pay for gas?
     }
 
     return response;
