@@ -1,0 +1,20 @@
+.root {
+}
+
+.value {
+    margin: 8px;
+}
+
+.row {
+}
+
+.button {
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+}
