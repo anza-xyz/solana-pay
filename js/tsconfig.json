@@ -1,29 +1,21 @@
 {
+    "include": ["src", "types"],
+    "exclude": ["node_modules"],
     "compilerOptions": {
-        "outDir": "lib",
+        "target": "esnext",
+        "module": "esnext",
+        "outDir": "lib/esm",
         "noEmit": false,
         "declaration": true,
         "sourceMap": true,
         "noEmitOnError": true,
         "stripInternal": true,
-        "target": "es6",
-        "module": "esnext",
         "moduleResolution": "node",
         "jsx": "react",
         "strict": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
-        "typeRoots": [
-            "node_modules/@types",
-            "types"
-        ]
-    },
-    "include": [
-        "src",
-        "types"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
+        "typeRoots": ["node_modules/@types"]
+    }
 }

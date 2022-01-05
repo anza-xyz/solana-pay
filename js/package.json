@@ -5,19 +5,28 @@
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
-    "engines": {
-        "node": ">= 10"
+    "type": "module",
+    "sideEffects": false,
+    "main": "lib/cjs/index.js",
+    "module": "lib/esm/index.js",
+    "types": "lib/esm/index.d.ts",
+    "exports": {
+        "import": "./lib/esm/index.js",
+        "require": "./lib/cjs/index.js"
     },
+    "files": [
+        "lib",
+        "src",
+        "LICENSE"
+    ],
     "publishConfig": {
         "access": "public"
     },
-    "type": "module",
-    "main": "lib/index.js",
     "scripts": {
-        "clean": "shx rm -rf lib",
-        "build": "yarn clean && tsc",
-        "watch": "yarn build -w",
-        "start": "node --experimental-specifier-resolution=node --loader ts-node/esm test/index.ts",
+        "clean": "shx rm -rf lib/*",
+        "build": "yarn clean && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+        "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json",
+        "test": "node --experimental-specifier-resolution=node --loader ts-node/esm test/index.ts",
         "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
