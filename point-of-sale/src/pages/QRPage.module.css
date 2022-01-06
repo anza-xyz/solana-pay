@@ -1,0 +1,65 @@
+.root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+    margin: 24px;
+}
+
+.button {
+    background: none;
+    border: 0;
+    color: #ffffff;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.arrow {
+    margin-right: 8px;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.total {
+    font-size: 14px;
+}
+
+.amount {
+    line-height: 64px;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.code {
+    width: 512px;
+    height: 512px;
+    margin: 24px;
+}
+
+.symbol {
+    font-size: 14px;
+}
+
+.scan {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.confirm {
+    font-size: 14px;
+}
+
+.footer {
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
