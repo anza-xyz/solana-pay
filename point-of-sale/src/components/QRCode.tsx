@@ -1,28 +1,24 @@
 import { createQR, encodeURL } from '@solana/pay';
-import { PublicKey } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { useConfig } from '../hooks/useConfig';
-import { useInput } from '../hooks/useInput';
+import { usePayment } from '../hooks/usePayment';
 
-export interface QRCodeProps {
-    references: PublicKey[];
-}
-
-export const QRCode: FC<QRCodeProps> = ({ references }) => {
+export const QRCode: FC = () => {
     const { account, token, label } = useConfig();
-    const { amount, message, memo } = useInput();
+    const { amount, message, memo, reference } = usePayment();
 
     const content = useMemo(
         () =>
             amount &&
+            reference &&
             encodeURL(account, amount, {
                 token,
-                references,
+                references: [reference],
                 label,
                 message,
                 memo,
             }),
-        [account, amount, token, references, label, message, memo]
+        [account, amount, token, reference, label, message, memo]
     );
 
     const src = useMemo(

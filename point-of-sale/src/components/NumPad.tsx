@@ -1,10 +1,9 @@
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../hooks/useConfig';
-import { useInput } from '../hooks/useInput';
+import { usePayment } from '../hooks/usePayment';
 import { Digits } from '../types';
-
-import * as classes from './NumPad.module.css';
+import * as styles from './NumPad.module.css';
 
 interface NumPadInputButton {
     input: Digits | '.';
@@ -14,14 +13,14 @@ interface NumPadInputButton {
 const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
     const onClick = useCallback(() => onInput(input), [onInput, input]);
     return (
-        <button className={classes.button} type="button" onClick={onClick}>
+        <button className={styles.button} type="button" onClick={onClick}>
             {input}
         </button>
     );
 };
 
 export const NumPad: FC = () => {
-    const { decimals } = useConfig();
+    const { symbol, decimals } = useConfig();
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
     const [value, setValue] = useState('');
@@ -35,37 +34,40 @@ export const NumPad: FC = () => {
                 }
                 return value;
             }),
-        [setValue]
+        [setValue, regExp]
     );
     const onBackspace = useCallback(() => setValue((value) => (value.length ? value.slice(0, -1) : value)), [setValue]);
 
-    const { setAmount } = useInput();
+    const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [value]);
 
     return (
-        <div className={classes.root}>
-            <h1 className={classes.value}>{value && '$' + value}</h1>
-            <div className={classes.row}>
-                <NumPadButton input={1} onInput={onInput} />
-                <NumPadButton input={2} onInput={onInput} />
-                <NumPadButton input={3} onInput={onInput} />
-            </div>
-            <div className={classes.row}>
-                <NumPadButton input={4} onInput={onInput} />
-                <NumPadButton input={5} onInput={onInput} />
-                <NumPadButton input={6} onInput={onInput} />
-            </div>
-            <div className={classes.row}>
-                <NumPadButton input={7} onInput={onInput} />
-                <NumPadButton input={8} onInput={onInput} />
-                <NumPadButton input={9} onInput={onInput} />
-            </div>
-            <div className={classes.row}>
-                <NumPadButton input="." onInput={onInput} />
-                <NumPadButton input={0} onInput={onInput} />
-                <button className={classes.button} type="button" onClick={onBackspace}>
-                    ⌫
-                </button>
+        <div className={styles.root}>
+            <div className={styles.text}>Enter amount in {symbol}</div>
+            <div className={styles.value}>{value}</div>
+            <div className={styles.buttons}>
+                <div className={styles.row}>
+                    <NumPadButton input={1} onInput={onInput} />
+                    <NumPadButton input={2} onInput={onInput} />
+                    <NumPadButton input={3} onInput={onInput} />
+                </div>
+                <div className={styles.row}>
+                    <NumPadButton input={4} onInput={onInput} />
+                    <NumPadButton input={5} onInput={onInput} />
+                    <NumPadButton input={6} onInput={onInput} />
+                </div>
+                <div className={styles.row}>
+                    <NumPadButton input={7} onInput={onInput} />
+                    <NumPadButton input={8} onInput={onInput} />
+                    <NumPadButton input={9} onInput={onInput} />
+                </div>
+                <div className={styles.row}>
+                    <NumPadButton input="." onInput={onInput} />
+                    <NumPadButton input={0} onInput={onInput} />
+                    <button className={styles.button} type="button" onClick={onBackspace}>
+                        ⌫
+                    </button>
+                </div>
             </div>
         </div>
     );
