@@ -9,11 +9,9 @@
         "access": "public"
     },
     "scripts": {
-        "clean": "shx rm -rf lib",
-        "build": "parcel src/index.html",
-        "production": "parcel build src/index.html",
-        "watch": "yarn build -w",
-        "start": "node --experimental-specifier-resolution=node --loader ts-node/esm test/index.ts",
+        "clean": "shx rm -rf dist .parcel-cache",
+        "build": "yarn clean && parcel build src/index.html",
+        "start": "yarn clean && parcel src/index.html",
         "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
