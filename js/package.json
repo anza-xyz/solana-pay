@@ -27,6 +27,7 @@
         "build": "yarn clean && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
         "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json",
         "test": "node --experimental-specifier-resolution=node --loader ts-node/esm test/index.ts",
+        "test:jest": "jest",
         "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
@@ -46,6 +47,7 @@
     "devDependencies": {
         "@types/eslint": "^8.2.1",
         "@types/eslint-plugin-prettier": "^3.1.0",
+        "@types/jest": "^27.4.0",
         "@types/node": "^16.11.14",
         "@types/prettier": "^2.4.2",
         "@types/qrcode-svg": "^1.1.1",
@@ -55,11 +57,13 @@
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
         "gh-pages": "^3.2.3",
+        "jest": "^27.4.7",
         "prettier": "^2.5.1",
         "shx": "^0.3.3",
+        "ts-jest": "^27.1.2",
         "ts-node": "^10.4.0",
         "tslib": "^2.3.1",
         "typedoc": "^0.22.10",
-        "typescript": "^4.4.4"
+        "typescript": "^4.5.4"
     }
 }

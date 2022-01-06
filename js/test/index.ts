@@ -30,6 +30,7 @@ import { createTransaction, parseURL } from '../src/wallet';
         '&memo=OrderId5678';
 
     const originalURL = NATIVE_URL;
+    console.log(originalURL);
 
     // Wallet gets URL from deep link / QR code
     const { recipient, amount, token, references, label, message, memo } = parseURL(originalURL);
