@@ -21,7 +21,7 @@ export async function validateTransactionSignature(
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
 
     if (!token) {
-        const index = response.transaction.message.accountKeys.indexOf(recipient);
+        const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
         const preAmount = new BigNumber(response.meta.preBalances[index]);
@@ -30,7 +30,7 @@ export async function validateTransactionSignature(
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
     } else {
         const recipientATA = await getAssociatedTokenAddress(token, recipient);
-        const index = response.transaction.message.accountKeys.indexOf(recipientATA);
+        const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
         const mint = token.toBase58();
