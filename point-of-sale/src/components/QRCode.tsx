@@ -10,10 +10,9 @@ export const QRCode: FC = () => {
     const content = useMemo(
         () =>
             amount &&
-            reference &&
             encodeURL(account, amount, {
                 token,
-                references: [reference],
+                references: reference && [reference],
                 label,
                 message,
                 memo,
