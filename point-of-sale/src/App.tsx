@@ -6,40 +6,17 @@ import { PaymentProvider, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { AmountPage } from './pages/AmountPage';
 import { QRPage } from './pages/QRPage';
+import { toggleFullscreen } from './utils/toggleFullscreen';
 
 export const App: FC = () => {
     useEffect(() => {
-        const toggleFullScreen = (event: KeyboardEvent) => {
+        const listener = (event: KeyboardEvent) => {
             if (event.key !== 'Enter') return;
-
-            const doc = document as any;
-            const el = doc.documentElement;
-            const isFullscreen =
-                doc.fullscreenElement ||
-                doc.webkitFullscreenElement ||
-                doc.mozFullScreenElement ||
-                doc.msFullscreenElement;
-
-            if (isFullscreen) {
-                const close =
-                    doc.exitFullscreen || doc.webkitExitFullscreen || doc.mozCancelFullScreen || doc.msExitFullscreen;
-                if (close) {
-                    close();
-                }
-            } else {
-                const open =
-                    el.requestFullScreen ||
-                    el.webkitRequestFullscreen ||
-                    el.mozRequestFullScreen ||
-                    el.msRequestFullscreen;
-                if (open) {
-                    open();
-                }
-            }
+            toggleFullscreen();
         };
 
-        document.addEventListener('keydown', toggleFullScreen, false);
-        return () => document.removeEventListener('keydown', toggleFullScreen, false);
+        document.addEventListener('keydown', listener, false);
+        return () => document.removeEventListener('keydown', listener, false);
     }, []);
 
     return (
