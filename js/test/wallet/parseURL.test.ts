@@ -6,29 +6,32 @@ describe('parseURL', () => {
     describe('parsing', () => {
         describe('when given correct params', () => {
             it('should parse successfully', () => {
-                const url =
-                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+                const recipientPublicKey = 'mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN';
+                const referencePublicKey = '82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny';
+                const url = `solana:${recipientPublicKey}?amount=0.01&reference=${referencePublicKey}&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678`;
 
                 const parsed = parseURL(url);
 
-                expect(parsed.recipient).toEqual(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'));
+                expect(new PublicKey(recipientPublicKey).equals(parsed.recipient)).toBe(true);
                 expect(parsed.amount).toEqual(new BigNumber(0.01));
                 expect(parsed.token).toBeUndefined();
-                expect(parsed.references).toEqual([new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny')]);
+                expect((parsed.references as PublicKey[]).length).toBe(1);
+                expect(new PublicKey(referencePublicKey).equals((parsed.references as PublicKey[])[0])).toBe(true);
                 expect(parsed.label).toEqual('Michael');
                 expect(parsed.message).toEqual('Thanks for all the fish');
                 expect(parsed.memo).toEqual('OrderId5678');
             });
 
             it('should parse with spl-token', () => {
-                const url =
-                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+                const recipientPublicKey = 'mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN';
+                const tokenMint = '82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny';
+                const url = `solana:${recipientPublicKey}?amount=0.01&spl-token=${tokenMint}&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678`;
 
                 const parsed = parseURL(url);
 
-                expect(parsed.recipient).toEqual(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'));
+                expect(new PublicKey(recipientPublicKey).equals(parsed.recipient)).toBe(true);
+                expect(new PublicKey(tokenMint).equals(parsed.token as PublicKey)).toBe(true);
                 expect(parsed.amount).toEqual(new BigNumber(0.01));
-                expect(parsed.token).toEqual(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'));
                 expect(parsed.references).toBeUndefined();
                 expect(parsed.label).toEqual('Michael');
                 expect(parsed.message).toEqual('Thanks for all the fish');
