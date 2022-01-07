@@ -35,3 +35,9 @@ html.dark button {
     width: 100vw;
     height: 100vh;
 }
+
+body .wallet-adapter-modal-container {
+    justify-content: flex-end;
+    align-items: flex-start;
+    margin: 24px;
+}
