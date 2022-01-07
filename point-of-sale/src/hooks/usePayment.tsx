@@ -25,6 +25,7 @@ export interface PaymentContextState {
     signature: TransactionSignature | undefined;
     status: PaymentStatus;
     confirmations: number;
+    url: string | undefined;
     reset(): void;
     generate(): void;
 }
@@ -50,6 +51,19 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.Confirmed);
     const [confirmations, setConfirmations] = useState(0);
+
+    const url = useMemo(
+        () =>
+            amount &&
+            encodeURL(account, amount, {
+                token,
+                references: reference && [reference],
+                label,
+                message,
+                memo,
+            }),
+        [account, amount, token, reference, label, message, memo]
+    );
 
     const reset = useCallback(() => {
         setAmount(undefined);
