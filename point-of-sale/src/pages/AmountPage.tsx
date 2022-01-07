@@ -1,19 +1,13 @@
-import { Keypair } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { FC } from 'react';
+import { Amount } from '../components/Amount';
 import { NumPad } from '../components/NumPad';
 import { useConfig } from '../hooks/useConfig';
 import { usePayment } from '../hooks/usePayment';
 import * as styles from './AmountPage.module.css';
 
-const ZERO = new BigNumber(0);
-
 export const AmountPage: FC = () => {
     const { symbol } = useConfig();
-    const { amount, setReference } = usePayment();
-
-    const onClick = useCallback(() => setReference(Keypair.generate().publicKey), [setReference]);
-    const amountOrZero = useMemo(() => (!amount || amount.isNaN() || amount.isZero() ? ZERO : amount), [amount]);
+    const { amount, generate } = usePayment();
 
     return (
         <div className={styles.root}>
@@ -26,11 +20,18 @@ export const AmountPage: FC = () => {
                     <div className={styles.totalLeft}>Total</div>
                     <div className={styles.totalRight}>
                         <div className={styles.symbol}>{symbol}</div>
-                        <div className={styles.amount}>{String(amountOrZero)}</div>
+                        <div className={styles.amount}>
+                            <Amount />
+                        </div>
                     </div>
                 </div>
                 <div className={styles.middle}>
-                    <button className={styles.button} type="button" onClick={onClick} disabled={amountOrZero.isZero()}>
+                    <button
+                        className={styles.button}
+                        type="button"
+                        onClick={generate}
+                        disabled={!amount || amount.isLessThanOrEqualTo(0)}
+                    >
                         Generate Payment Code
                     </button>
                 </div>

@@ -2,6 +2,9 @@
 
 * {
     font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+body {
     font-weight: 300;
 }
 

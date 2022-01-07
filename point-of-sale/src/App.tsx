@@ -5,6 +5,7 @@ import { ConnectionProvider } from './hooks/useConnection';
 import { PaymentProvider, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { AmountPage } from './pages/AmountPage';
+import { ConfirmationPage } from './pages/ConfirmationPage';
 import { QRPage } from './pages/QRPage';
 import { toggleFullscreen } from './utils/toggleFullscreen';
 
@@ -29,22 +30,25 @@ export const App: FC = () => {
 const Context: FC<{ children: ReactNode }> = ({ children }) => {
     return (
         <ThemeProvider>
-            <ConfigProvider
-                account={Keypair.generate().publicKey}
-                token={Keypair.generate().publicKey}
-                symbol="USDC"
-                decimals={6}
-                label="Starbucks"
-            >
-                <PaymentProvider>
-                    <ConnectionProvider>{children}</ConnectionProvider>
-                </PaymentProvider>
-            </ConfigProvider>
+            <ConnectionProvider>
+                <ConfigProvider
+                    account={Keypair.generate().publicKey}
+                    token={Keypair.generate().publicKey}
+                    symbol="USDC"
+                    decimals={6}
+                    minDecimals={2}
+                    label="Starbucks"
+                >
+                    <PaymentProvider>{children}</PaymentProvider>
+                </ConfigProvider>
+            </ConnectionProvider>
         </ThemeProvider>
     );
 };
 
 const Content: FC = () => {
-    const { reference } = usePayment();
-    return reference ? <QRPage /> : <AmountPage />;
+    const { reference, signature } = usePayment();
+    if (signature) return <ConfirmationPage />;
+    if (reference) return <QRPage />;
+    return <AmountPage />;
 };
