@@ -7,6 +7,7 @@ export interface ConfigContextState {
     token: PublicKey;
     symbol: string;
     decimals: Digits;
+    minDecimals: Digits;
     label: string;
 }
 
@@ -22,11 +23,22 @@ export interface ConfigProviderProps {
     token: PublicKey;
     symbol: string;
     decimals: Digits;
+    minDecimals: Digits;
     label: string;
 }
 
-export const ConfigProvider: FC<ConfigProviderProps> = ({ children, account, token, symbol, decimals, label }) => {
+export const ConfigProvider: FC<ConfigProviderProps> = ({
+    children,
+    account,
+    token,
+    symbol,
+    decimals,
+    minDecimals,
+    label,
+}) => {
     return (
-        <ConfigContext.Provider value={{ account, token, symbol, decimals, label }}>{children}</ConfigContext.Provider>
+        <ConfigContext.Provider value={{ account, token, symbol, decimals, minDecimals, label }}>
+            {children}
+        </ConfigContext.Provider>
     );
 };
