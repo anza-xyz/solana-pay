@@ -1,3 +1,4 @@
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import React, { FC } from 'react';
 import { Amount } from '../components/Amount';
 import { PoweredBy } from '../components/PoweredBy';
@@ -16,6 +17,7 @@ export const QRPage: FC = () => {
                 <button className={styles.button} type="button" onClick={reset}>
                     <span className={styles.arrow}>◄</span>Cancel Payment
                 </button>
+                <WalletMultiButton />
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>
