@@ -1,9 +1,18 @@
 import { findTransactionSignature, FindTransactionSignatureError, validateTransactionSignature } from '@solana/pay';
-import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
+import { ConfirmedSignatureInfo, Keypair, PublicKey, SignatureStatus, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import { useConfig } from './useConfig';
 import { useConnection } from './useConnection';
+
+export enum PaymentStatus {
+    New,
+    Waiting,
+    Confirmed,
+    Finalized,
+    Valid,
+    Invalid,
+}
 
 export interface PaymentContextState {
     amount: BigNumber | undefined;
@@ -14,7 +23,8 @@ export interface PaymentContextState {
     setMemo(memo: string | undefined): void;
     reference: PublicKey | undefined;
     signature: TransactionSignature | undefined;
-    confirmed: boolean;
+    status: PaymentStatus;
+    confirmations: number;
     reset(): void;
     generate(): void;
 }
@@ -38,7 +48,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [memo, setMemo] = useState<string>();
     const [reference, setReference] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
-    const [confirmed, setConfirmed] = useState(false);
+    const [status, setStatus] = useState(PaymentStatus.Confirmed);
+    const [confirmations, setConfirmations] = useState(0);
 
     const reset = useCallback(() => {
         setAmount(undefined);
@@ -46,66 +57,103 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setMemo(undefined);
         setReference(undefined);
         setSignature(undefined);
-        setConfirmed(false);
-    }, [setAmount, setMessage, setMemo, setReference, setSignature, setConfirmed]);
+        setStatus(PaymentStatus.New);
+        setConfirmations(0);
+    }, []);
 
-    const generate = useCallback(() => setReference(Keypair.generate().publicKey), [setReference]);
+    const generate = useCallback(() => {
+        setReference(Keypair.generate().publicKey);
+        setStatus(PaymentStatus.Waiting);
+    }, []);
 
-    // useEffect(() => {
-    //     if (reference) {
-    //         const timeout = setTimeout(() => setSignature('x'), 3000);
-    //         return () => clearTimeout(timeout);
-    //     }
-    // }, [reference]);
-    //
-    // useEffect(() => {
-    //     if (reference && !signature) {
-    //         const interval = setInterval(async () => {
-    //             let signature: ConfirmedSignatureInfo;
-    //             try {
-    //                 signature = await findTransactionSignature(connection, reference);
-    //             } catch (error: any) {
-    //                 if (!(error instanceof FindTransactionSignatureError)) {
-    //                     console.error(error);
-    //                 }
-    //                 return;
-    //             }
-    //
-    //             clearInterval(interval);
-    //             setSignature(signature.signature);
-    //         }, 250);
-    //
-    //         return () => clearInterval(interval);
-    //     }
-    // }, [reference, signature]);
-    //
-    // useEffect(() => {
-    //     if (signature) {
-    //         const timeout = setTimeout(() => setConfirmed(true), 3000);
-    //         return () => clearTimeout(timeout);
-    //     }
-    // }, [signature]);
-    //
-    // useEffect(() => {
-    //     (async () => {
-    //         if (signature && amount) {
-    //             let changed = false;
-    //             try {
-    //                 await validateTransactionSignature(connection, signature, account, amount, token, 'confirmed');
-    //
-    //                 if (!changed) {
-    //                     setConfirmed(true);
-    //                 }
-    //             } catch (error: any) {
-    //                 console.log(error);
-    //             }
-    //
-    //             return () => {
-    //                 changed = true;
-    //             };
-    //         }
-    //     })();
-    // }, [signature, amount]);
+    // When the status is waiting, poll for the transaction using the reference key
+    useEffect(() => {
+        if (status === PaymentStatus.Waiting && reference && !signature) {
+            let changed = false;
+
+            const interval = setInterval(async () => {
+                let signature: ConfirmedSignatureInfo;
+                try {
+                    signature = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+                } catch (error: any) {
+                    if (!(error instanceof FindTransactionSignatureError)) {
+                        console.error(error);
+                    }
+                    return;
+                }
+
+                if (!changed) {
+                    clearInterval(interval);
+                    setSignature(signature.signature);
+                    setStatus(PaymentStatus.Confirmed);
+                }
+            }, 250);
+
+            return () => {
+                changed = true;
+                clearInterval(interval);
+            };
+        }
+    }, [status, reference, signature]);
+
+    // When the status is confirmed, validate the transaction
+    useEffect(() => {
+        if (status === PaymentStatus.Confirmed && signature && amount) {
+            let changed = false;
+
+            (async () => {
+                try {
+                    await validateTransactionSignature(connection, signature, account, amount, token, 'confirmed');
+
+                    if (!changed) {
+                        setStatus(PaymentStatus.Valid);
+                    }
+                } catch (error: any) {
+                    console.log(error);
+                    setStatus(PaymentStatus.Invalid);
+                }
+            })();
+
+            return () => {
+                changed = true;
+            };
+        }
+    }, [status, signature, amount]);
+
+    // When the status is valid, wait for the transaction to finalize
+    useEffect(() => {
+        if (status === PaymentStatus.Valid && signature) {
+            let changed = false;
+
+            const interval = setInterval(async () => {
+                let status: SignatureStatus;
+                try {
+                    const response = await connection.getSignatureStatus(signature);
+                    const value = response.value;
+                    if (!value) return;
+                    if (value.err) throw value.err;
+                    status = value;
+                } catch (error: any) {
+                    console.log(error);
+                    return;
+                }
+
+                if (!changed) {
+                    setConfirmations(status.confirmations || 0);
+
+                    if (status.confirmationStatus === 'finalized') {
+                        clearInterval(interval);
+                        setStatus(PaymentStatus.Finalized);
+                    }
+                }
+            }, 250);
+
+            return () => {
+                changed = true;
+                clearInterval(interval);
+            };
+        }
+    }, [status, signature]);
 
     return (
         <PaymentContext.Provider
@@ -118,7 +166,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 setMemo,
                 reference,
                 signature,
-                confirmed,
+                status,
+                confirmations,
                 reset,
                 generate,
             }}

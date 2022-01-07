@@ -2,7 +2,7 @@ import { Keypair } from '@solana/web3.js';
 import React, { FC, ReactNode, useEffect } from 'react';
 import { ConfigProvider } from './hooks/useConfig';
 import { ConnectionProvider } from './hooks/useConnection';
-import { PaymentProvider, usePayment } from './hooks/usePayment';
+import { PaymentProvider, PaymentStatus, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { AmountPage } from './pages/AmountPage';
 import { ConfirmationPage } from './pages/ConfirmationPage';
@@ -47,8 +47,13 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
 };
 
 const Content: FC = () => {
-    const { reference, signature } = usePayment();
-    if (signature) return <ConfirmationPage />;
-    if (reference) return <QRPage />;
-    return <AmountPage />;
+    const { status } = usePayment();
+    switch (status) {
+        case PaymentStatus.New:
+            return <AmountPage />;
+        case PaymentStatus.Waiting:
+            return <QRPage />;
+        default:
+            return <ConfirmationPage />;
+    }
 };
