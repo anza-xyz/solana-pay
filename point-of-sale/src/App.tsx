@@ -1,6 +1,7 @@
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, TorusWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, ReactNode, useEffect, useMemo } from 'react';
 import { ConfigProvider } from './hooks/useConfig';
