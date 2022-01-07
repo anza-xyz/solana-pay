@@ -14,7 +14,6 @@
     display: flex;
     flex-direction: column;
     width: 420px;
-    padding: 48px;
 }
 
 :global(html.light) .summary {
@@ -25,6 +24,11 @@
 :global(html.dark) .summary {
     background: #000000;
     color: #FFFFFF;
+}
+
+.header {
+    flex: 1;
+    margin: 48px;
 }
 
 :global(html.light) .title,
@@ -71,10 +75,6 @@
     font-weight: 700;
 }
 
-.middle {
-    flex: 1;
-}
-
 .button {
     display: block;
     margin: 32px auto;
@@ -103,5 +103,6 @@
 }
 
 .footer {
+    margin: 24px;
     text-align: center;
 }

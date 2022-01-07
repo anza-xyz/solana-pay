@@ -15,17 +15,17 @@ export const AmountPage: FC = () => {
                 <NumPad />
             </div>
             <div className={styles.summary}>
-                <div className={styles.title}>Balance Due</div>
-                <div className={styles.total}>
-                    <div className={styles.totalLeft}>Total</div>
-                    <div className={styles.totalRight}>
-                        <div className={styles.symbol}>{symbol}</div>
-                        <div className={styles.amount}>
-                            <Amount />
+                <div className={styles.header}>
+                    <div className={styles.title}>Balance Due</div>
+                    <div className={styles.total}>
+                        <div className={styles.totalLeft}>Total</div>
+                        <div className={styles.totalRight}>
+                            <div className={styles.symbol}>{symbol}</div>
+                            <div className={styles.amount}>
+                                <Amount />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={styles.middle}>
                     <button
                         className={styles.button}
                         type="button"
