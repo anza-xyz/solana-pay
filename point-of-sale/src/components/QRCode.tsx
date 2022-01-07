@@ -25,9 +25,9 @@ export const QRCode: FC = () => {
         () =>
             content &&
             'data:image/svg+xml;utf8,' +
-                encodeURIComponent(createQR({ content, width: 512, height: 512, join: true, xmlDeclaration: false })),
+                encodeURIComponent(createQR({ content, width: 400, height: 400, join: true, xmlDeclaration: false })),
         [content]
     );
 
-    return src ? <img width={512} height={512} src={src} alt="" /> : null;
+    return src ? <img width={400} height={400} src={src} alt="" /> : null;
 };
