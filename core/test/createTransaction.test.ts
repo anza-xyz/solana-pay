@@ -1,13 +1,17 @@
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { createTransaction } from '../../src/wallet/createTransaction';
-import { getMint } from '@solana/spl-token';
+import { getMint, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
 
 jest.mock('@solana/spl-token', () => ({
     getMint: jest.fn(),
+    getAccount: jest.fn(),
+    getAssociatedTokenAddress: jest.fn(),
 }));
 
 const mockGetMint = getMint as jest.Mock;
+const mockGetAccount = getAccount as jest.Mock;
+const mockGetAssociatedTokenAddress = getAssociatedTokenAddress as jest.Mock;
 
 describe('createTransaction', () => {
     let connection: Connection;
@@ -125,6 +129,8 @@ describe('createTransaction', () => {
         describe('errors', () => {
             beforeEach(() => {
                 mockGetMint.mockClear();
+                mockGetAccount.mockClear();
+                mockGetAssociatedTokenAddress.mockClear();
             });
 
             beforeEach(() => {
@@ -132,6 +138,12 @@ describe('createTransaction', () => {
                     isInitialized: true,
                     decimals: 9,
                 });
+
+                mockGetAccount.mockReturnValue({ isInitialized: true });
+
+                mockGetAssociatedTokenAddress.mockReturnValue(
+                    new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN')
+                );
             });
 
             it('throws an error on uninitialized mint', async () => {
@@ -168,10 +180,10 @@ describe('createTransaction', () => {
                 }).rejects.toThrow('amount decimals invalid');
             });
 
-            // FIXME: can't get past this error
-            // Fails at getting associated token account
-            it.skip('throws an error on unintialized payer', async () => {
+            it('throws an error on unintialized payer', async () => {
                 expect.assertions(1);
+
+                mockGetAccount.mockReturnValue({ isInitialized: false });
 
                 await expect(async () => {
                     return await createTransaction(
