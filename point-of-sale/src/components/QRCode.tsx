@@ -22,7 +22,7 @@ export const QRCode: FC = () => {
     );
     const options = useMemo(
         () => (url ? getQROptions(url, width, height, background, color) : {}),
-        [url, phone, theme]
+        [url, width, height, background, color]
     );
 
     const qr = useMemo(() => new QRCodeStyling(), []);
