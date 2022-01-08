@@ -6,7 +6,6 @@ import { usePayment } from '../hooks/usePayment';
 import { useTheme } from '../hooks/useTheme';
 
 export const QRCode: FC = () => {
-    const { url } = usePayment();
     const phone = useMediaQuery({ query: '(max-width: 767px)' });
     const [width, height] = useMemo(
         () =>
@@ -20,6 +19,7 @@ export const QRCode: FC = () => {
         () => (theme === 'light' ? ['#EFF2F3', '#2A2A2A'] : ['#2A2A2A', '#EEF5F6']),
         [theme]
     );
+    const { url } = usePayment();
     const options = useMemo(
         () => (url ? getQROptions(url, width, height, background, color) : {}),
         [url, width, height, background, color]
