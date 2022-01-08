@@ -34,10 +34,8 @@ export function encodeURL(
             references = [references];
         }
 
-        if (references?.length) {
-            for (const reference of references) {
-                params.push(['reference', reference.toBase58()]);
-            }
+        for (const reference of references) {
+            params.push(['reference', reference.toBase58()]);
         }
     }
 
