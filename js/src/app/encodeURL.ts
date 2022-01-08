@@ -19,33 +19,37 @@ export function encodeURL(
         memo?: string;
     }
 ): string {
-    let url = `solana:${encodeURIComponent(recipient.toBase58())}`;
+    const params: [string, string][] = [];
 
     if (amount) {
-        url = `${url}&amount=${encodeURIComponent(String(amount))}`;
+        params.push(['amount', String(amount)]);
     }
 
     if (token) {
-        url = `${url}&spl-token=${encodeURIComponent(token.toBase58())}`;
+        params.push(['spl', token.toBase58()]);
     }
 
     if (references?.length) {
         for (const reference of references) {
-            url = `${url}&reference=${encodeURIComponent(reference.toBase58())}`;
+            params.push(['reference', reference.toBase58()]);
         }
     }
 
     if (label) {
-        url = `${url}&label=${encodeURIComponent(String(label))}`;
+        params.push(['label', label]);
     }
 
     if (message) {
-        url = `${url}&message=${encodeURIComponent(String(message))}`;
+        params.push(['message', message]);
     }
 
     if (memo) {
-        url = `${url}&memo=${encodeURIComponent(String(memo))}`;
+        params.push(['memo', memo]);
     }
 
+    let url = `solana:${encodeURIComponent(recipient.toBase58())}`;
+    if (params.length) {
+        url += '?' + params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    }
     return url;
 }
