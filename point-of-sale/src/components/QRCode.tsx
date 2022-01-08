@@ -1,5 +1,3 @@
-import React, { FC, useEffect, useLayoutEffect, useMemo, useRef } from 'react';
-import { usePayment } from '../hooks/usePayment';
 import QRCodeStyling, {
     CornerDotType,
     CornerSquareType,
@@ -10,6 +8,8 @@ import QRCodeStyling, {
     Options,
     TypeNumber,
 } from 'qr-code-styling';
+import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
+import { usePayment } from '../hooks/usePayment';
 import { useTheme } from '../hooks/useTheme';
 
 export const QRCode: FC = () => {
@@ -49,10 +49,7 @@ export const QRCode: FC = () => {
         [url, background, color]
     );
 
-    useLayoutEffect(() => {
-        qr.update(options);
-    }, [qr, options]);
-
+    useLayoutEffect(() => qr.update(options), [qr, options]);
     useLayoutEffect(() => {
         if (ref.current) {
             qr.append(ref.current);
