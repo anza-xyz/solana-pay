@@ -73,7 +73,7 @@ describe('createTransaction', () => {
             const payer = wallet.publicKey;
             const amount = new BigNumber(0.01);
 
-            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount);
+            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, {});
             const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {});
 
             expect(expectedTransaction).toEqual(transaction);
@@ -86,7 +86,7 @@ describe('createTransaction', () => {
             const amount = new BigNumber(0.01);
             const memo = 'Thanks for all the fish!';
 
-            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, memo);
+            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, { memo });
             const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {
                 memo,
             });
@@ -96,7 +96,24 @@ describe('createTransaction', () => {
 
         it.todo('creates a transaction for spl token');
 
-        it.todo('creates a transaction with references');
+        it('creates a transaction with references', async () => {
+            expect.assertions(1);
+
+            const payer = wallet.publicKey;
+            const amount = new BigNumber(0.01);
+
+            const reference1 = new Keypair().publicKey;
+            const reference2 = new Keypair().publicKey;
+
+            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, {
+                references: [reference1, reference2],
+            });
+            const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {
+                references: [reference1, reference2],
+            });
+
+            expect(expectedTransaction).toEqual(transaction);
+        });
     });
 
     describe('errors', () => {
@@ -373,7 +390,20 @@ describe('createTransaction', () => {
     });
 });
 
-function createSOLTransaction(payer: PublicKey, recipient: PublicKey, amount: BigNumber, memo?: string): Transaction {
+function createSOLTransaction(
+    payer: PublicKey,
+    recipient: PublicKey,
+    amount: BigNumber,
+    {
+        token,
+        references,
+        memo,
+    }: {
+        token?: PublicKey;
+        references?: PublicKey[];
+        memo?: string;
+    }
+): Transaction {
     amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
     const lamports = amount.toNumber();
 
@@ -382,6 +412,10 @@ function createSOLTransaction(payer: PublicKey, recipient: PublicKey, amount: Bi
         toPubkey: recipient,
         lamports,
     });
+
+    if (references?.length) {
+        instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+    }
 
     const transaction = new Transaction().add(instruction);
 
