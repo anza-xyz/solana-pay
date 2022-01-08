@@ -1,5 +1,6 @@
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import React, { FC } from 'react';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import React, { FC, useEffect } from 'react';
 import { Amount } from '../components/Amount';
 import { PoweredBy } from '../components/PoweredBy';
 import { QRCode } from '../components/QRCode';
@@ -10,6 +11,14 @@ import * as styles from './QRPage.module.css';
 export const QRPage: FC = () => {
     const { symbol } = useConfig();
     const { reset } = usePayment();
+    const { publicKey } = useWallet();
+    const { setVisible } = useWalletModal();
+
+    useEffect(() => {
+        if (!publicKey) {
+            setVisible(true);
+        }
+    }, [publicKey]);
 
     return (
         <div className={styles.root}>
@@ -17,7 +26,6 @@ export const QRPage: FC = () => {
                 <button className={styles.button} type="button" onClick={reset}>
                     <span className={styles.arrow}>◄</span>Cancel Payment
                 </button>
-                <WalletMultiButton />
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>

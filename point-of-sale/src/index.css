@@ -36,10 +36,6 @@ html.dark button {
     height: 100vh;
 }
 
-html body .wallet-adapter-button {
-    color: #FFFFFF;
-}
-
 html body .wallet-adapter-modal-container {
     justify-content: flex-end;
     align-items: flex-start;
