@@ -37,8 +37,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     }, [setTheme]);
 
     useLayoutEffect(() => {
-        document.documentElement.classList.remove('light', 'dark');
         document.documentElement.classList.add(theme);
+        return () => document.documentElement.classList.remove(theme);
     }, [theme]);
 
     return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>;
