@@ -1,6 +1,13 @@
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { createTransaction } from '../../src/wallet/createTransaction';
+import { getMint } from '@solana/spl-token';
+
+jest.mock('@solana/spl-token', () => ({
+    getMint: jest.fn(),
+}));
+
+const mockGetMint = getMint as jest.Mock;
 
 describe('createTransaction', () => {
     let connection: Connection;
@@ -116,7 +123,34 @@ describe('createTransaction', () => {
 
     describe('when transferring SPL token', () => {
         describe('errors', () => {
-            it.todo('throws an error on invalid mint');
+            beforeEach(() => {
+                mockGetMint.mockClear();
+            });
+
+            beforeEach(() => {
+                mockGetMint.mockReturnValue({
+                    isInitialized: true,
+                    decimals: 9,
+                });
+            });
+
+            it('throws an error on uninitialized mint', async () => {
+                expect.assertions(1);
+
+                mockGetMint.mockReturnValue({ isInitialized: false });
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new BigNumber(1),
+                        {
+                            token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        }
+                    );
+                }).rejects.toThrow('mint not initialized');
+            });
 
             it('throws an error on invalid decimal amount', async () => {
                 expect.assertions(1);
