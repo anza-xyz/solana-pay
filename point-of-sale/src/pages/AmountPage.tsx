@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Amount } from '../components/Amount';
 import { NumPad } from '../components/NumPad';
+import { PoweredBy } from '../components/PoweredBy';
 import { useConfig } from '../hooks/useConfig';
 import { usePayment } from '../hooks/usePayment';
 import * as styles from './AmountPage.module.css';
@@ -35,7 +36,9 @@ export const AmountPage: FC = () => {
                         Generate Payment Code
                     </button>
                 </div>
-                <div className={styles.footer}>Powered by SolanaPay</div>
+                <div className={styles.footer}>
+                    <PoweredBy />
+                </div>
             </div>
         </div>
     );
