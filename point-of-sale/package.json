@@ -34,7 +34,7 @@
         "use-error-boundary": "^2.0.6"
     },
     "devDependencies": {
-        "@types/eslint": "^8.2.1",
+        "@types/eslint": "^8.2.2",
         "@types/eslint-plugin-prettier": "^3.1.0",
         "@types/node": "^16.11.14",
         "@types/prettier": "^2.4.2",
