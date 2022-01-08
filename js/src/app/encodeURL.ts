@@ -13,7 +13,7 @@ export function encodeURL(
     }: {
         amount?: BigNumber;
         token?: PublicKey;
-        references?: PublicKey[];
+        references?: PublicKey | PublicKey[];
         label?: string;
         message?: string;
         memo?: string;
@@ -29,9 +29,15 @@ export function encodeURL(
         params.push(['spl', token.toBase58()]);
     }
 
-    if (references?.length) {
-        for (const reference of references) {
-            params.push(['reference', reference.toBase58()]);
+    if (references) {
+        if (!Array.isArray(references)) {
+            references = [references];
+        }
+
+        if (references?.length) {
+            for (const reference of references) {
+                params.push(['reference', reference.toBase58()]);
+            }
         }
     }
 
