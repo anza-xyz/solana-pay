@@ -67,7 +67,7 @@ describe('createTransaction', () => {
     });
 
     describe('transaction', () => {
-        it('creates a transaction without memo', async () => {
+        it('creates a transaction without memo for native sol', async () => {
             expect.assertions(1);
 
             const payer = wallet.publicKey;
@@ -79,7 +79,7 @@ describe('createTransaction', () => {
             expect(expectedTransaction).toEqual(transaction);
         });
 
-        it('creates a transaction with memo', async () => {
+        it('creates a transaction with memo for native sol', async () => {
             expect.assertions(1);
 
             const payer = wallet.publicKey;
@@ -93,6 +93,10 @@ describe('createTransaction', () => {
 
             expect(expectedTransaction).toEqual(transaction);
         });
+
+        it.todo('creates a transaction for spl token');
+
+        it.todo('creates a transaction with references');
     });
 
     describe('errors', () => {
