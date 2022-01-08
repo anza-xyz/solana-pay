@@ -3,14 +3,15 @@ import BigNumber from 'bignumber.js';
 
 export function encodeURL(
     recipient: PublicKey,
-    amount: BigNumber,
     {
+        amount,
         token,
         references,
         label,
         message,
         memo,
     }: {
+        amount?: BigNumber;
         token?: PublicKey;
         references?: PublicKey[];
         label?: string;
@@ -18,28 +19,32 @@ export function encodeURL(
         memo?: string;
     }
 ): string {
-    let url = `solana:${encodeURIComponent(String(recipient))}?amount=${encodeURIComponent(String(amount))}`;
+    let url = `solana:${encodeURIComponent(recipient.toBase58())}`;
+
+    if (amount) {
+        url = `${url}&amount=${encodeURIComponent(String(amount))}`;
+    }
 
     if (token) {
-        url += `&spl-token=${encodeURIComponent(String(token))}`;
+        url = `${url}&spl-token=${encodeURIComponent(token.toBase58())}`;
     }
 
     if (references?.length) {
         for (const reference of references) {
-            url += `&reference=${encodeURIComponent(String(reference))}`;
+            url = `${url}&reference=${encodeURIComponent(reference.toBase58())}`;
         }
     }
 
     if (label) {
-        url += `&label=${encodeURIComponent(String(label))}`;
+        url = `${url}&label=${encodeURIComponent(String(label))}`;
     }
 
     if (message) {
-        url += `&message=${encodeURIComponent(String(message))}`;
+        url = `${url}&message=${encodeURIComponent(String(message))}`;
     }
 
     if (memo) {
-        url += `&memo=${encodeURIComponent(String(memo))}`;
+        url = `${url}&memo=${encodeURIComponent(String(memo))}`;
     }
 
     return url;

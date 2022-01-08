@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 export interface ParsedURL {
     recipient: PublicKey;
-    amount: BigNumber;
+    amount?: BigNumber;
     token?: PublicKey;
     references?: PublicKey[];
     label?: string;
@@ -29,12 +29,14 @@ export function parseURL(url: string): ParsedURL {
     }
 
     const amountParam = searchParams.get('amount');
-    if (!amountParam) throw new ParseURLError('amount missing');
-    if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new ParseURLError('amount invalid');
+    let amount: BigNumber | undefined;
+    if (amountParam != null) {
+        if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new ParseURLError('amount invalid');
 
-    const amount = new BigNumber(amountParam);
-    if (amount.isNaN()) throw new ParseURLError('amount NaN');
-    if (amount.isZero()) throw new ParseURLError('amount zero');
+        amount = new BigNumber(amountParam);
+        if (amount.isNaN()) throw new ParseURLError('amount NaN');
+        if (amount.isNegative()) throw new ParseURLError('amount negative');
+    }
 
     const tokenParam = searchParams.get('spl-token');
     let token: PublicKey | undefined;
