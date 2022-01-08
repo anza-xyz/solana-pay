@@ -18,6 +18,7 @@ describe('createTransaction', () => {
     let wallet: Keypair;
     const recipientPublicKey = new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN');
     const accountOwnedByWallet = Keypair.generate();
+    const programAccount = Keypair.generate();
 
     beforeAll(async () => {
         wallet = Keypair.generate();
@@ -43,6 +44,11 @@ describe('createTransaction', () => {
                     [accountOwnedByWallet.publicKey.toBase58()]: {
                         executable: false,
                         owner: wallet.publicKey,
+                        lamports: LAMPORTS_PER_SOL / 100,
+                    },
+                    [programAccount.publicKey.toBase58()]: {
+                        executable: true,
+                        owner: SystemProgram.programId,
                         lamports: LAMPORTS_PER_SOL / 100,
                     },
                 };
@@ -126,7 +132,19 @@ describe('createTransaction', () => {
                 }).rejects.toThrow('payer owner invalid');
             });
 
-            it.todo('throws an error on executable payer');
+            it('throws an error on executable payer', async () => {
+                expect.assertions(1);
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        programAccount.publicKey,
+                        recipientPublicKey,
+                        new BigNumber(1),
+                        {}
+                    );
+                }).rejects.toThrow('payer executable');
+            });
 
             it('throws an error on invalid recipient owner', async () => {
                 expect.assertions(1);
