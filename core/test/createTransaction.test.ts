@@ -27,41 +27,71 @@ describe('createTransaction', () => {
         await connection.confirmTransaction(airdropSignature);
     });
 
-    describe('when transferring native SOL', () => {
-        describe('transaction', () => {
-            it('creates a transaction without memo', async () => {
-                expect.assertions(1);
+    describe('transaction', () => {
+        it('creates a transaction without memo', async () => {
+            expect.assertions(1);
 
-                const transaction = await createTransaction(
-                    connection,
-                    wallet.publicKey,
-                    new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                    new BigNumber(0.01),
-                    {}
-                );
+            const transaction = await createTransaction(
+                connection,
+                wallet.publicKey,
+                new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                new BigNumber(0.01),
+                {}
+            );
 
-                expect(transaction.instructions).toHaveLength(1);
-                // FIXME: Best way to validate?
-            });
-
-            it('creates a transaction with memo', async () => {
-                expect.assertions(1);
-
-                const transaction = await createTransaction(
-                    connection,
-                    wallet.publicKey,
-                    new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                    new BigNumber(0.01),
-                    {
-                        memo: 'Thanks for all the fish',
-                    }
-                );
-
-                expect(transaction.instructions).toHaveLength(2);
-                // FIXME: Best way to validate?
-            });
+            expect(transaction.instructions).toHaveLength(1);
+            // FIXME: Best way to validate?
         });
 
+        it('creates a transaction with memo', async () => {
+            expect.assertions(1);
+
+            const transaction = await createTransaction(
+                connection,
+                wallet.publicKey,
+                new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                new BigNumber(0.01),
+                {
+                    memo: 'Thanks for all the fish',
+                }
+            );
+
+            expect(transaction.instructions).toHaveLength(2);
+            // FIXME: Best way to validate?
+        });
+    });
+
+    describe('errors', () => {
+        it('throws an error on invalid payer', async () => {
+            expect.assertions(1);
+            await expect(
+                async () =>
+                    await createTransaction(
+                        connection,
+                        new Keypair().publicKey,
+                        new Keypair().publicKey,
+                        new BigNumber(1),
+                        {}
+                    )
+            ).rejects.toThrow('payer not found');
+        });
+
+        it('throws an error on invalid recipient', async () => {
+            expect.assertions(1);
+            await expect(
+                async () =>
+                    await createTransaction(
+                        connection,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new Keypair().publicKey,
+                        new BigNumber(1),
+                        {}
+                    )
+            ).rejects.toThrow('recipient not found');
+        });
+    });
+
+    describe('when transferring native SOL', () => {
         describe('errors', () => {
             it('throws an error on invalid payer owner', async () => {
                 expect.assertions(1);
@@ -295,36 +325,6 @@ describe('createTransaction', () => {
                     );
                 }).rejects.toThrow('insufficient funds');
             });
-        });
-    });
-
-    describe('errors', () => {
-        it('throws an error on invalid payer', async () => {
-            expect.assertions(1);
-            await expect(
-                async () =>
-                    await createTransaction(
-                        connection,
-                        new Keypair().publicKey,
-                        new Keypair().publicKey,
-                        new BigNumber(1),
-                        {}
-                    )
-            ).rejects.toThrow('payer not found');
-        });
-
-        it('throws an error on invalid recipient', async () => {
-            expect.assertions(1);
-            await expect(
-                async () =>
-                    await createTransaction(
-                        connection,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        new Keypair().publicKey,
-                        new BigNumber(1),
-                        {}
-                    )
-            ).rejects.toThrow('recipient not found');
         });
     });
 });
