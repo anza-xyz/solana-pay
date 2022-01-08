@@ -127,6 +127,9 @@ describe('createTransaction', () => {
 
     describe('when transferring SPL token', () => {
         describe('errors', () => {
+            let payerATA: PublicKey;
+            let recipientATA: PublicKey;
+
             beforeEach(() => {
                 mockGetMint.mockClear();
                 mockGetAccount.mockClear();
@@ -141,9 +144,18 @@ describe('createTransaction', () => {
 
                 mockGetAccount.mockReturnValue({ isInitialized: true });
 
-                mockGetAssociatedTokenAddress.mockReturnValue(
-                    new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN')
-                );
+                payerATA = new Keypair().publicKey;
+                recipientATA = new Keypair().publicKey;
+
+                mockGetAssociatedTokenAddress.mockImplementation((_, pubKey) => {
+                    switch (pubKey.toString()) {
+                        case wallet.publicKey.toString():
+                            return payerATA;
+
+                        default:
+                            return recipientATA;
+                    }
+                });
             });
 
             it('throws an error on uninitialized mint', async () => {
@@ -198,11 +210,75 @@ describe('createTransaction', () => {
                 }).rejects.toThrow('payer not initialized');
             });
 
-            it.todo('throws an error on frozen payer');
+            it('throws an error on frozen payer', async () => {
+                expect.assertions(1);
 
-            it.todo('throws an error on unitialized recipient');
+                mockGetAccount.mockReturnValue({ isInitialized: true, isFrozen: true });
 
-            it.todo('throws an error on frozen recipient');
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new BigNumber(100),
+                        {
+                            token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
+                        }
+                    );
+                }).rejects.toThrow('payer frozen');
+            });
+
+            it('throws an error on unitialized recipient', async () => {
+                expect.assertions(1);
+
+                mockGetAccount.mockImplementation((_, ATA) => {
+                    switch (ATA.toString()) {
+                        case payerATA.toString():
+                            return { isInitialized: true, isFrozen: false };
+
+                        default:
+                            return { isInitialized: false, isFrozen: false };
+                    }
+                });
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new BigNumber(100),
+                        {
+                            token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
+                        }
+                    );
+                }).rejects.toThrow('recipient not initialized');
+            });
+
+            it('throws an error on frozen recipient', async () => {
+                expect.assertions(1);
+
+                mockGetAccount.mockImplementation((_, ATA) => {
+                    switch (ATA.toString()) {
+                        case payerATA.toString():
+                            return { isInitialized: true, isFrozen: false };
+
+                        default:
+                            return { isInitialized: true, isFrozen: true };
+                    }
+                });
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new BigNumber(100),
+                        {
+                            token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
+                        }
+                    );
+                }).rejects.toThrow('recipient frozen');
+            });
 
             it.todo('throws an error on insufficient funds');
         });
