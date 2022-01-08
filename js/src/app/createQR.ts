@@ -9,15 +9,15 @@ import QRCodeStyling, {
     TypeNumber,
 } from 'qr-code-styling';
 
-export function createQR(options: Options): QRCodeStyling {
-    return new QRCodeStyling(options);
+export function createQR(data: string, size = 512, background = 'white', color = 'black'): QRCodeStyling {
+    return new QRCodeStyling(createQROptions(data, size, background, color));
 }
 
-export function getQROptions (data: string, width = 400, height = 400, background = 'white', color = 'black'): Options {
+export function createQROptions(data: string, size = 512, background = 'white', color = 'black'): Options {
     return {
         type: 'svg' as DrawType,
-        width,
-        height,
+        width: size,
+        height: size,
         data,
         margin: 0,
         qrOptions: {
