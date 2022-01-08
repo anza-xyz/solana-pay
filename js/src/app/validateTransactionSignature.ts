@@ -14,6 +14,7 @@ export async function validateTransactionSignature(
     recipient: PublicKey,
     amount: BigNumber,
     token?: PublicKey,
+    references?: PublicKey | PublicKey[],
     finality?: Finality
 ): Promise<TransactionResponse> {
     const response = await connection.getTransaction(signature, { commitment: finality });
@@ -51,6 +52,17 @@ export async function validateTransactionSignature(
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
 
         // TODO: what if a token was used to pay for gas?
+    }
+
+    if (references) {
+        if (!Array.isArray(references)) {
+            references = [references];
+        }
+
+        for (const reference of references) {
+            if (!response.transaction.message.accountKeys.some((pubkey) => pubkey.equals(reference)))
+                throw new ValidateTransactionSignatureError('reference not found');
+        }
     }
 
     return response;
