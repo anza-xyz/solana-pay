@@ -390,6 +390,9 @@ describe('createTransaction', () => {
     });
 });
 
+/**
+ * Test helper to create a SOL transaction.
+ */
 function createSOLTransaction(
     payer: PublicKey,
     recipient: PublicKey,
