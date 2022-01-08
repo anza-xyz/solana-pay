@@ -15,7 +15,8 @@ describe('encodeURL', () => {
         const message = 'message';
         const memo = 'memo';
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             token,
             references,
             label,
@@ -24,7 +25,7 @@ describe('encodeURL', () => {
         });
 
         expect(url).toBe(
-            `solana:${recipient}?amount=${amount.toNumber()}&spl-token=${token}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
+            `solana:${recipient}?amount=${amount.toNumber()}&spl=${token}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
         );
     });
 
@@ -32,7 +33,9 @@ describe('encodeURL', () => {
         const recipient = new Keypair().publicKey;
         const amount = new BigNumber(12345);
 
-        const url = encodeURL(recipient, amount, {});
+        const url = encodeURL(recipient, {
+            amount,
+        });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}`);
     });
@@ -42,11 +45,12 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const token = new Keypair().publicKey;
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             token,
         });
 
-        expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&spl-token=${token}`);
+        expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&spl=${token}`);
     });
 
     it('encodes a url with recipient, amount and references', () => {
@@ -55,7 +59,8 @@ describe('encodeURL', () => {
         const reference1 = new Keypair().publicKey;
         const references = [reference1];
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             references,
         });
 
@@ -67,7 +72,8 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const label = 'label';
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             label,
         });
 
@@ -79,7 +85,8 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const message = 'message';
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             message,
         });
 
@@ -91,7 +98,8 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const memo = 'memo';
 
-        const url = encodeURL(recipient, amount, {
+        const url = encodeURL(recipient, {
+            amount,
             memo,
         });
 
