@@ -13,12 +13,13 @@ export function useLocalStorage<T>(key: string, defaultState: T): [T, React.Disp
     });
     const value = state[0];
 
-    const isFirstRender = useRef(true);
+    const rendered = useRef(false);
     useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false;
+        if (!rendered.current) {
+            rendered.current = true;
             return;
         }
+
         try {
             if (value === null) {
                 localStorage.removeItem(key);
