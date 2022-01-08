@@ -1,4 +1,12 @@
-import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
+import {
+    Connection,
+    Keypair,
+    LAMPORTS_PER_SOL,
+    PublicKey,
+    SystemProgram,
+    Transaction,
+    TransactionInstruction,
+} from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { createTransaction } from '../../src/wallet/createTransaction';
 import { getMint, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
@@ -62,33 +70,28 @@ describe('createTransaction', () => {
         it('creates a transaction without memo', async () => {
             expect.assertions(1);
 
-            const transaction = await createTransaction(
-                connection,
-                wallet.publicKey,
-                recipientPublicKey,
-                new BigNumber(0.01),
-                {}
-            );
+            const payer = wallet.publicKey;
+            const amount = new BigNumber(0.01);
 
-            expect(transaction.instructions).toHaveLength(1);
-            // FIXME: Best way to validate?
+            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount);
+            const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {});
+
+            expect(expectedTransaction).toEqual(transaction);
         });
 
         it('creates a transaction with memo', async () => {
             expect.assertions(1);
 
-            const transaction = await createTransaction(
-                connection,
-                wallet.publicKey,
-                recipientPublicKey,
-                new BigNumber(0.01),
-                {
-                    memo: 'Thanks for all the fish',
-                }
-            );
+            const payer = wallet.publicKey;
+            const amount = new BigNumber(0.01);
+            const memo = 'Thanks for all the fish!';
 
-            expect(transaction.instructions).toHaveLength(2);
-            // FIXME: Best way to validate?
+            const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, memo);
+            const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {
+                memo,
+            });
+
+            expect(expectedTransaction).toEqual(transaction);
         });
     });
 
@@ -365,3 +368,28 @@ describe('createTransaction', () => {
         });
     });
 });
+
+function createSOLTransaction(payer: PublicKey, recipient: PublicKey, amount: BigNumber, memo?: string): Transaction {
+    amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
+    const lamports = amount.toNumber();
+
+    const instruction = SystemProgram.transfer({
+        fromPubkey: payer,
+        toPubkey: recipient,
+        lamports,
+    });
+
+    const transaction = new Transaction().add(instruction);
+
+    if (memo != null) {
+        transaction.add(
+            new TransactionInstruction({
+                programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'),
+                keys: [],
+                data: Buffer.from(memo, 'utf8'),
+            })
+        );
+    }
+
+    return transaction;
+}
