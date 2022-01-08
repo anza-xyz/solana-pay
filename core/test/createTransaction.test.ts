@@ -1,4 +1,4 @@
-import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
+import { Connection, Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { createTransaction } from '../../src/wallet/createTransaction';
 import { getMint, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
@@ -16,15 +16,40 @@ const mockGetAssociatedTokenAddress = getAssociatedTokenAddress as jest.Mock;
 describe('createTransaction', () => {
     let connection: Connection;
     let wallet: Keypair;
+    const recipientPublicKey = new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN');
+    const accountOwnedByWallet = Keypair.generate();
 
     beforeAll(async () => {
-        const endpoint = clusterApiUrl('devnet');
-        connection = new Connection(endpoint, 'confirmed');
-
         wallet = Keypair.generate();
 
-        const airdropSignature = await connection.requestAirdrop(wallet.publicKey, LAMPORTS_PER_SOL / 100);
-        await connection.confirmTransaction(airdropSignature);
+        connection = {
+            getAccountInfo: (publicKey: PublicKey) => {
+                const accounts = {
+                    [wallet.publicKey.toBase58()]: {
+                        executable: false,
+                        owner: SystemProgram.programId,
+                        lamports: LAMPORTS_PER_SOL / 100,
+                    },
+                    [recipientPublicKey.toBase58()]: {
+                        executable: false,
+                        owner: SystemProgram.programId,
+                        lamports: LAMPORTS_PER_SOL / 100,
+                    },
+                    [SystemProgram.programId.toBase58()]: {
+                        executable: true,
+                        owner: SystemProgram.programId,
+                        lamports: LAMPORTS_PER_SOL / 100,
+                    },
+                    [accountOwnedByWallet.publicKey.toBase58()]: {
+                        executable: false,
+                        owner: wallet.publicKey,
+                        lamports: LAMPORTS_PER_SOL / 100,
+                    },
+                };
+
+                return accounts[publicKey.toBase58()] || null;
+            },
+        } as unknown as Connection;
     });
 
     describe('transaction', () => {
@@ -34,7 +59,7 @@ describe('createTransaction', () => {
             const transaction = await createTransaction(
                 connection,
                 wallet.publicKey,
-                new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                recipientPublicKey,
                 new BigNumber(0.01),
                 {}
             );
@@ -49,7 +74,7 @@ describe('createTransaction', () => {
             const transaction = await createTransaction(
                 connection,
                 wallet.publicKey,
-                new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                recipientPublicKey,
                 new BigNumber(0.01),
                 {
                     memo: 'Thanks for all the fish',
@@ -80,13 +105,7 @@ describe('createTransaction', () => {
             expect.assertions(1);
             await expect(
                 async () =>
-                    await createTransaction(
-                        connection,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        new Keypair().publicKey,
-                        new BigNumber(1),
-                        {}
-                    )
+                    await createTransaction(connection, wallet.publicKey, new Keypair().publicKey, new BigNumber(1), {})
             ).rejects.toThrow('recipient not found');
         });
     });
@@ -99,8 +118,8 @@ describe('createTransaction', () => {
                 await expect(async () => {
                     return await createTransaction(
                         connection,
-                        new PublicKey(SystemProgram.programId),
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        accountOwnedByWallet.publicKey,
+                        recipientPublicKey,
                         new BigNumber(1),
                         {}
                     );
@@ -115,8 +134,8 @@ describe('createTransaction', () => {
                 await expect(async () => {
                     return await createTransaction(
                         connection,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        new PublicKey(SystemProgram.programId),
+                        wallet.publicKey,
+                        accountOwnedByWallet.publicKey,
                         new BigNumber(1),
                         {}
                     );
@@ -132,7 +151,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(1.0000000000001),
                         {}
                     );
@@ -146,7 +165,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(100),
                         {}
                     );
@@ -194,15 +213,9 @@ describe('createTransaction', () => {
                 mockGetMint.mockReturnValue({ isInitialized: false });
 
                 await expect(async () => {
-                    return await createTransaction(
-                        connection,
-                        wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        new BigNumber(1),
-                        {
-                            token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        }
-                    );
+                    return await createTransaction(connection, wallet.publicKey, recipientPublicKey, new BigNumber(1), {
+                        token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                    });
                 }).rejects.toThrow('mint not initialized');
             });
 
@@ -213,7 +226,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(1.0000000001),
                         {
                             token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
@@ -231,7 +244,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(100),
                         {
                             token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
@@ -249,7 +262,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(100),
                         {
                             token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
@@ -275,7 +288,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(100),
                         {
                             token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
@@ -301,7 +314,7 @@ describe('createTransaction', () => {
                     return await createTransaction(
                         connection,
                         wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        recipientPublicKey,
                         new BigNumber(100),
                         {
                             token: new PublicKey('8FRFC6MoGGkMFQwngccyu69VnYbzykGeez7ignHVAFSN'),
@@ -314,15 +327,9 @@ describe('createTransaction', () => {
                 expect.assertions(1);
 
                 await expect(async () => {
-                    return await createTransaction(
-                        connection,
-                        wallet.publicKey,
-                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        new BigNumber(1),
-                        {
-                            token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
-                        }
-                    );
+                    return await createTransaction(connection, wallet.publicKey, recipientPublicKey, new BigNumber(1), {
+                        token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                    });
                 }).rejects.toThrow('insufficient funds');
             });
         });
