@@ -14,7 +14,7 @@ import { useTheme } from '../hooks/useTheme';
 
 export const QRCode: FC = () => {
     const { theme } = useTheme();
-    const ref = useRef<HTMLSpanElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
     const { url } = usePayment();
 
     const qr = useMemo(() => new QRCodeStyling(), []);
@@ -59,5 +59,5 @@ export const QRCode: FC = () => {
         }
     }, [ref, qr]);
 
-    return <span ref={ref} />;
+    return <div ref={ref} />;
 };
