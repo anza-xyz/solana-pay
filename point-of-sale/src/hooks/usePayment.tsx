@@ -121,7 +121,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 clearTimeout(timeout);
             };
         }
-    }, [status, publicKey, url]);
+    }, [status, publicKey, url, connection, sendTransaction]);
 
     // When the status is waiting, poll for the transaction using the reference key
     useEffect(() => {
@@ -150,7 +150,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 clearInterval(interval);
             };
         }
-    }, [status, reference, signature]);
+    }, [status, reference, signature, connection]);
 
     // When the status is confirmed, validate the transaction
     useEffect(() => {
@@ -174,7 +174,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 changed = true;
             };
         }
-    }, [status, signature, amount, token]);
+    }, [status, signature, amount, connection, account, token, reference]);
 
     // When the status is valid, wait for the transaction to finalize
     useEffect(() => {
@@ -206,7 +206,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 clearInterval(interval);
             };
         }
-    }, [status, signature]);
+    }, [status, signature, connection]);
 
     return (
         <PaymentContext.Provider

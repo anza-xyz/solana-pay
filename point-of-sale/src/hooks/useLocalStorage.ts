@@ -28,7 +28,7 @@ export function useLocalStorage<T>(key: string, defaultState: T): [T, React.Disp
         } catch (error) {
             console.error(error);
         }
-    }, [value]);
+    }, [key, value]);
 
     return state;
 }

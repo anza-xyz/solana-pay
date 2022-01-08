@@ -34,7 +34,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
             window.matchMedia(query).addEventListener('change', listener);
             return () => window.matchMedia(query).removeEventListener('change', listener);
         }
-    }, []);
+    }, [setTheme]);
 
     useLayoutEffect(() => {
         document.documentElement.classList.remove('light', 'dark');

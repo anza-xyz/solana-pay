@@ -18,7 +18,7 @@ export const QRPage: FC = () => {
         if (!publicKey) {
             setVisible(true);
         }
-    }, [publicKey]);
+    }, [publicKey, setVisible]);
 
     return (
         <div className={styles.root}>

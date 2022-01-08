@@ -39,7 +39,7 @@ export const NumPad: FC = () => {
     const onBackspace = useCallback(() => setValue((value) => (value.length ? value.slice(0, -1) : value)), []);
 
     const { setAmount } = usePayment();
-    useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [value]);
+    useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
     return (
         <div className={styles.root}>

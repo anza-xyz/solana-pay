@@ -19,7 +19,7 @@ export const Progress: FC = () => {
                 return [0, status];
         }
     }, [status, confirmations]);
-    const pathColor = useMemo(() => interpolated(value), [value]);
+    const pathColor = useMemo(() => interpolated(value), [interpolated, value]);
 
     return (
         <div className={styles.root}>
