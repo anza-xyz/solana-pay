@@ -32,7 +32,7 @@ export interface PaymentContextState {
     signature: TransactionSignature | undefined;
     status: PaymentStatus;
     confirmations: number;
-    url: string | undefined;
+    url: string;
     reset(): void;
     generate(): void;
 }
@@ -62,10 +62,10 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     const url = useMemo(
         () =>
-            amount &&
-            encodeURL(account, amount, {
+            encodeURL(account, {
+                amount,
                 token,
-                references: reference && [reference],
+                references: reference,
                 label,
                 message,
                 memo,
@@ -90,14 +90,17 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         }
     }, [status, reference]);
 
+    // TODO: remove this
     // Use the connected wallet to sign and send the transaction for now
     useEffect(() => {
-        if (status === PaymentStatus.Waiting && publicKey && url) {
+        if (status === PaymentStatus.Waiting && publicKey) {
             let changed = false;
 
             const run = async () => {
                 try {
                     const { recipient, amount, token, references, memo } = parseURL(url);
+                    if (!amount) return;
+
                     const transaction = await createTransaction(connection, publicKey, recipient, amount, {
                         token,
                         references,
@@ -159,7 +162,15 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             (async () => {
                 try {
-                    await validateTransactionSignature(connection, signature, account, amount, token, 'confirmed');
+                    await validateTransactionSignature(
+                        connection,
+                        signature,
+                        account,
+                        amount,
+                        token,
+                        reference,
+                        'confirmed'
+                    );
 
                     if (!changed) {
                         setStatus(PaymentStatus.Valid);
