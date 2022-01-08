@@ -142,7 +142,7 @@ describe('createTransaction', () => {
                     decimals: 9,
                 });
 
-                mockGetAccount.mockReturnValue({ isInitialized: true });
+                mockGetAccount.mockReturnValue({ isInitialized: true, amount: 0.5 });
 
                 payerATA = new Keypair().publicKey;
                 recipientATA = new Keypair().publicKey;
@@ -280,7 +280,21 @@ describe('createTransaction', () => {
                 }).rejects.toThrow('recipient frozen');
             });
 
-            it.todo('throws an error on insufficient funds');
+            it('throws an error on insufficient funds', async () => {
+                expect.assertions(1);
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        new BigNumber(1),
+                        {
+                            token: new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'),
+                        }
+                    );
+                }).rejects.toThrow('insufficient funds');
+            });
         });
     });
 
