@@ -28,7 +28,7 @@ export async function createTransaction(
         memo,
     }: {
         token?: PublicKey;
-        references?: PublicKey[];
+        references?: PublicKey | PublicKey[];
         memo?: string;
     }
 ): Promise<Transaction> {
@@ -101,8 +101,14 @@ export async function createTransaction(
     }
 
     // If reference accounts are provided, add them to the instruction
-    if (references?.length) {
-        instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+    if (references) {
+        if (!Array.isArray(references)) {
+            references = [references];
+        }
+
+        if (references.length) {
+            instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+        }
     }
 
     // Create the transaction
