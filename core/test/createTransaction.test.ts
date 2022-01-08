@@ -160,7 +160,19 @@ describe('createTransaction', () => {
                 }).rejects.toThrow('recipient owner invalid');
             });
 
-            it.todo('throws an error on executable recipient');
+            it('throws an error on executable recipient', async () => {
+                expect.assertions(1);
+
+                await expect(async () => {
+                    return await createTransaction(
+                        connection,
+                        wallet.publicKey,
+                        programAccount.publicKey,
+                        new BigNumber(1),
+                        {}
+                    );
+                }).rejects.toThrow('recipient executable');
+            });
 
             it('throws an error on invalid decimal amount', async () => {
                 expect.assertions(1);
