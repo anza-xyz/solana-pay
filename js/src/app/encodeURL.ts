@@ -26,7 +26,7 @@ export function encodeURL(
     }
 
     if (token) {
-        params.push(['spl', token.toBase58()]);
+        params.push(['spl-token', token.toBase58()]);
     }
 
     if (references) {
