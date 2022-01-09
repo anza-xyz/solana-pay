@@ -106,8 +106,8 @@ export async function createTransaction(
             references = [references];
         }
 
-        if (references.length) {
-            instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+        for (const reference of references) {
+            instruction.keys.push({ pubkey: reference, isWritable: false, isSigner: false });
         }
     }
 
