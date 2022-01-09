@@ -20,6 +20,7 @@ export async function validateTransactionSignature(
     const response = await connection.getTransaction(signature, { commitment: finality });
     if (!response) throw new ValidateTransactionSignatureError('not found');
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
+    if (response.meta.err) throw response.meta.err;
 
     if (!token) {
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
