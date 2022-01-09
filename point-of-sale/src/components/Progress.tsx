@@ -2,23 +2,31 @@ import interpolate from 'color-interpolate';
 import React, { FC, useMemo } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { useConfig } from '../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../hooks/usePayment';
 import * as styles from './Progress.module.css';
 
 export const Progress: FC = () => {
+    const { requiredConfirmations } = useConfig();
     const { status, confirmations } = usePayment();
-    const interpolated = useMemo(() => interpolate(['#8752f3', '#5497d5', '#43b4ca', '#28e0b9', '#19fb9b']), []);
     const [value, text] = useMemo(() => {
         switch (status) {
             case PaymentStatus.Finalized:
                 return [1, 'Complete'];
             case PaymentStatus.Confirmed:
             case PaymentStatus.Valid:
-                return [confirmations / 32, Math.floor((confirmations / 32) * 100) + '%'];
+                return confirmations >= requiredConfirmations
+                    ? [1, 'Complete']
+                    : [
+                          confirmations / requiredConfirmations,
+                          Math.floor((confirmations / requiredConfirmations) * 100) + '%',
+                      ];
             default:
                 return [0, status];
         }
-    }, [status, confirmations]);
+    }, [status, confirmations, requiredConfirmations]);
+
+    const interpolated = useMemo(() => interpolate(['#8752f3', '#5497d5', '#43b4ca', '#28e0b9', '#19fb9b']), []);
     const pathColor = useMemo(() => interpolated(value), [interpolated, value]);
 
     return (

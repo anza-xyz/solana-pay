@@ -43,12 +43,13 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                 <WalletProvider wallets={wallets} autoConnect>
                     <WalletModalProvider>
                         <ConfigProvider
+                            label="Starbucks"
                             account={account}
                             token={token}
                             symbol="USDC"
                             decimals={6}
                             minDecimals={2}
-                            label="Starbucks"
+                            requiredConfirmations={9}
                         >
                             <PaymentProvider>{children}</PaymentProvider>
                         </ConfigProvider>
