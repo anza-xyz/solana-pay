@@ -3,47 +3,20 @@
     height: 100vh;
 }
 
-.entry {
+.main {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.summary {
+.side {
     display: flex;
     flex-direction: column;
 }
 
 .header {
     flex: 1;
-}
-
-.button {
-    display: block;
-    margin: 32px auto;
-    border: 0;
-    border-radius: 8px;
-    font-size: 18px;
-    font-weight: 500;
-    padding: 12px 24px;
-    cursor: pointer;
-}
-
-:global(html.light) .button {
-    background: #000000;
-    color: #FFFFFF;
-}
-
-:global(html.dark) .button {
-    background: #FFFFFF;
-    color: #000000;
-}
-
-.button[disabled] {
-    cursor: default;
-    color: inherit;
-    opacity: 0.5;
 }
 
 .footer {
@@ -58,62 +31,18 @@
 }
 
 @media (min-width: 768px) {
-    .summary {
+    .side {
         width: 420px;
     }
 
-    :global(html.light) .summary {
-        background: #FFFFFF;
-        color:      #000000;
-    }
-
-    :global(html.dark) .summary {
+    :global(html.dark) .side {
         background: #000000;
-        color:      #FFFFFF;
+        color: #FFFFFF;
     }
 
-    :global(html.light) .title,
-    :global(html.light) .total {
-        box-shadow: inset 0 -1px 0 0 #000000;
-    }
-
-    :global(html.dark) .title,
-    :global(html.dark) .total {
-        box-shadow: inset 0 -1px 0 0 #ffffff;
-    }
-
-    .title {
-        line-height: 24px;
-        padding-bottom: 12px;
-        margin-bottom: 12px;
-        font-size: 14px;
-    }
-
-    .total {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        line-height: 24px;
-        padding-bottom: 12px;
-        margin-bottom: 12px;
-    }
-
-    .totalLeft {
-        font-size: 14px;
-    }
-
-    .totalRight {
-        text-align: right;
-    }
-
-    .symbol {
-        font-size: 12px;
-    }
-
-    .amount {
-        line-height: 32px;
-        font-size: 32px;
-        font-weight: 700;
+    :global(html.light) .side {
+        background: #FFFFFF;
+        color: #000000;
     }
 
     .header {

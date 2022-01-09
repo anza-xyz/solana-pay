@@ -1,0 +1,26 @@
+.root {
+    display: block;
+    margin: 32px auto;
+    border: 0;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 12px 24px;
+    cursor: pointer;
+}
+
+:global(html.dark) .root {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+:global(html.light) .root {
+    background: #000000;
+    color: #FFFFFF;
+}
+
+.root[disabled] {
+    cursor: default;
+    color: inherit;
+    opacity: 0.5;
+}
