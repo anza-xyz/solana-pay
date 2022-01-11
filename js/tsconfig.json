@@ -2,7 +2,7 @@
     "include": ["src", "types"],
     "exclude": ["node_modules", "test"],
     "compilerOptions": {
-        "target": "esnext",
+        "target": "es2019",
         "module": "esnext",
         "outDir": "lib/esm",
         "noEmit": false,
