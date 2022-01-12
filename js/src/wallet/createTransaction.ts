@@ -39,7 +39,7 @@ export async function createTransaction(
     const recipientInfo = await connection.getAccountInfo(recipient);
     if (!recipientInfo) throw new CreateTransactionError('recipient not found');
 
-    // Either a native SOL or SPL token transfer instruction
+    // A native SOL or SPL token transfer instruction
     let instruction: TransactionInstruction;
 
     // If no SPL token mint is provided, transfer native SOL
@@ -100,7 +100,7 @@ export async function createTransaction(
         instruction = createTransferCheckedInstruction(payerATA, token, recipientATA, payer, tokens, mint.decimals);
     }
 
-    // If reference accounts are provided, add them to the instruction
+    // If reference accounts are provided, add them to the transfer instruction
     if (references) {
         if (!Array.isArray(references)) {
             references = [references];
@@ -112,9 +112,9 @@ export async function createTransaction(
     }
 
     // Create the transaction
-    const transaction = new Transaction().add(instruction);
+    const transaction = new Transaction();
 
-    // If a memo is provided, add it to the transaction
+    // If a memo is provided, add it to the transaction before adding the transfer instruction
     if (memo != null) {
         transaction.add(
             new TransactionInstruction({
@@ -124,6 +124,9 @@ export async function createTransaction(
             })
         );
     }
+
+    // Add the transfer instruction to the transaction
+    transaction.add(instruction);
 
     return transaction;
 }
