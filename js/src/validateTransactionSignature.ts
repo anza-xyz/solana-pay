@@ -1,8 +1,7 @@
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { Connection, Finality, PublicKey, TransactionResponse, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-
-const TEN = new BigNumber(10);
+import { TEN } from './constants';
 
 export class ValidateTransactionSignatureError extends Error {
     name = 'ValidateTransactionSignatureError';
