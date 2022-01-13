@@ -1,6 +1,6 @@
 import { PublicKey, Transaction } from '@solana/web3.js';
 import base58 from 'bs58';
-import { EncodeURLParams, encodeURLParams } from '../app';
+import { EncodeURLParams, encodeURLParams } from './encodeURL';
 
 export class RequestTransactionError extends Error {
     name = 'RequestTransactionError';
