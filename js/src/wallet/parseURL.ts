@@ -2,13 +2,14 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 export interface ParsedURL {
-    recipient?: PublicKey;
-    amount?: BigNumber;
-    token?: PublicKey;
-    references?: PublicKey[];
-    label?: string;
-    message?: string;
-    memo?: string;
+    recipient: PublicKey | undefined;
+    amount: BigNumber | undefined;
+    token: PublicKey | undefined;
+    references: PublicKey[] | undefined;
+    label: string | undefined;
+    message: string | undefined;
+    memo: string | undefined;
+    request: string | undefined;
 }
 
 export class ParseURLError extends Error {
@@ -63,6 +64,7 @@ export function parseURL(url: string): ParsedURL {
     const label = searchParams.get('label') || undefined;
     const message = searchParams.get('message') || undefined;
     const memo = searchParams.get('memo') || undefined;
+    const request = searchParams.get('request') || undefined;
 
     return {
         recipient,
@@ -72,5 +74,6 @@ export function parseURL(url: string): ParsedURL {
         label,
         message,
         memo,
+        request,
     };
 }
