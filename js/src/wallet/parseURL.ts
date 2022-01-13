@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 export interface ParsedURL {
-    recipient: PublicKey;
+    recipient?: PublicKey;
     amount?: BigNumber;
     token?: PublicKey;
     references?: PublicKey[];
@@ -21,11 +21,13 @@ export function parseURL(url: string): ParsedURL {
     const { protocol, pathname, searchParams } = new URL(url);
     if (protocol !== 'solana:') throw new ParseURLError('protocol invalid');
 
-    let recipient: PublicKey;
-    try {
-        recipient = new PublicKey(pathname);
-    } catch (error) {
-        throw new ParseURLError('ParseURLError: recipient invalid');
+    let recipient: PublicKey | undefined;
+    if (pathname) {
+        try {
+            recipient = new PublicKey(pathname);
+        } catch (error) {
+            throw new ParseURLError('ParseURLError: recipient invalid');
+        }
     }
 
     const amountParam = searchParams.get('amount');

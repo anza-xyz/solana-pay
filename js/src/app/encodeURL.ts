@@ -1,24 +1,36 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-export function encodeURL(
-    recipient: PublicKey,
-    {
-        amount,
-        token,
-        references,
-        label,
-        message,
-        memo,
-    }: {
-        amount?: BigNumber;
-        token?: PublicKey;
-        references?: PublicKey | PublicKey[];
-        label?: string;
-        message?: string;
-        memo?: string;
+export interface EncodeURLParams {
+    amount?: BigNumber;
+    token?: PublicKey;
+    references?: PublicKey | PublicKey[];
+    label?: string;
+    message?: string;
+    memo?: string;
+    request?: string;
+}
+
+export interface EncodeURLComponents extends EncodeURLParams {
+    recipient?: PublicKey;
+}
+
+export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
+    let url = `solana:`;
+
+    if (recipient) {
+        url += encodeURIComponent(recipient.toBase58());
     }
-): string {
+
+    const encodedParams = encodeURLParams(params);
+    if (encodedParams) {
+        url += '?' + encodedParams;
+    }
+
+    return url;
+}
+
+export function encodeURLParams({ amount, token, references, label, message, memo, request }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
@@ -51,9 +63,9 @@ export function encodeURL(
         params.push(['memo', memo]);
     }
 
-    let url = `solana:${encodeURIComponent(recipient.toBase58())}`;
-    if (params.length) {
-        url += '?' + params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+    if (request) {
+        params.push(['request', request]);
     }
-    return url;
+
+    return params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
 }
