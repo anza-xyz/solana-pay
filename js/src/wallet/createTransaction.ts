@@ -17,20 +17,18 @@ export class CreateTransactionError extends Error {
     name = 'CreateTransactionError';
 }
 
+export interface CreateTransactionParams {
+    token?: PublicKey;
+    references?: PublicKey | PublicKey[];
+    memo?: string;
+}
+
 export async function createTransaction(
     connection: Connection,
     payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    {
-        token,
-        references,
-        memo,
-    }: {
-        token?: PublicKey;
-        references?: PublicKey | PublicKey[];
-        memo?: string;
-    }
+    { token, references, memo }: CreateTransactionParams = {}
 ): Promise<Transaction> {
     // Check that the payer and recipient accounts exist
     const payerInfo = await connection.getAccountInfo(payer);
