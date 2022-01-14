@@ -37,19 +37,14 @@ export async function validateTransactionSignature(
         const mint = token.toBase58();
 
         const preBalance = response.meta.preTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
-        if (!preBalance) throw new ValidateTransactionSignatureError('balance not found');
+        if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
         const postBalance = response.meta.postTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
-        if (!postBalance) throw new ValidateTransactionSignatureError('balance not found');
+        if (!postBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
-        const preAmount = new BigNumber(preBalance.uiTokenAmount.amount).div(
-            TEN.pow(preBalance.uiTokenAmount.decimals)
-        );
-        const postAmount = new BigNumber(postBalance.uiTokenAmount.amount).div(
-            TEN.pow(postBalance.uiTokenAmount.decimals)
-        );
-
-        if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
+        const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
+        const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
+        if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
 
         // TODO: what if a token was used to pay for gas?
     }
