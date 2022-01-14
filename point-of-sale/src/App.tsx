@@ -7,6 +7,7 @@ import React, { FC, ReactNode, useEffect, useMemo } from 'react';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider, PaymentStatus, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
+import { TransactionsProvider } from './hooks/useTransactions';
 import { AmountPage } from './pages/AmountPage';
 import { ConfirmationPage } from './pages/ConfirmationPage';
 import { QRPage } from './pages/QRPage';
@@ -51,7 +52,9 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                             minDecimals={2}
                             requiredConfirmations={9}
                         >
-                            <PaymentProvider>{children}</PaymentProvider>
+                            <TransactionsProvider>
+                                <PaymentProvider>{children}</PaymentProvider>
+                            </TransactionsProvider>
                         </ConfigProvider>
                     </WalletModalProvider>
                 </WalletProvider>
