@@ -13,7 +13,7 @@ export async function validateTransactionSignature(
     recipient: PublicKey,
     amount: BigNumber,
     token?: PublicKey,
-    references?: PublicKey | PublicKey[],
+    reference?: PublicKey | PublicKey[],
     finality?: Finality
 ): Promise<TransactionResponse> {
     const response = await connection.getTransaction(signature, { commitment: finality });
@@ -54,13 +54,13 @@ export async function validateTransactionSignature(
         // TODO: what if a token was used to pay for gas?
     }
 
-    if (references) {
-        if (!Array.isArray(references)) {
-            references = [references];
+    if (reference) {
+        if (!Array.isArray(reference)) {
+            reference = [reference];
         }
 
-        for (const reference of references) {
-            if (!response.transaction.message.accountKeys.some((pubkey) => pubkey.equals(reference)))
+        for (const pubkey of reference) {
+            if (!response.transaction.message.accountKeys.some((accountKey) => accountKey.equals(pubkey)))
                 throw new ValidateTransactionSignatureError('reference not found');
         }
     }

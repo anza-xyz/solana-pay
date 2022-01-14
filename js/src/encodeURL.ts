@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 export interface EncodeURLParams {
     amount?: BigNumber;
     token?: PublicKey;
-    references?: PublicKey | PublicKey[];
+    reference?: PublicKey | PublicKey[];
     label?: string;
     message?: string;
     memo?: string;
@@ -25,7 +25,7 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-export function encodeURLParams({ amount, token, references, label, message, memo }: EncodeURLParams): string {
+export function encodeURLParams({ amount, token, reference, label, message, memo }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
@@ -36,13 +36,13 @@ export function encodeURLParams({ amount, token, references, label, message, mem
         params.push(['spl-token', token.toBase58()]);
     }
 
-    if (references) {
-        if (!Array.isArray(references)) {
-            references = [references];
+    if (reference) {
+        if (!Array.isArray(reference)) {
+            reference = [reference];
         }
 
-        for (const reference of references) {
-            params.push(['reference', reference.toBase58()]);
+        for (const pubkey of reference) {
+            params.push(['reference', pubkey.toBase58()]);
         }
     }
 

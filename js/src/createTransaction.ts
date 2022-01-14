@@ -16,7 +16,7 @@ export class CreateTransactionError extends Error {
 
 export interface CreateTransactionParams {
     token?: PublicKey;
-    references?: PublicKey | PublicKey[];
+    reference?: PublicKey | PublicKey[];
     memo?: string;
 }
 
@@ -25,7 +25,7 @@ export async function createTransaction(
     payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    { token, references, memo }: CreateTransactionParams = {}
+    { token, reference, memo }: CreateTransactionParams = {}
 ): Promise<Transaction> {
     // Check that the payer and recipient accounts exist
     const payerInfo = await connection.getAccountInfo(payer);
@@ -96,13 +96,13 @@ export async function createTransaction(
     }
 
     // If reference accounts are provided, add them to the transfer instruction
-    if (references) {
-        if (!Array.isArray(references)) {
-            references = [references];
+    if (reference) {
+        if (!Array.isArray(reference)) {
+            reference = [reference];
         }
 
-        for (const reference of references) {
-            instruction.keys.push({ pubkey: reference, isWritable: false, isSigner: false });
+        for (const pubkey of reference) {
+            instruction.keys.push({ pubkey, isWritable: false, isSigner: false });
         }
     }
 

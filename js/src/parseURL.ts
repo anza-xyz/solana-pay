@@ -5,7 +5,7 @@ export interface ParsedURL {
     recipient: PublicKey;
     amount: BigNumber | undefined;
     token: PublicKey | undefined;
-    references: PublicKey[] | undefined;
+    reference: PublicKey[] | undefined;
     label: string | undefined;
     message: string | undefined;
     memo: string | undefined;
@@ -29,8 +29,8 @@ export function parseURL(url: string): ParsedURL {
         throw new ParseURLError('ParseURLError: recipient invalid');
     }
 
-    const amountParam = searchParams.get('amount');
     let amount: BigNumber | undefined;
+    const amountParam = searchParams.get('amount');
     if (amountParam != null) {
         if (!/^\d+(\.\d+)?$/.test(amountParam)) throw new ParseURLError('amount invalid');
 
@@ -39,8 +39,8 @@ export function parseURL(url: string): ParsedURL {
         if (amount.isNegative()) throw new ParseURLError('amount negative');
     }
 
-    const tokenParam = searchParams.get('spl-token');
     let token: PublicKey | undefined;
+    const tokenParam = searchParams.get('spl-token');
     if (tokenParam != null) {
         try {
             token = new PublicKey(tokenParam);
@@ -49,11 +49,11 @@ export function parseURL(url: string): ParsedURL {
         }
     }
 
+    let reference: PublicKey[] | undefined;
     const referenceParam = searchParams.getAll('reference');
-    let references: PublicKey[] | undefined;
     if (referenceParam.length) {
         try {
-            references = referenceParam.map((reference) => new PublicKey(reference));
+            reference = referenceParam.map((reference) => new PublicKey(reference));
         } catch (error) {
             throw new ParseURLError('reference invalid');
         }
@@ -67,7 +67,7 @@ export function parseURL(url: string): ParsedURL {
         recipient,
         amount,
         token,
-        references,
+        reference,
         label,
         message,
         memo,
