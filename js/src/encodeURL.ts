@@ -8,19 +8,14 @@ export interface EncodeURLParams {
     label?: string;
     message?: string;
     memo?: string;
-    request?: string;
 }
 
 export interface EncodeURLComponents extends EncodeURLParams {
-    recipient?: PublicKey;
+    recipient: PublicKey;
 }
 
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
-    let url = `solana:`;
-
-    if (recipient) {
-        url += encodeURIComponent(recipient.toBase58());
-    }
+    let url = `solana:` + encodeURIComponent(recipient.toBase58());
 
     const encodedParams = encodeURLParams(params);
     if (encodedParams) {
@@ -30,7 +25,7 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-export function encodeURLParams({ amount, token, references, label, message, memo, request }: EncodeURLParams): string {
+export function encodeURLParams({ amount, token, references, label, message, memo }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
@@ -61,10 +56,6 @@ export function encodeURLParams({ amount, token, references, label, message, mem
 
     if (memo) {
         params.push(['memo', memo]);
-    }
-
-    if (request) {
-        params.push(['request', request]);
     }
 
     return params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
