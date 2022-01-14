@@ -129,95 +129,92 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     // When the status is waiting, poll for the transaction using the reference key
     useEffect(() => {
-        if (status === PaymentStatus.Waiting && reference && !signature) {
-            let changed = false;
+        if (!(status === PaymentStatus.Waiting && reference && !signature)) return;
+        let changed = false;
 
-            const interval = setInterval(async () => {
-                let signature: ConfirmedSignatureInfo;
-                try {
-                    signature = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+        const interval = setInterval(async () => {
+            let signature: ConfirmedSignatureInfo;
+            try {
+                signature = await findTransactionSignature(connection, reference, undefined, 'confirmed');
 
-                    if (!changed) {
-                        clearInterval(interval);
-                        setSignature(signature.signature);
-                        setStatus(PaymentStatus.Confirmed);
-                    }
-                } catch (error: any) {
-                    if (!(error instanceof FindTransactionSignatureError)) {
-                        console.error(error);
-                    }
+                if (!changed) {
+                    clearInterval(interval);
+                    setSignature(signature.signature);
+                    setStatus(PaymentStatus.Confirmed);
                 }
-            }, 250);
+            } catch (error: any) {
+                if (!(error instanceof FindTransactionSignatureError)) {
+                    console.error(error);
+                }
+            }
+        }, 250);
 
-            return () => {
-                changed = true;
-                clearInterval(interval);
-            };
-        }
+        return () => {
+            changed = true;
+            clearInterval(interval);
+        };
     }, [status, reference, signature, connection]);
 
     // When the status is confirmed, validate the transaction
     useEffect(() => {
-        if (status === PaymentStatus.Confirmed && signature && amount) {
-            let changed = false;
+        if (!(status === PaymentStatus.Confirmed && signature && amount)) return;
+        let changed = false;
 
-            (async () => {
-                try {
-                    await validateTransactionSignature(
-                        connection,
-                        signature,
-                        account,
-                        amount,
-                        token,
-                        reference,
-                        'confirmed'
-                    );
+        (async () => {
+            try {
+                await validateTransactionSignature(
+                    connection,
+                    signature,
+                    recipient,
+                    amount,
+                    token,
+                    reference,
+                    'confirmed'
+                );
 
-                    if (!changed) {
-                        setStatus(PaymentStatus.Valid);
-                    }
-                } catch (error: any) {
-                    console.log(error);
-                    setStatus(PaymentStatus.Invalid);
+                if (!changed) {
+                    setStatus(PaymentStatus.Valid);
                 }
-            })();
+            } catch (error: any) {
+                console.log(error);
+                setStatus(PaymentStatus.Invalid);
+            }
+        })();
 
-            return () => {
-                changed = true;
-            };
-        }
-    }, [status, signature, amount, connection, account, token, reference]);
+        return () => {
+            changed = true;
+        };
+    }, [status, signature, amount, connection, recipient, token, reference]);
 
     // When the status is valid, wait for the transaction to finalize
     useEffect(() => {
-        if (status === PaymentStatus.Valid && signature) {
-            let changed = false;
+        if (!(status === PaymentStatus.Valid && signature)) return;
+        let changed = false;
 
-            const interval = setInterval(async () => {
-                try {
-                    const response = await connection.getSignatureStatus(signature);
-                    const status = response.value;
-                    if (!status) return;
-                    if (status.err) throw status.err;
+        const interval = setInterval(async () => {
+            try {
+                const response = await connection.getSignatureStatus(signature);
+                const status = response.value;
+                if (!status) return;
+                if (status.err) throw status.err;
 
-                    if (!changed) {
-                        setConfirmations(status.confirmations || 0);
+                if (!changed) {
+                    setConfirmations(status.confirmations || 0);
 
-                        if (status.confirmationStatus === 'finalized') {
-                            clearInterval(interval);
-                            setStatus(PaymentStatus.Finalized);
-                        }
+                    if (status.confirmationStatus === 'finalized') {
+                        clearInterval(interval);
+                        setStatus(PaymentStatus.Finalized);
                     }
-                } catch (error: any) {
-                    console.log(error);
                 }
-            }, 250);
+            } catch (error: any) {
+                console.log(error);
+            }
+        }, 250);
 
-            return () => {
-                changed = true;
-                clearInterval(interval);
-            };
-        }
+        return () => {
+            changed = true;
+            clearInterval(interval);
+        };
     }, [status, signature, connection]);
 
     return (
