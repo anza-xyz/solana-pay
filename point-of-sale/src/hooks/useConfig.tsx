@@ -3,8 +3,8 @@ import React, { createContext, FC, ReactNode, useContext } from 'react';
 import { Digits } from '../types';
 
 export interface ConfigContextState {
+    recipient: PublicKey;
     label: string;
-    account: PublicKey;
     token: PublicKey;
     symbol: string;
     decimals: Digits;
@@ -20,8 +20,8 @@ export function useConfig(): ConfigContextState {
 
 export interface ConfigProviderProps {
     children: ReactNode;
+    recipient: PublicKey;
     label: string;
-    account: PublicKey;
     token: PublicKey;
     symbol: string;
     decimals: Digits;
@@ -31,8 +31,8 @@ export interface ConfigProviderProps {
 
 export const ConfigProvider: FC<ConfigProviderProps> = ({
     children,
+    recipient,
     label,
-    account,
     token,
     symbol,
     decimals,
@@ -40,7 +40,9 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     requiredConfirmations = 32,
 }) => {
     return (
-        <ConfigContext.Provider value={{ label, account, token, symbol, decimals, minDecimals, requiredConfirmations }}>
+        <ConfigContext.Provider
+            value={{ recipient, label, token, symbol, decimals, minDecimals, requiredConfirmations }}
+        >
             {children}
         </ConfigContext.Provider>
     );

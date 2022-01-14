@@ -34,7 +34,7 @@ export const App: FC = () => {
 
 const Context: FC<{ children: ReactNode }> = ({ children }) => {
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
-    const account = useMemo(() => new PublicKey('GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj'), []);
+    const recipient = useMemo(() => new PublicKey('GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj'), []);
     const token = useMemo(() => new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr'), []);
 
     return (
@@ -43,8 +43,8 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                 <WalletProvider wallets={wallets} autoConnect>
                     <WalletModalProvider>
                         <ConfigProvider
+                            recipient={recipient}
                             label="Starbucks"
-                            account={account}
                             token={token}
                             symbol="USDC"
                             decimals={6}
