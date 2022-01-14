@@ -5,6 +5,7 @@
         "target": "es2019",
         "module": "esnext",
         "outDir": "lib/esm",
+        "declarationDir": "lib/types",
         "noEmit": false,
         "declaration": true,
         "sourceMap": true,
