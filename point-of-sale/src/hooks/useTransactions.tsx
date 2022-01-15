@@ -92,7 +92,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
     // When the signatures change, poll and update the transactions
     useEffect(() => {
-        if (!associatedToken) return;
+        if (!signatures.length || !associatedToken) return;
         let changed = false;
 
         const interval = setInterval(async () => {
@@ -158,7 +158,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             changed = true;
             clearInterval(interval);
         };
-    }, [associatedToken, connection, signatures]);
+    }, [signatures, connection, associatedToken, pollInterval]);
 
     return <TransactionsContext.Provider value={{ transactions }}>{children}</TransactionsContext.Provider>;
 };
