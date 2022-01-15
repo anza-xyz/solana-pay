@@ -1,16 +1,20 @@
+import BigNumber from 'bignumber.js';
 import React, { FC } from 'react';
 import { useConfig } from '../hooks/useConfig';
-import { usePayment } from '../hooks/usePayment';
+import { NON_BREAKING_SPACE } from '../utils/constants';
 
-export const Amount: FC = () => {
+export interface AmountProps {
+    amount: BigNumber | undefined;
+}
+
+export const Amount: FC<AmountProps> = ({ amount }) => {
     const { minDecimals } = useConfig();
-    const { amount } = usePayment();
 
     return (
         <span>
             {amount && amount.isGreaterThan(0)
                 ? amount.toFormat(amount.decimalPlaces() < minDecimals ? minDecimals : amount.decimalPlaces())
-                : '\u00a0'}
+                : NON_BREAKING_SPACE}
         </span>
     );
 };

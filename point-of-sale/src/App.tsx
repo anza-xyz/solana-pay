@@ -4,9 +4,11 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, ReactNode, useEffect, useMemo } from 'react';
+import { USDC } from './components/USDC';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider, PaymentStatus, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
+import { TransactionsProvider } from './hooks/useTransactions';
 import { AmountPage } from './pages/AmountPage';
 import { ConfirmationPage } from './pages/ConfirmationPage';
 import { QRPage } from './pages/QRPage';
@@ -46,12 +48,15 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                             recipient={recipient}
                             label="Starbucks"
                             token={token}
+                            icon={<USDC />}
                             symbol="USDC"
                             decimals={6}
                             minDecimals={2}
                             requiredConfirmations={9}
                         >
-                            <PaymentProvider>{children}</PaymentProvider>
+                            <TransactionsProvider>
+                                <PaymentProvider>{children}</PaymentProvider>
+                            </TransactionsProvider>
                         </ConfigProvider>
                     </WalletModalProvider>
                 </WalletProvider>
