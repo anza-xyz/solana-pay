@@ -95,7 +95,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
         if (!signatures.length || !associatedToken) return;
         let changed = false;
 
-        const interval = setInterval(async () => {
+        const run = async () => {
             let parsedConfirmedTransactions: (ParsedConfirmedTransaction | null)[],
                 signatureStatuses: RpcResponseAndContext<(SignatureStatus | null)[]>;
             try {
@@ -152,7 +152,10 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                     })
                     .filter((transaction): transaction is Transaction => !!transaction)
             );
-        }, pollInterval);
+        };
+
+        const interval = setInterval(run, pollInterval);
+        void run();
 
         return () => {
             changed = true;
