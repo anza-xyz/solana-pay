@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import 'react-circular-progressbar/dist/styles.css';
 import { PoweredBy } from '../components/PoweredBy';
 import { Transactions } from '../components/Transactions';
 import { usePayment } from '../hooks/usePayment';
