@@ -11,6 +11,8 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react';
+import { arraysEqual } from '../utils/arraysEqual';
+import { MAX_CONFIRMATIONS } from '../utils/constants';
 import { useConfig } from './useConfig';
 
 export interface Transaction {
@@ -24,6 +26,7 @@ export interface Transaction {
 
 export interface TransactionsContextState {
     transactions: Transaction[];
+    loading: boolean;
 }
 
 export const TransactionsContext = createContext<TransactionsContextState>({} as TransactionsContextState);
@@ -45,6 +48,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
     const [signatures, setSignatures] = useState<TransactionSignature[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loading, setLoading] = useState(false);
 
     // Get the ATA for the recipient and token
     useEffect(() => {
@@ -68,20 +72,30 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
         if (!associatedToken) return;
         let changed = false;
 
-        const interval = setInterval(async () => {
+        const run = async () => {
             try {
-                const signatures = await connection.getSignaturesForAddress(
+                setLoading(true);
+
+                const confirmedSignatureInfos = await connection.getSignaturesForAddress(
                     associatedToken,
                     { limit: 10 },
                     'confirmed'
                 );
                 if (changed) return;
 
-                setSignatures(signatures.map(({ signature }) => signature));
+                setSignatures((prevSignatures) => {
+                    const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
+                    return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
+                });
             } catch (error: any) {
                 console.error(error);
+            } finally {
+                setLoading(false);
             }
-        }, 5000);
+        };
+
+        const interval = setInterval(run, 5000);
+        void run();
 
         return () => {
             changed = true;
@@ -99,14 +113,18 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             let parsedConfirmedTransactions: (ParsedConfirmedTransaction | null)[],
                 signatureStatuses: RpcResponseAndContext<(SignatureStatus | null)[]>;
             try {
+                setLoading(true);
+
                 [parsedConfirmedTransactions, signatureStatuses] = await Promise.all([
                     connection.getParsedConfirmedTransactions(signatures),
-                    connection.getSignatureStatuses(signatures),
+                    connection.getSignatureStatuses(signatures, { searchTransactionHistory: true }),
                 ]);
             } catch (error) {
                 if (changed) return;
                 console.error(error);
                 return;
+            } finally {
+                setLoading(false);
             }
             if (changed) return;
 
@@ -120,8 +138,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                         const timestamp = parsedConfirmedTransaction.blockTime;
                         const error = parsedConfirmedTransaction.meta.err;
                         const status = signatureStatus.confirmationStatus;
-                        const confirmations = signatureStatus.confirmations;
-                        if (!timestamp || !status || !confirmations) return;
+                        if (!timestamp || !status) return;
 
                         const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
                             ({ pubkey }) => pubkey.equals(associatedToken)
@@ -140,6 +157,8 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                         const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
                         const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
                         const amount = postAmount.minus(preAmount).toString();
+                        const confirmations =
+                            status === 'finalized' ? MAX_CONFIRMATIONS : signatureStatus.confirmations || 0;
 
                         return {
                             signature,
@@ -163,5 +182,5 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
         };
     }, [signatures, connection, associatedToken, pollInterval]);
 
-    return <TransactionsContext.Provider value={{ transactions }}>{children}</TransactionsContext.Provider>;
+    return <TransactionsContext.Provider value={{ transactions, loading }}>{children}</TransactionsContext.Provider>;
 };
