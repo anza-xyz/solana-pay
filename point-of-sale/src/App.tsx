@@ -4,6 +4,7 @@ import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, ReactNode, useEffect, useMemo } from 'react';
+import { USDC } from './components/USDC';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider, PaymentStatus, usePayment } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
@@ -47,6 +48,7 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                             recipient={recipient}
                             label="Starbucks"
                             token={token}
+                            icon={<USDC />}
                             symbol="USDC"
                             decimals={6}
                             minDecimals={2}

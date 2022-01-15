@@ -1,11 +1,12 @@
 import { PublicKey } from '@solana/web3.js';
-import React, { createContext, FC, ReactNode, useContext } from 'react';
+import React, { createContext, FC, ReactElement, ReactNode, useContext } from 'react';
 import { Digits } from '../types';
 
 export interface ConfigContextState {
     recipient: PublicKey;
     label: string;
     token: PublicKey;
+    icon: ReactElement;
     symbol: string;
     decimals: Digits;
     minDecimals: Digits;
@@ -23,6 +24,7 @@ export interface ConfigProviderProps {
     recipient: PublicKey;
     label: string;
     token: PublicKey;
+    icon: ReactElement;
     symbol: string;
     decimals: Digits;
     minDecimals: Digits;
@@ -34,6 +36,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     recipient,
     label,
     token,
+    icon,
     symbol,
     decimals,
     minDecimals = 0,
@@ -41,7 +44,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
 }) => {
     return (
         <ConfigContext.Provider
-            value={{ recipient, label, token, symbol, decimals, minDecimals, requiredConfirmations }}
+            value={{ recipient, label, token, icon, symbol, decimals, minDecimals, requiredConfirmations }}
         >
             {children}
         </ConfigContext.Provider>
