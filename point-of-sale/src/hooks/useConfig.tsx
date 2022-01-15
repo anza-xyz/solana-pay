@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import React, { createContext, FC, ReactElement, ReactNode, useContext } from 'react';
 import { Digits } from '../types';
+import { MAX_CONFIRMATIONS } from '../utils/constants';
 
 export interface ConfigContextState {
     recipient: PublicKey;
@@ -40,7 +41,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     symbol,
     decimals,
     minDecimals = 0,
-    requiredConfirmations = 32,
+    requiredConfirmations = MAX_CONFIRMATIONS,
 }) => {
     return (
         <ConfigContext.Provider
