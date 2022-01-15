@@ -10,7 +10,7 @@ import * as styles from './QRPage.module.css';
 
 export const QRPage: FC = () => {
     const { symbol } = useConfig();
-    const { reset } = usePayment();
+    const { amount, reset } = usePayment();
     const { publicKey } = useWallet();
     const { setVisible } = useWalletModal();
 
@@ -29,7 +29,7 @@ export const QRPage: FC = () => {
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>
-                    <Amount />
+                    <Amount amount={amount} />
                 </div>
                 <div className={styles.symbol}>{symbol}</div>
                 <div className={styles.code}>
