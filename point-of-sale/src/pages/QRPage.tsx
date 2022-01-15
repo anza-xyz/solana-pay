@@ -35,7 +35,7 @@ export const QRPage: FC = () => {
                 <div className={styles.code}>
                     <QRCode />
                 </div>
-                <div className={styles.scan}>Scan this code with your SolanaPay wallet</div>
+                <div className={styles.scan}>Scan this code with your Solana Pay wallet</div>
                 <div className={styles.confirm}>You'll be asked to confirm the transaction</div>
             </div>
             <div className={styles.footer}>
