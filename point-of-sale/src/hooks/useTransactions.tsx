@@ -34,10 +34,12 @@ export function useTransactions(): TransactionsContextState {
 
 export interface TransactionsProviderProps {
     children: ReactNode;
-    pollInterval: number;
+    pollInterval?: number;
 }
 
-export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval = 10000 }) => {
+export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval }) => {
+    pollInterval ||= 10000;
+
     const { connection } = useConnection();
     const { recipient, token } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
