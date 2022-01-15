@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { Amount } from './Amount';
 import { useConfig } from '../hooks/useConfig';
+import { Amount } from './Amount';
 import * as styles from './Summary.module.css';
 
 export const Summary: FC = () => {
