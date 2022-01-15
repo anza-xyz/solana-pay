@@ -34,12 +34,10 @@ export async function validateTransactionSignature(
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
-        const mint = token.toBase58();
-
-        const preBalance = response.meta.preTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
+        const preBalance = response.meta.preTokenBalances?.find((x) => x.accountIndex === index);
         if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
-        const postBalance = response.meta.postTokenBalances?.find((x) => x.mint === mint && x.accountIndex === index);
+        const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === index);
         if (!postBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
         const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
