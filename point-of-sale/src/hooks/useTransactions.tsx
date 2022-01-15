@@ -1,17 +1,25 @@
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
-import { PublicKey, TransactionConfirmationStatus, TransactionError, TransactionSignature } from '@solana/web3.js';
+import {
+    ParsedConfirmedTransaction,
+    PublicKey,
+    RpcResponseAndContext,
+    SignatureStatus,
+    TransactionConfirmationStatus,
+    TransactionError,
+    TransactionSignature,
+} from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react';
 import { useConfig } from './useConfig';
 
 export interface Transaction {
     signature: TransactionSignature;
-    amount?: string;
-    timestamp?: number | null;
-    error?: TransactionError | null;
-    status?: TransactionConfirmationStatus;
-    confirmations?: number | null;
+    amount: string;
+    timestamp: number;
+    error: TransactionError | null;
+    status: TransactionConfirmationStatus;
+    confirmations: number;
 }
 
 export interface TransactionsContextState {
@@ -26,9 +34,10 @@ export function useTransactions(): TransactionsContextState {
 
 export interface TransactionsProviderProps {
     children: ReactNode;
+    pollInterval: number;
 }
 
-export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children }) => {
+export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval = 10000 }) => {
     const { connection } = useConnection();
     const { recipient, token } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
@@ -41,9 +50,9 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children }
 
         (async () => {
             const associatedToken = await getAssociatedTokenAddress(token, recipient);
-            if (!changed) {
-                setAssociatedToken(associatedToken);
-            }
+            if (changed) return;
+
+            setAssociatedToken(associatedToken);
         })();
 
         return () => {
@@ -64,8 +73,8 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children }
                     { limit: 10 },
                     'confirmed'
                 );
-
                 if (changed) return;
+
                 setSignatures(signatures.map(({ signature }) => signature));
             } catch (error: any) {
                 console.error(error);
@@ -79,83 +88,69 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children }
         };
     }, [associatedToken, connection]);
 
-    // When the signatures change, update the transactions
-    useEffect(() => {
-        if (!associatedToken) return;
-        let changed = false;
-
-        setTransactions((transactions) =>
-            signatures.length && transactions.length
-                ? signatures
-                      .map((signature) => transactions.find((transaction) => transaction.signature === signature))
-                      .filter((transaction): transaction is Transaction => !!transaction)
-                : []
-        );
-
-        for (const signature of signatures) {
-            (async () => {
-                // TODO: replace with getParsedConfirmedTransactions and batch with statuses
-                const response = await connection.getTransaction(signature, { commitment: 'confirmed' });
-                if (changed) return;
-
-                if (!response?.meta || !response.meta.preTokenBalances || !response.meta.postTokenBalances) return;
-
-                const index = response.transaction.message.accountKeys.findIndex((pubkey) =>
-                    pubkey.equals(associatedToken)
-                );
-                if (index === -1) return;
-
-                const mint = token.toBase58();
-                const preBalance = response.meta.preTokenBalances.find(
-                    (x) => x.mint === mint && x.accountIndex === index
-                );
-                const postBalance = response.meta.postTokenBalances.find(
-                    (x) => x.mint === mint && x.accountIndex === index
-                );
-                if (!preBalance?.uiTokenAmount.uiAmountString || !postBalance?.uiTokenAmount.uiAmountString) return;
-
-                const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
-                const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
-
-                const amount = postAmount.minus(preAmount).toString();
-                const timestamp = response.blockTime;
-                const error = response.meta.err;
-
-                setTransactions((transactions) =>
-                    signatures.map((signature) => ({
-                        ...transactions.find((transaction) => transaction.signature === signature),
-                        signature,
-                        amount,
-                        timestamp,
-                        error,
-                    }))
-                );
-            })();
-        }
-
-        return () => {
-            changed = true;
-        };
-    }, [associatedToken, signatures, connection, token]);
-
-    // When the signatures change, poll and update the transaction statuses
+    // When the signatures change, poll and update the transactions
     useEffect(() => {
         if (!associatedToken) return;
         let changed = false;
 
         const interval = setInterval(async () => {
-            const response = await connection.getSignatureStatuses(signatures);
+            let parsedConfirmedTransactions: (ParsedConfirmedTransaction | null)[],
+                signatureStatuses: RpcResponseAndContext<(SignatureStatus | null)[]>;
+            try {
+                [parsedConfirmedTransactions, signatureStatuses] = await Promise.all([
+                    connection.getParsedConfirmedTransactions(signatures),
+                    connection.getSignatureStatuses(signatures),
+                ]);
+            } catch (error) {
+                if (changed) return;
+                console.error(error);
+                return;
+            }
             if (changed) return;
 
-            setTransactions((transactions) =>
-                signatures.map((signature, index) => ({
-                    ...transactions.find((transaction) => transaction.signature === signature),
-                    signature,
-                    status: response.value[index]?.confirmationStatus,
-                    confirmations: response.value[index]?.confirmations,
-                }))
+            setTransactions(
+                signatures
+                    .map((signature, signatureIndex): Transaction | undefined => {
+                        const parsedConfirmedTransaction = parsedConfirmedTransactions[signatureIndex];
+                        const signatureStatus = signatureStatuses.value[signatureIndex];
+                        if (!parsedConfirmedTransaction?.meta || !signatureStatus) return;
+
+                        const timestamp = parsedConfirmedTransaction.blockTime;
+                        const error = parsedConfirmedTransaction.meta.err;
+                        const status = signatureStatus.confirmationStatus;
+                        const confirmations = signatureStatus.confirmations;
+                        if (!timestamp || !status || !confirmations) return;
+
+                        const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                            ({ pubkey }) => pubkey.equals(associatedToken)
+                        );
+                        if (accountIndex === -1) return;
+
+                        const preBalance = parsedConfirmedTransaction.meta.preTokenBalances?.find(
+                            (x) => x.accountIndex === accountIndex
+                        );
+                        const postBalance = parsedConfirmedTransaction.meta.postTokenBalances?.find(
+                            (x) => x.accountIndex === accountIndex
+                        );
+                        if (!preBalance?.uiTokenAmount.uiAmountString || !postBalance?.uiTokenAmount.uiAmountString)
+                            return;
+
+                        const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
+                        const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
+                        const amount = postAmount.minus(preAmount).toString();
+
+                        return {
+                            signature,
+                            amount,
+                            timestamp,
+                            error,
+                            status,
+                            confirmations,
+                        };
+                    })
+                    .filter((transaction): transaction is Transaction => !!transaction)
             );
-        }, 5000);
+        }, pollInterval);
 
         return () => {
             changed = true;
