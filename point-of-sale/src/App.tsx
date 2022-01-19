@@ -26,6 +26,7 @@ export const App: FC = () => {
         return () => document.removeEventListener('keydown', listener, false);
     }, []);
 
+    // TODO: move config to URL
     const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
     const recipient = useMemo(() => new PublicKey('GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj'), []);
