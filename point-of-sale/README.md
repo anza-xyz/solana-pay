@@ -10,24 +10,6 @@ To build and run this app locally, you'll need:
 -   yarn
 -   Build JS library
 
-### Build JS Library
-
-Before running the PoS example, you have to build the JS library:
-
-Install JS dependencies
-
-```shell
-cd js
-yarn install
-```
-
-Build JS library
-
-```shell
-# from js project root
-yarn build
-```
-
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -48,7 +30,23 @@ git clone https://github.com/solana-labs/solana-pay.git
 gh repo clone solana-labs/solana-pay
 ```
 
-Install the dependencies
+Before running the PoS example, you have to build the JS library:
+
+Install dependencies for JS lib
+
+```shell
+cd js
+yarn install
+```
+
+Build JS library
+
+```shell
+# from js project root
+yarn build
+```
+
+Install dependencies for point-of-sale
 
 ```shell
 cd point-of-sale
