@@ -33,8 +33,7 @@ html.dark button {
 }
 
 #app {
-    width: 100vw;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 html body .wallet-adapter-modal {
