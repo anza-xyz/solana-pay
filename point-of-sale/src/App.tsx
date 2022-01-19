@@ -2,16 +2,14 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
-import { PublicKey } from '@solana/web3.js';
-import React, { FC, ReactNode, useEffect, useMemo } from 'react';
+import { clusterApiUrl, PublicKey } from '@solana/web3.js';
+import React, { FC, useEffect, useMemo } from 'react';
+import { Outlet } from 'react-router-dom';
 import { USDC } from './components/USDC';
 import { ConfigProvider } from './hooks/useConfig';
-import { PaymentProvider, PaymentStatus, usePayment } from './hooks/usePayment';
+import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
-import { AmountPage } from './pages/AmountPage';
-import { ConfirmationPage } from './pages/ConfirmationPage';
-import { QRPage } from './pages/QRPage';
 import { toggleFullscreen } from './utils/toggleFullscreen';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
@@ -27,21 +25,14 @@ export const App: FC = () => {
         return () => document.removeEventListener('keydown', listener, false);
     }, []);
 
-    return (
-        <Context>
-            <Content />
-        </Context>
-    );
-};
-
-const Context: FC<{ children: ReactNode }> = ({ children }) => {
+    const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
     const recipient = useMemo(() => new PublicKey('GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj'), []);
     const token = useMemo(() => new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr'), []);
 
     return (
         <ThemeProvider>
-            <ConnectionProvider endpoint="https://psytrbhymqlkfrhudd.dev.genesysgo.net:8899/">
+            <ConnectionProvider endpoint={endpoint}>
                 <WalletProvider wallets={wallets} autoConnect>
                     <WalletModalProvider>
                         <ConfigProvider
@@ -55,7 +46,9 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
                             requiredConfirmations={9}
                         >
                             <TransactionsProvider>
-                                <PaymentProvider>{children}</PaymentProvider>
+                                <PaymentProvider>
+                                    <Outlet />
+                                </PaymentProvider>
                             </TransactionsProvider>
                         </ConfigProvider>
                     </WalletModalProvider>
@@ -63,16 +56,4 @@ const Context: FC<{ children: ReactNode }> = ({ children }) => {
             </ConnectionProvider>
         </ThemeProvider>
     );
-};
-
-const Content: FC = () => {
-    const { status } = usePayment();
-    switch (status) {
-        case PaymentStatus.New:
-            return <AmountPage />;
-        case PaymentStatus.Waiting:
-            return <QRPage />;
-        default:
-            return <ConfirmationPage />;
-    }
 };
