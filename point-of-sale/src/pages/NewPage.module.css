@@ -44,11 +44,11 @@
 
     :global(html.dark) .side {
         background: #000000;
-        color: #FFFFFF;
+        color: #ffffff;
     }
 
     :global(html.light) .side {
-        background: #FFFFFF;
+        background: #ffffff;
         color: #000000;
     }
 

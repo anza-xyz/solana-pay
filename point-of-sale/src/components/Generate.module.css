@@ -10,13 +10,13 @@
 }
 
 :global(html.dark) .root {
-    background: #FFFFFF;
+    background: #ffffff;
     color: #000000;
 }
 
 :global(html.light) .root {
     background: #000000;
-    color: #FFFFFF;
+    color: #ffffff;
 }
 
 .root[disabled] {

@@ -10,13 +10,13 @@ body {
 }
 
 html.light {
-    background: #EFF2F3;
-    color: #2A2A2A;
+    background: #eff2f3;
+    color: #2a2a2a;
 }
 
 html.dark {
-    background: #2A2A2A;
-    color: #EEF5F6;
+    background: #2a2a2a;
+    color: #eef5f6;
 }
 
 button {
@@ -25,11 +25,11 @@ button {
 }
 
 html.light button {
-    color: #2A2A2A;
+    color: #2a2a2a;
 }
 
 html.dark button {
-    color: #EEF5F6;
+    color: #eef5f6;
 }
 
 #app {
