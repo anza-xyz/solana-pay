@@ -10,11 +10,12 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useConfig } from './useConfig';
 
 export enum PaymentStatus {
     New = 'New',
-    Waiting = 'Waiting',
+    Pending = 'Pending',
     Confirmed = 'Confirmed',
     Valid = 'Valid',
     Invalid = 'Invalid',
@@ -59,6 +60,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState(0);
+    const navigate = useNavigate();
 
     const url = useMemo(
         () =>
@@ -82,19 +84,21 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-    }, []);
+        navigate('/new');
+    }, [navigate]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
-            setStatus(PaymentStatus.Waiting);
+            setStatus(PaymentStatus.Pending);
+            navigate('/pending');
         }
-    }, [status, reference]);
+    }, [status, reference, navigate]);
 
     // TODO: remove this
     // Use the connected wallet to sign and send the transaction for now
     useEffect(() => {
-        if (status === PaymentStatus.Waiting && publicKey) {
+        if (status === PaymentStatus.Pending && publicKey) {
             let changed = false;
 
             const run = async () => {
@@ -129,7 +133,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     // When the status is waiting, poll for the transaction using the reference key
     useEffect(() => {
-        if (!(status === PaymentStatus.Waiting && reference && !signature)) return;
+        if (!(status === PaymentStatus.Pending && reference && !signature)) return;
         let changed = false;
 
         const interval = setInterval(async () => {
@@ -141,6 +145,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
+                    navigate('/confirmed');
                 }
             } catch (error: any) {
                 if (!(error instanceof FindTransactionSignatureError)) {
@@ -153,7 +158,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, reference, signature, connection]);
+    }, [status, reference, signature, connection, navigate]);
 
     // When the status is confirmed, validate the transaction
     useEffect(() => {
