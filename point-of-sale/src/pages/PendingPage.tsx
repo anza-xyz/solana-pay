@@ -6,9 +6,9 @@ import { PoweredBy } from '../components/PoweredBy';
 import { QRCode } from '../components/QRCode';
 import { useConfig } from '../hooks/useConfig';
 import { usePayment } from '../hooks/usePayment';
-import * as styles from './QRPage.module.css';
+import * as styles from './PendingPage.module.css';
 
-export const QRPage: FC = () => {
+export const PendingPage: FC = () => {
     const { symbol } = useConfig();
     const { amount, reset } = usePayment();
     const { publicKey } = useWallet();

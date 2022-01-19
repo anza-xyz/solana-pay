@@ -3,9 +3,9 @@ import { Generate } from '../components/Generate';
 import { NumPad } from '../components/NumPad';
 import { PoweredBy } from '../components/PoweredBy';
 import { Summary } from '../components/Summary';
-import * as styles from './AmountPage.module.css';
+import * as styles from './NewPage.module.css';
 
-export const AmountPage: FC = () => {
+export const NewPage: FC = () => {
     return (
         <div className={styles.root}>
             <div className={styles.main}>

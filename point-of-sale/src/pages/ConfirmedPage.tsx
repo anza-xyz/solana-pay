@@ -2,9 +2,9 @@ import React, { FC } from 'react';
 import { PoweredBy } from '../components/PoweredBy';
 import { Progress } from '../components/Progress';
 import { usePayment } from '../hooks/usePayment';
-import * as styles from './ConfirmationPage.module.css';
+import * as styles from './ConfirmedPage.module.css';
 
-export const ConfirmationPage: FC = () => {
+export const ConfirmedPage: FC = () => {
     const { reset } = usePayment();
 
     return (
