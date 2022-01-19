@@ -24,7 +24,6 @@ const Transaction: FC<{ transaction: Transaction }> = ({ transaction }) => {
     const { icon, symbol } = useConfig();
 
     const amount = useMemo(() => new BigNumber(transaction.amount), [transaction.amount]);
-
     const signature = useMemo(
         () => transaction.signature.slice(0, 8) + '....' + transaction.signature.slice(-8),
         [transaction.signature]
