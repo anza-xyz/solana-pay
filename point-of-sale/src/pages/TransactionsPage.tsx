@@ -1,5 +1,6 @@
 import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { BackButton } from '../components/BackButton';
 import { PoweredBy } from '../components/PoweredBy';
 import { Transactions } from '../components/Transactions';
 import * as styles from './TransactionsPage.module.css';
@@ -11,9 +12,7 @@ export const TransactionsPage: FC = () => {
     return (
         <div className={styles.root}>
             <div className={styles.header}>
-                <button className={styles.button} type="button" onClick={onClick}>
-                    <span className={styles.arrow}>◄</span>Back
-                </button>
+                <BackButton onClick={onClick}>Back</BackButton>
             </div>
             <div className={styles.main}>
                 <Transactions />

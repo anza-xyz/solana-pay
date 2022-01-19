@@ -2,6 +2,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useEffect } from 'react';
 import { Amount } from '../components/Amount';
+import { BackButton } from '../components/BackButton';
 import { PoweredBy } from '../components/PoweredBy';
 import { QRCode } from '../components/QRCode';
 import { useConfig } from '../hooks/useConfig';
@@ -23,9 +24,7 @@ export const PendingPage: FC = () => {
     return (
         <div className={styles.root}>
             <div className={styles.header}>
-                <button className={styles.button} type="button" onClick={reset}>
-                    <span className={styles.arrow}>◄</span>Cancel Payment
-                </button>
+                <BackButton onClick={reset}>Cancel Payment</BackButton>
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>

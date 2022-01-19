@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
+import { BackButton } from '../components/BackButton';
 import { PoweredBy } from '../components/PoweredBy';
 import { Progress } from '../components/Progress';
+import { TransactionsLink } from '../components/TransactionsLink';
 import { usePayment } from '../hooks/usePayment';
 import * as styles from './ConfirmedPage.module.css';
 
@@ -10,9 +12,8 @@ export const ConfirmedPage: FC = () => {
     return (
         <div className={styles.root}>
             <div className={styles.header}>
-                <button className={styles.button} type="button" onClick={reset}>
-                    <span className={styles.arrow}>◄</span>Start Over
-                </button>
+                <BackButton onClick={reset}>Start Over</BackButton>
+                <TransactionsLink />
             </div>
             <div className={styles.main}>
                 <Progress />
