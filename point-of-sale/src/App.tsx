@@ -15,6 +15,7 @@ import { toggleFullscreen } from './utils/toggleFullscreen';
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export const App: FC = () => {
+    // TODO: replace with fullscreen button
     useEffect(() => {
         const listener = (event: KeyboardEvent) => {
             if (event.key !== 'Enter') return;
