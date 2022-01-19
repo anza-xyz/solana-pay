@@ -1,16 +1,17 @@
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PoweredBy } from '../components/PoweredBy';
 import { Transactions } from '../components/Transactions';
-import { usePayment } from '../hooks/usePayment';
 import * as styles from './TransactionsPage.module.css';
 
 export const TransactionsPage: FC = () => {
-    const { reset } = usePayment();
+    const navigate = useNavigate();
+    const onClick = useCallback(() => navigate(-1), [navigate]);
 
     return (
         <div className={styles.root}>
             <div className={styles.header}>
-                <button className={styles.button} type="button" onClick={reset}>
+                <button className={styles.button} type="button" onClick={onClick}>
                     <span className={styles.arrow}>◄</span>Back
                 </button>
             </div>
