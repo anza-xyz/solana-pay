@@ -8,12 +8,11 @@ import { Amount } from './Amount';
 import * as styles from './Transactions.module.css';
 
 export const Transactions: FC = () => {
-    const { transactions, loading } = useTransactions();
+    const { transactions } = useTransactions();
 
     return (
         <div className={styles.root}>
             <div className={styles.title}>Recent Transactions</div>
-            <div className={styles.loading}>{loading ? 'Loading ...' : NON_BREAKING_SPACE}</div>
             {transactions.map((transaction) => (
                 <Transaction key={transaction.signature} transaction={transaction} />
             ))}
