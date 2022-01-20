@@ -51,7 +51,7 @@ export function Payment() {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
         <WalletModalProvider>
-          <h3>SolPay</h3>
+          <h3>Solana Pay</h3>
           <WalletMultiButton />
           <WalletDisconnectButton />
         </WalletModalProvider>
