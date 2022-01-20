@@ -19,7 +19,7 @@
         "nuke": "shx rm -rf node_modules yarn.lock"
     },
     "dependencies": {
-        "@solana/pay": "file:../js",
+        "@solana/pay": "^0.1.0-alpha.0",
         "@solana/wallet-adapter-base": "^0.9.2",
         "@solana/wallet-adapter-react": "^0.15.2",
         "@solana/wallet-adapter-react-ui": "^0.9.4",
