@@ -11,8 +11,6 @@ import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
 
-require('@solana/wallet-adapter-react-ui/styles.css');
-
 export const App: FC = () => {
     // TODO: move config to URL
     const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
