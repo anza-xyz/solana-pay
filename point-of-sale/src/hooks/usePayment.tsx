@@ -33,6 +33,7 @@ export interface PaymentContextState {
     signature: TransactionSignature | undefined;
     status: PaymentStatus;
     confirmations: number;
+    progress: number;
     url: string;
     reset(): void;
     generate(): void;
@@ -50,7 +51,7 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { recipient, token, label } = useConfig();
+    const { recipient, token, label, requiredConfirmations } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
@@ -61,6 +62,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState(0);
     const navigate = useNavigate();
+    const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
     const url = useMemo(
         () =>
@@ -235,6 +237,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 signature,
                 status,
                 confirmations,
+                progress,
                 url,
                 reset,
                 generate,
