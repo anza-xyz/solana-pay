@@ -1,4 +1,5 @@
 import React, { FC } from 'react';
+import { FullscreenButton } from '../components/FullscreenButton';
 import { Generate } from '../components/Generate';
 import { NumPad } from '../components/NumPad';
 import { PoweredBy } from '../components/PoweredBy';
@@ -10,7 +11,10 @@ export const NewPage: FC = () => {
     return (
         <div className={styles.root}>
             <div className={styles.main}>
-                <TransactionsLink />
+                <div className={styles.buttons}>
+                    <TransactionsLink />
+                    <FullscreenButton />
+                </div>
                 <div className={styles.body}>
                     <NumPad />
                 </div>

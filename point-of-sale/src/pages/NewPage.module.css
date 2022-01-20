@@ -10,6 +10,11 @@
     justify-content: center;
 }
 
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
 .body {
     flex: 1;
     display: flex;

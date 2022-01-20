@@ -10,22 +10,11 @@ import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
-import { toggleFullscreen } from './utils/toggleFullscreen';
+import { toggleFullscreen } from './utils/fullscreen';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
 export const App: FC = () => {
-    // TODO: replace with fullscreen button
-    useEffect(() => {
-        const listener = (event: KeyboardEvent) => {
-            if (event.key !== 'Enter') return;
-            toggleFullscreen();
-        };
-
-        document.addEventListener('keydown', listener, false);
-        return () => document.removeEventListener('keydown', listener, false);
-    }, []);
-
     // TODO: move config to URL
     const endpoint = useMemo(() => clusterApiUrl('devnet'), []);
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
