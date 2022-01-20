@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { parseURL } from '../../src/wallet/parseURL';
+import { parseURL } from '../src/parseURL';
 
 describe('parseURL', () => {
     describe('parsing', () => {
@@ -14,7 +14,7 @@ describe('parseURL', () => {
                 expect(parsed.recipient).toEqual(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'));
                 expect(parsed.amount).toEqual(new BigNumber(0.01));
                 expect(parsed.token).toBeUndefined();
-                expect(parsed.references).toEqual([new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny')]);
+                expect(parsed.reference).toEqual([new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny')]);
                 expect(parsed.label).toEqual('Michael');
                 expect(parsed.message).toEqual('Thanks for all the fish');
                 expect(parsed.memo).toEqual('OrderId5678');
@@ -29,7 +29,7 @@ describe('parseURL', () => {
                 expect(parsed.recipient).toEqual(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'));
                 expect(parsed.amount).toEqual(new BigNumber(0.01));
                 expect(parsed.token).toEqual(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'));
-                expect(parsed.references).toBeUndefined();
+                expect(parsed.reference).toBeUndefined();
                 expect(parsed.label).toEqual('Michael');
                 expect(parsed.message).toEqual('Thanks for all the fish');
                 expect(parsed.memo).toEqual('OrderId5678');
