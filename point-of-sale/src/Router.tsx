@@ -6,6 +6,8 @@ import { NewPage } from './pages/NewPage';
 import { PendingPage } from './pages/PendingPage';
 import { TransactionsPage } from './pages/TransactionsPage';
 
+// TODO: add finalized view
+
 export const Router: FC = () => {
     return (
         <BrowserRouter>
