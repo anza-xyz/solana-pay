@@ -24,13 +24,15 @@ export interface EncodeURLComponents extends EncodeURLParams {
 /**
  * Encode params into URL
  *
- * @param recipient - The address the payment should be made to. It **must** be a native SOL address.
- * @param amount - The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider.
- * @param token - The mint address of the SPL token. If `null` the transaction will be for native SOL
- * @param reference - An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.
- * @param label - A label to be used by the wallet provider to identify this transaction; should be the merchant name
- * @param message - A message to be used by the wallet provider to identify this transaction; should describe the transaction to the user
- * @param memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
+ * @param {EncodeURLComponents} encodeURLParams
+ *
+ * @param encodeURLParams.recipient - The address the payment should be made to. It **must** be a native SOL address.
+ * @param encodeURLParams.amount - The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider.
+ * @param encodeURLParams.token - The mint address of the SPL token. If `null` the transaction will be for native SOL
+ * @param encodeURLParams.reference - An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.
+ * @param encodeURLParams.label - A label to be used by the wallet provider to identify this transaction; should be the merchant name
+ * @param encodeURLParams.message - A message to be used by the wallet provider to identify this transaction; should describe the transaction to the user
+ * @param encodeURLParams.memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
  */
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
     let url = `solana:` + encodeURIComponent(recipient.toBase58());
