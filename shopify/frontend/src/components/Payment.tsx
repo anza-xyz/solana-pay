@@ -4,13 +4,13 @@ import { usePaymentSession } from "../providers/PaymentSessionProvider";
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
-  getLedgerWallet,
-  getPhantomWallet,
-  getSlopeWallet,
-  getSolflareWallet,
-  getSolletExtensionWallet,
-  getSolletWallet,
-  getTorusWallet,
+  LedgerWalletAdapter,
+  PhantomWalletAdapter,
+  SlopeWalletAdapter,
+  SolflareWalletAdapter,
+  SolletExtensionWalletAdapter,
+  SolletWalletAdapter,
+  TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
 import {
   WalletModalProvider,
@@ -34,15 +34,13 @@ export function Payment() {
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking --
   // Only the wallets you configure here will be compiled into your application
   const wallets = useMemo(() => [
-    getPhantomWallet(),
-    getSlopeWallet(),
-    getSolflareWallet(),
-    getTorusWallet({
-      options: { clientId: 'Get a client ID @ https://developer.tor.us' }
-    }),
-    getLedgerWallet(),
-    getSolletWallet({ network }),
-    getSolletExtensionWallet({ network }),
+    new PhantomWalletAdapter(),
+    new SlopeWalletAdapter(),
+    new SolflareWalletAdapter(),
+    new TorusWalletAdapter(),
+    new LedgerWalletAdapter(),
+    new SolletWalletAdapter({ network }),
+    new SolletExtensionWalletAdapter({ network }),
   ], [network]);
 
   console.log(session);
