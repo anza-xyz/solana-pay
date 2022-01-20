@@ -3,14 +3,13 @@ import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { clusterApiUrl, PublicKey } from '@solana/web3.js';
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { Outlet } from 'react-router-dom';
 import { USDC } from './components/USDC';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
-import { toggleFullscreen } from './utils/fullscreen';
 
 require('@solana/wallet-adapter-react-ui/styles.css');
 
