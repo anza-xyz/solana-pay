@@ -9,6 +9,10 @@
     justify-content: space-between;
 }
 
+.header :global(.wallet-adapter-button) {
+    margin: 16px;
+}
+
 .main {
     flex: 1;
     display: flex;
