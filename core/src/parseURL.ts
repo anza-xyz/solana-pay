@@ -2,19 +2,34 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 export interface ParsedURL {
+    /** The address the payment should be made to. It **must** be a native SOL address. */
     recipient: PublicKey;
+    /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
     amount: BigNumber | undefined;
+    /** The mint address of the SPL token */
     token: PublicKey | undefined;
+    /** An array of public keys used to identify this transaction */
     reference: PublicKey[] | undefined;
+    /** A label to be used by the wallet provider to identify this transaction */
     label: string | undefined;
+    /** A message to be used by the wallet provider to identify this transaction */
     message: string | undefined;
+    /** Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo) */
     memo: string | undefined;
 }
 
+/** @ignore */
 export class ParseURLError extends Error {
     name = 'ParseURLError';
 }
 
+/**
+ * Parse the URL based off the Solana Pay URI scheme
+ *
+ * **Reference** implementation for wallet providers.
+ *
+ * @param url - The payment request url
+ */
 export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
 
