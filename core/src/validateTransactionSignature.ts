@@ -2,10 +2,22 @@ import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { Connection, Finality, PublicKey, TransactionResponse, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
+/** @ignore */
 export class ValidateTransactionSignatureError extends Error {
     name = 'ValidateTransactionSignatureError';
 }
 
+/**
+ * Validate a transaction signature
+ *
+ * @param connection - A connection to the cluster.
+ * @param signature -  The signature to validate.
+ * @param recipient - The address the payment was made to.
+ * @param amount - The amount of SOL or SPL token that was transferred.
+ * @param token - The mint address of the SPL token.
+ * @param reference - A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used.
+ * @param finality - A subset of Commitment levels, which are at least optimistically confirmed
+ */
 export async function validateTransactionSignature(
     connection: Connection,
     signature: TransactionSignature,
@@ -37,11 +49,13 @@ export async function validateTransactionSignature(
         if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
         const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === index);
-        if (!postBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
+        if (!postBalance?.uiTokenAmount.uiAmountString)
+            throw new ValidateTransactionSignatureError('balance not found');
 
         const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
         const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
-        if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
+        if (preAmount.plus(amount).lt(postAmount))
+            throw new ValidateTransactionSignatureError('amount not transferred');
 
         // TODO: what if a token was used to pay for gas?
     }
