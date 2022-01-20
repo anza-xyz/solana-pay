@@ -5,17 +5,34 @@ import { createTransaction } from '../../src/createTransaction';
 import { CUSTOMER_WALLET } from './constant';
 
 export async function simulateWalletInteraction(connection: Connection, url: string) {
+    /**
+     * For example only
+     *
+     * The URL that triggers the wallet interaction; follows the Solana Pay URI scheme
+     * The parameters needed to create the correct transaction is encoded within the URL
+     */
     const { recipient, message, memo, amount, reference, label } = parseURL(url);
     console.log('label: ', label);
     console.log('message: ', message);
 
+    /**
+     * For example only
+     *
+     * Attempts to airdrop the customers wallet some SOL for a succeful transaction
+     */
     await getPayer(connection);
 
+    /**
+     * Create the transaction with the paramaters decoded from the URL
+     */
     const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
         reference,
         memo,
     });
 
+    /**
+     * Send the transaction to the network
+     */
     sendAndConfirmTransaction(connection, tx, [CUSTOMER_WALLET]);
 }
 
