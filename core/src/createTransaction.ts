@@ -10,16 +10,34 @@ import {
 import BigNumber from 'bignumber.js';
 import { MEMO_PROGRAM_ID, SOL_DECIMALS, TEN } from './constants';
 
+/** @ignore */
 export class CreateTransactionError extends Error {
     name = 'CreateTransactionError';
 }
 
 export interface CreateTransactionParams {
+    /** The mint address of the SPL token */
     token?: PublicKey;
+    /** An array of public keys used to identify this transaction */
     reference?: PublicKey | PublicKey[];
+    /** Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo) */
     memo?: string;
 }
 
+/**
+ * Create a transaction
+ *
+ * **Reference** implementation for wallet providers.
+ *
+ * @param connection - A connection to the cluster.
+ * @param payer - `PublicKey` of the payer.
+ * @param recipient - The **native SOL** address the payment should be made to.
+ * @param amount - The amount of SOL or SPL token that should be transferred.
+ * @param {CreateTransactionParams} createTransactionParams - Additional parameters
+ * @param createTransactionParams.token - The mint address of the SPL token.
+ * @param createTransactionParams.reference - An array of public keys used to identify this transaction.
+ * @param createTransactionParams.memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
+ */
 export async function createTransaction(
     connection: Connection,
     payer: PublicKey,
