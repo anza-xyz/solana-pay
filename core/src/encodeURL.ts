@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 export interface EncodeURLParams {
     amount?: BigNumber;
-    token?: PublicKey;
+    splToken?: PublicKey;
     reference?: PublicKey | PublicKey[];
     label?: string;
     message?: string;
@@ -25,15 +25,15 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-export function encodeURLParams({ amount, token, reference, label, message, memo }: EncodeURLParams): string {
+export function encodeURLParams({ amount, splToken, reference, label, message, memo }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
         params.push(['amount', String(amount)]);
     }
 
-    if (token) {
-        params.push(['spl-token', token.toBase58()]);
+    if (splToken) {
+        params.push(['spl-token', splToken.toBase58()]);
     }
 
     if (reference) {

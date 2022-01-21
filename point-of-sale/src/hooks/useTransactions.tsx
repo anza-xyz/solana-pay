@@ -44,7 +44,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
     pollInterval ||= 10000;
 
     const { connection } = useConnection();
-    const { recipient, token } = useConfig();
+    const { recipient, splToken } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
     const [signatures, setSignatures] = useState<TransactionSignature[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -55,7 +55,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
         let changed = false;
 
         (async () => {
-            const associatedToken = await getAssociatedTokenAddress(token, recipient);
+            const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
             if (changed) return;
 
             setAssociatedToken(associatedToken);
@@ -65,7 +65,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             changed = true;
             setAssociatedToken(undefined);
         };
-    }, [token, recipient]);
+    }, [splToken, recipient]);
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {

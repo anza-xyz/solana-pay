@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 export interface ParsedURL {
     recipient: PublicKey;
     amount: BigNumber | undefined;
-    token: PublicKey | undefined;
+    splToken: PublicKey | undefined;
     reference: PublicKey[] | undefined;
     label: string | undefined;
     message: string | undefined;
@@ -66,7 +66,7 @@ export function parseURL(url: string): ParsedURL {
     return {
         recipient,
         amount,
-        token,
+        splToken: token,
         reference,
         label,
         message,

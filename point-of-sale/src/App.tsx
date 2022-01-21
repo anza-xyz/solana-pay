@@ -41,7 +41,7 @@ export const App: FC = () => {
                         <ConfigProvider
                             recipient={recipient}
                             label={label}
-                            token={TOKEN}
+                            splToken={TOKEN}
                             icon={<USDC />}
                             symbol="USDC"
                             decimals={6}

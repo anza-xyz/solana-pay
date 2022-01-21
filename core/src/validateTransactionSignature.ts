@@ -11,7 +11,7 @@ export async function validateTransactionSignature(
     signature: TransactionSignature,
     recipient: PublicKey,
     amount: BigNumber,
-    token?: PublicKey,
+    splToken?: PublicKey,
     reference?: PublicKey | PublicKey[],
     finality?: Finality
 ): Promise<TransactionResponse> {
@@ -20,7 +20,7 @@ export async function validateTransactionSignature(
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
     if (response.meta.err) throw response.meta.err;
 
-    if (!token) {
+    if (!splToken) {
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
@@ -29,7 +29,7 @@ export async function validateTransactionSignature(
 
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
     } else {
-        const recipientATA = await getAssociatedTokenAddress(token, recipient);
+        const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
@@ -37,11 +37,13 @@ export async function validateTransactionSignature(
         if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
         const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === index);
-        if (!postBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
+        if (!postBalance?.uiTokenAmount.uiAmountString)
+            throw new ValidateTransactionSignatureError('balance not found');
 
         const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
         const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
-        if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
+        if (preAmount.plus(amount).lt(postAmount))
+            throw new ValidateTransactionSignatureError('amount not transferred');
 
         // TODO: what if a token was used to pay for gas?
     }
