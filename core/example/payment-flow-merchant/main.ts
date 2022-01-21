@@ -1,11 +1,12 @@
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { encodeURL } from '../../src/encodeURL';
 import { findTransactionSignature, FindTransactionSignatureError } from '../../src/findTransactionSignature';
+import { validateTransactionSignature } from '../../src/validateTransactionSignature';
 import { MERCHANT_WALLET } from './constant';
 import { establishConnection } from './establishConnection';
-import { findTransaction } from './findTransaction';
 import { simulateCheckout } from './simulateCheckout';
 import { simulateWalletInteraction } from './simulateWalletInteraction';
-import { validateTransaction } from './validateTransaction';
 
 async function main() {
     console.log("Let's simulate a Solana Pay flow ... \n");
@@ -101,7 +102,16 @@ async function main() {
     console.log('\n6. 🔗 Validate transaction \n');
 
     try {
-        await validateTransaction(connection, signature, MERCHANT_WALLET, amount, reference);
+        const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
+
+        await validateTransactionSignature(
+            connection,
+            signature,
+            MERCHANT_WALLET,
+            amountInLamports,
+            undefined,
+            reference
+        );
 
         // Update payment status
         paymentStatus = 'validated';
