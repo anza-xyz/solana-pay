@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { App } from './App';
 import { ConfirmedPage } from './pages/ConfirmedPage';
 import { NewPage } from './pages/NewPage';
@@ -13,6 +13,7 @@ export const Router: FC = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/:config" element={<App />}>
+                    <Route index element={<Navigate replace to="new" />} />
                     <Route path="new" element={<NewPage />} />
                     <Route path="pending" element={<PendingPage />} />
                     <Route path="confirmed" element={<ConfirmedPage />} />

@@ -86,14 +86,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('/new');
+        navigate('new');
     }, [navigate]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
             setStatus(PaymentStatus.Pending);
-            navigate('/pending');
+            navigate('pending');
         }
     }, [status, reference, navigate]);
 
@@ -147,7 +147,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
-                    navigate('/confirmed');
+                    navigate('confirmed', { replace: true });
                 }
             } catch (error: any) {
                 if (!(error instanceof FindTransactionSignatureError)) {
