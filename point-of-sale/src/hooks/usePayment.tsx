@@ -10,8 +10,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useConfig } from './useConfig';
+import { useNavigateWithQuery } from './useNavigateWithQuery';
 
 export enum PaymentStatus {
     New = 'New',
@@ -61,7 +61,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState(0);
-    const navigate = useNavigate();
+    const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
     const url = useMemo(
@@ -86,14 +86,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('new', { replace: true });
+        navigate('/new', { replace: true });
     }, [navigate]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
             setStatus(PaymentStatus.Pending);
-            navigate('pending');
+            navigate('/pending');
         }
     }, [status, reference, navigate]);
 
@@ -147,7 +147,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
-                    navigate('confirmed', { replace: true });
+                    navigate('/confirmed', { replace: true });
                 }
             } catch (error: any) {
                 if (!(error instanceof FindTransactionSignatureError)) {

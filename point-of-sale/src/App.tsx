@@ -3,9 +3,8 @@ import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
-import base58 from 'bs58';
 import React, { FC, useMemo } from 'react';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import { USDC } from './components/USDC';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
@@ -16,26 +15,23 @@ import { ENDPOINT, TOKEN } from './utils/constants';
 export const App: FC = () => {
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
 
-    const { config } = useParams();
+    const [params] = useSearchParams();
     const { recipient, label } = useMemo(() => {
         let recipient: PublicKey | undefined, label: string | undefined;
 
-        if (config) {
+        const recipientParam = params.get('recipient');
+        const labelParam = params.get('label');
+        if (recipientParam && labelParam) {
             try {
-                const params = JSON.parse(base58.decode(config).toString());
-                if (typeof params.recipient === 'string') {
-                    recipient = new PublicKey(params.recipient);
-                }
-                if (typeof params.label === 'string') {
-                    label = params.label;
-                }
+                recipient = new PublicKey(recipientParam);
+                label = labelParam;
             } catch (error) {
                 console.error(error);
             }
         }
 
         return { recipient, label };
-    }, [config]);
+    }, [params]);
 
     return recipient && label ? (
         <ThemeProvider>
