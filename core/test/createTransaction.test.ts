@@ -8,7 +8,7 @@ import {
     TransactionInstruction,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { createTransaction } from '../../src/wallet/createTransaction';
+import { createTransaction } from '../src/createTransaction';
 import { getMint, getAccount, getAssociatedTokenAddress } from '@solana/spl-token';
 
 jest.mock('@solana/spl-token', () => ({
@@ -22,49 +22,45 @@ const mockGetAccount = getAccount as jest.Mock;
 const mockGetAssociatedTokenAddress = getAssociatedTokenAddress as jest.Mock;
 
 describe('createTransaction', () => {
-    let connection: Connection;
-    let wallet: Keypair;
     const recipientPublicKey = new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN');
     const accountOwnedByWallet = Keypair.generate();
     const programAccount = Keypair.generate();
 
-    beforeAll(async () => {
-        wallet = Keypair.generate();
+    const wallet = Keypair.generate();
 
-        connection = {
-            getAccountInfo: (publicKey: PublicKey) => {
-                const accounts = {
-                    [wallet.publicKey.toBase58()]: {
-                        executable: false,
-                        owner: SystemProgram.programId,
-                        lamports: LAMPORTS_PER_SOL / 100,
-                    },
-                    [recipientPublicKey.toBase58()]: {
-                        executable: false,
-                        owner: SystemProgram.programId,
-                        lamports: LAMPORTS_PER_SOL / 100,
-                    },
-                    [SystemProgram.programId.toBase58()]: {
-                        executable: true,
-                        owner: SystemProgram.programId,
-                        lamports: LAMPORTS_PER_SOL / 100,
-                    },
-                    [accountOwnedByWallet.publicKey.toBase58()]: {
-                        executable: false,
-                        owner: wallet.publicKey,
-                        lamports: LAMPORTS_PER_SOL / 100,
-                    },
-                    [programAccount.publicKey.toBase58()]: {
-                        executable: true,
-                        owner: SystemProgram.programId,
-                        lamports: LAMPORTS_PER_SOL / 100,
-                    },
-                };
+    const accounts = {
+        [wallet.publicKey.toBase58()]: {
+            executable: false,
+            owner: SystemProgram.programId,
+            lamports: LAMPORTS_PER_SOL / 100,
+        },
+        [recipientPublicKey.toBase58()]: {
+            executable: false,
+            owner: SystemProgram.programId,
+            lamports: LAMPORTS_PER_SOL / 100,
+        },
+        [SystemProgram.programId.toBase58()]: {
+            executable: true,
+            owner: SystemProgram.programId,
+            lamports: LAMPORTS_PER_SOL / 100,
+        },
+        [accountOwnedByWallet.publicKey.toBase58()]: {
+            executable: false,
+            owner: wallet.publicKey,
+            lamports: LAMPORTS_PER_SOL / 100,
+        },
+        [programAccount.publicKey.toBase58()]: {
+            executable: true,
+            owner: SystemProgram.programId,
+            lamports: LAMPORTS_PER_SOL / 100,
+        },
+    };
 
-                return accounts[publicKey.toBase58()] || null;
-            },
-        } as unknown as Connection;
-    });
+    const connection = {
+        getAccountInfo: (publicKey: PublicKey) => {
+            return accounts[publicKey.toBase58()] || null;
+        },
+    } as unknown as Connection;
 
     describe('transaction', () => {
         it('creates a transaction without memo for native sol', async () => {
@@ -96,7 +92,7 @@ describe('createTransaction', () => {
 
         it.todo('creates a transaction for spl token');
 
-        it('creates a transaction with references', async () => {
+        it('creates a transaction with reference', async () => {
             expect.assertions(1);
 
             const payer = wallet.publicKey;
@@ -106,10 +102,10 @@ describe('createTransaction', () => {
             const reference2 = new Keypair().publicKey;
 
             const expectedTransaction = createSOLTransaction(payer, recipientPublicKey, amount, {
-                references: [reference1, reference2],
+                reference: [reference1, reference2],
             });
             const transaction = await createTransaction(connection, payer, recipientPublicKey, amount, {
-                references: [reference1, reference2],
+                reference: [reference1, reference2],
             });
 
             expect(expectedTransaction).toEqual(transaction);
@@ -399,11 +395,11 @@ function createSOLTransaction(
     amount: BigNumber,
     {
         token,
-        references,
+        reference,
         memo,
     }: {
         token?: PublicKey;
-        references?: PublicKey[];
+        reference?: PublicKey[];
         memo?: string;
     }
 ): Transaction {
@@ -416,8 +412,8 @@ function createSOLTransaction(
         lamports,
     });
 
-    if (references?.length) {
-        instruction.keys.push(...references.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
+    if (reference?.length) {
+        instruction.keys.push(...reference.map((pubkey) => ({ pubkey, isWritable: false, isSigner: false })));
     }
 
     const transaction = new Transaction().add(instruction);
