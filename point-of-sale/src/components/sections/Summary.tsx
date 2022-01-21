@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { useConfig } from '../hooks/useConfig';
-import { usePayment } from '../hooks/usePayment';
+import { useConfig } from '../../hooks/useConfig';
+import { usePayment } from '../../hooks/usePayment';
 import { Amount } from './Amount';
 import * as styles from './Summary.module.css';
 

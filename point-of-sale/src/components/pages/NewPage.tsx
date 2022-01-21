@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import { FullscreenButton } from '../components/FullscreenButton';
-import { Generate } from '../components/Generate';
-import { NumPad } from '../components/NumPad';
-import { PoweredBy } from '../components/PoweredBy';
-import { Summary } from '../components/Summary';
-import { TransactionsLink } from '../components/TransactionsLink';
+import { FullscreenButton } from '../buttons/FullscreenButton';
+import { GenerateButton } from '../buttons/GenerateButton';
+import { NumPad } from '../sections/NumPad';
+import { PoweredBy } from '../sections/PoweredBy';
+import { Summary } from '../sections/Summary';
+import { TransactionsLink } from '../buttons/TransactionsLink';
 import * as styles from './NewPage.module.css';
 
 export const NewPage: FC = () => {
@@ -22,7 +22,7 @@ export const NewPage: FC = () => {
             <div className={styles.side}>
                 <div className={styles.header}>
                     <Summary />
-                    <Generate />
+                    <GenerateButton />
                 </div>
                 <div className={styles.footer}>
                     <PoweredBy />

@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useConfig } from '../hooks/useConfig';
-import { usePayment } from '../hooks/usePayment';
-import { Digits } from '../types';
+import { useConfig } from '../../hooks/useConfig';
+import { usePayment } from '../../hooks/usePayment';
+import { Digits } from '../../types';
 import * as styles from './NumPad.module.css';
 
 interface NumPadInputButton {

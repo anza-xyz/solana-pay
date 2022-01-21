@@ -1,4 +1,5 @@
 import React, { FC, HTMLAttributes, ReactNode } from 'react';
+import { BackIcon } from '../images/BackIcon';
 import * as styles from './BackButton.module.css';
 
 export interface BackButtonProps {
@@ -9,7 +10,7 @@ export interface BackButtonProps {
 export const BackButton: FC<BackButtonProps> = ({ children, onClick }) => {
     return (
         <button className={styles.button} type="button" onClick={onClick}>
-            <span className={styles.icon}>◄</span>
+            <BackIcon />
             {children}
         </button>
     );

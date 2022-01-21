@@ -2,8 +2,8 @@ import { createQROptions } from '@solana/pay';
 import QRCodeStyling from 'qr-code-styling';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { usePayment } from '../hooks/usePayment';
-import { useTheme } from '../hooks/useTheme';
+import { usePayment } from '../../hooks/usePayment';
+import { useTheme } from '../../hooks/useTheme';
 
 export const QRCode: FC = () => {
     const phone = useMediaQuery({ query: '(max-width: 767px)' });

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-export const SolanaPay: FC = () => {
+export const SolanaPayLogo: FC = () => {
     return (
         <svg
             height="40"

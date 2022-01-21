@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { App } from './App';
 import { useLinkWithQuery } from './hooks/useLinkWithQuery';
-import { ConfirmedPage } from './pages/ConfirmedPage';
-import { NewPage } from './pages/NewPage';
-import { PendingPage } from './pages/PendingPage';
-import { TransactionsPage } from './pages/TransactionsPage';
+import { ConfirmedPage } from './components/pages/ConfirmedPage';
+import { NewPage } from './components/pages/NewPage';
+import { PendingPage } from './components/pages/PendingPage';
+import { TransactionsPage } from './components/pages/TransactionsPage';
 
 // TODO: add finalized view
 

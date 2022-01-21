@@ -1,9 +1,9 @@
 import React, { FC, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BackButton } from '../components/BackButton';
-import { FullscreenButton } from '../components/FullscreenButton';
-import { PoweredBy } from '../components/PoweredBy';
-import { Transactions } from '../components/Transactions';
+import { BackButton } from '../buttons/BackButton';
+import { FullscreenButton } from '../buttons/FullscreenButton';
+import { PoweredBy } from '../sections/PoweredBy';
+import { Transactions } from '../sections/Transactions';
 import * as styles from './TransactionsPage.module.css';
 
 export const TransactionsPage: FC = () => {

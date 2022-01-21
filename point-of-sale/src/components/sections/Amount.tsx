@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
 import React, { FC } from 'react';
-import { useConfig } from '../hooks/useConfig';
-import { NON_BREAKING_SPACE } from '../utils/constants';
+import { useConfig } from '../../hooks/useConfig';
+import { NON_BREAKING_SPACE } from '../../utils/constants';
 
 export interface AmountProps {
     amount: BigNumber | undefined;

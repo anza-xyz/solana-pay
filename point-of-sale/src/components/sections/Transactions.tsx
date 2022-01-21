@@ -1,9 +1,9 @@
 import BigNumber from 'bignumber.js';
 import { formatDistance } from 'date-fns';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useConfig } from '../hooks/useConfig';
-import { Transaction, useTransactions } from '../hooks/useTransactions';
-import { NON_BREAKING_SPACE } from '../utils/constants';
+import { useConfig } from '../../hooks/useConfig';
+import { Transaction, useTransactions } from '../../hooks/useTransactions';
+import { NON_BREAKING_SPACE } from '../../utils/constants';
 import { Amount } from './Amount';
 import * as styles from './Transactions.module.css';
 

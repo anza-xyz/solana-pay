@@ -5,7 +5,7 @@ import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
-import { USDC } from './components/USDC';
+import { USDCIcon } from './components/images/USDCIcon';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
@@ -42,7 +42,7 @@ export const App: FC = () => {
                             recipient={recipient}
                             label={label}
                             token={TOKEN}
-                            icon={<USDC />}
+                            icon={<USDCIcon />}
                             symbol="USDC"
                             decimals={6}
                             minDecimals={2}

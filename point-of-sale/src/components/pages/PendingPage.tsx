@@ -1,12 +1,12 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useEffect } from 'react';
-import { Amount } from '../components/Amount';
-import { BackButton } from '../components/BackButton';
-import { PoweredBy } from '../components/PoweredBy';
-import { QRCode } from '../components/QRCode';
-import { useConfig } from '../hooks/useConfig';
-import { usePayment } from '../hooks/usePayment';
+import { Amount } from '../sections/Amount';
+import { BackButton } from '../buttons/BackButton';
+import { PoweredBy } from '../sections/PoweredBy';
+import { QRCode } from '../sections/QRCode';
+import { useConfig } from '../../hooks/useConfig';
+import { usePayment } from '../../hooks/usePayment';
 import * as styles from './PendingPage.module.css';
 
 export const PendingPage: FC = () => {
