@@ -25,7 +25,7 @@ export const PendingPage: FC = () => {
         <div className={styles.root}>
             <div className={styles.header}>
                 <BackButton onClick={reset}>Cancel Payment</BackButton>
-                <WalletMultiButton/>
+                <WalletMultiButton />
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>
