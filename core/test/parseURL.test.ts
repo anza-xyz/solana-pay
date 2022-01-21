@@ -44,7 +44,7 @@ describe('parseURL', () => {
                 expect(parsed.amount).toBeUndefined();
                 expect(parsed.recipient).toEqual(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'));
                 expect(parsed.token).toBeUndefined();
-                expect(parsed.references).toEqual([new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny')]);
+                expect(parsed.reference).toEqual([new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny')]);
                 expect(parsed.label).toEqual('Michael');
                 expect(parsed.message).toEqual('Thanks for all the fish');
                 expect(parsed.memo).toEqual('OrderId5678');
@@ -72,18 +72,6 @@ describe('parseURL', () => {
             const url = `solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=${amount}`;
 
             expect(() => parseURL(url)).toThrow('amount invalid');
-        });
-
-        it.skip('throws an error on NaN amount', () => {
-            const url = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.0000.000000000000001';
-
-            expect(() => parseURL(url)).toThrow('amount NaN');
-        });
-
-        it.skip('throws an error on zero amount', () => {
-            const url = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0';
-
-            expect(() => parseURL(url)).toThrow('amount zero');
         });
 
         it('throws an error on invalid token', () => {
