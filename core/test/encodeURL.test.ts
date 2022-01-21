@@ -10,32 +10,31 @@ describe('encodeURL', () => {
         const reference1 = new Keypair().publicKey;
         const reference2 = new Keypair().publicKey;
 
-        const references = [reference1, reference2];
+        const reference = [reference1, reference2];
         const label = 'label';
         const message = 'message';
         const memo = 'memo';
 
-        const url = encodeURL(recipient, {
-            amount,
-            token,
-            references,
-            label,
-            message,
-            memo,
-        });
+        const url = encodeURL({ recipient, amount, token, reference, label, message, memo });
 
         expect(url).toBe(
-            `solana:${recipient}?amount=${amount.toNumber()}&spl=${token}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
+            `solana:${recipient}?amount=${amount.toNumber()}&spl-token=${token}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
         );
+    });
+
+    it('encodes a url with recipient', () => {
+        const recipient = new Keypair().publicKey;
+
+        const url = encodeURL({ recipient });
+
+        expect(url).toBe(`solana:${recipient}`);
     });
 
     it('encodes a url with recipient and amount', () => {
         const recipient = new Keypair().publicKey;
         const amount = new BigNumber(12345);
 
-        const url = encodeURL(recipient, {
-            amount,
-        });
+        const url = encodeURL({ recipient, amount });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}`);
     });
@@ -45,24 +44,18 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const token = new Keypair().publicKey;
 
-        const url = encodeURL(recipient, {
-            amount,
-            token,
-        });
+        const url = encodeURL({ recipient, amount, token });
 
-        expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&spl=${token}`);
+        expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&spl-token=${token}`);
     });
 
     it('encodes a url with recipient, amount and references', () => {
         const recipient = new Keypair().publicKey;
         const amount = new BigNumber(12345);
         const reference1 = new Keypair().publicKey;
-        const references = [reference1];
+        const reference = [reference1];
 
-        const url = encodeURL(recipient, {
-            amount,
-            references,
-        });
+        const url = encodeURL({ recipient, amount, reference });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&reference=${reference1}`);
     });
@@ -72,10 +65,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const label = 'label';
 
-        const url = encodeURL(recipient, {
-            amount,
-            label,
-        });
+        const url = encodeURL({ recipient, amount, label });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&label=${label}`);
     });
@@ -85,10 +75,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const message = 'message';
 
-        const url = encodeURL(recipient, {
-            amount,
-            message,
-        });
+        const url = encodeURL({ recipient, amount, message });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&message=${message}`);
     });
@@ -98,10 +85,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber(12345);
         const memo = 'memo';
 
-        const url = encodeURL(recipient, {
-            amount,
-            memo,
-        });
+        const url = encodeURL({ recipient, amount, memo });
 
         expect(url).toBe(`solana:${recipient}?amount=${amount.toNumber()}&memo=${memo}`);
     });
