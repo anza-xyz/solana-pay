@@ -12,7 +12,7 @@ export const Router: FC = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<App />}>
+                <Route path="/:config" element={<App />}>
                     <Route path="new" element={<NewPage />} />
                     <Route path="pending" element={<PendingPage />} />
                     <Route path="confirmed" element={<ConfirmedPage />} />
