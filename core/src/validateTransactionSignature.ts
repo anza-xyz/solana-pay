@@ -37,11 +37,13 @@ export async function validateTransactionSignature(
         if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
         const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === index);
-        if (!postBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
+        if (!postBalance?.uiTokenAmount.uiAmountString)
+            throw new ValidateTransactionSignatureError('balance not found');
 
         const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
         const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
-        if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
+        if (preAmount.plus(amount).lt(postAmount))
+            throw new ValidateTransactionSignatureError('amount not transferred');
 
         // TODO: what if a token was used to pay for gas?
     }
