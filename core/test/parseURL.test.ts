@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { parseURL } from '../src/parseURL';
+import { parseURL } from '../src';
 
 describe('parseURL', () => {
     describe('parsing', () => {

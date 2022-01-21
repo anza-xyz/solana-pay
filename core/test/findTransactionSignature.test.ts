@@ -1,42 +1,31 @@
 import { Connection, Keypair, PublicKey } from '@solana/web3.js';
-import { findTransactionSignature } from '../src/findTransactionSignature';
+import { findTransactionSignature } from '../src';
 
-// Test setup
-const validReference = new Keypair().publicKey;
-const signatureForAddress = {
-    [validReference.toBase58()]: [
-        {
-            signature: 'signature',
-        },
-    ],
+const reference = new Keypair().publicKey;
+const signaturesForAddress = {
+    [reference.toBase58()]: [{ signature: 'signature' }],
 };
 
 const connection = {
-    getSignaturesForAddress: async (reference: PublicKey) => {
-        return signatureForAddress[reference.toBase58()] || [];
+    async getSignaturesForAddress(reference: PublicKey) {
+        return signaturesForAddress[reference.toBase58()] || [];
     },
-} as unknown as Connection;
-// end: Test setup
+} as Connection;
 
 describe('findTransactionSignature', () => {
     it('should return the last signature', async () => {
-        const recieved = await findTransactionSignature(connection, validReference);
-        const expected = {
-            signature: 'signature',
-        };
+        expect.assertions(1);
 
-        expect(recieved).toEqual(expected);
+        const found = await findTransactionSignature(connection, reference);
+
+        expect(found).toEqual({ signature: 'signature' });
     });
 
-    describe('errors', () => {
-        it('throws an error on signature not found', async () => {
-            expect.assertions(1);
+    it('throws an error on signature not found', async () => {
+        expect.assertions(1);
 
-            const reference = new Keypair().publicKey;
+        const reference = new Keypair().publicKey;
 
-            await expect(async () => await findTransactionSignature(connection, reference)).rejects.toThrow(
-                'not found'
-            );
-        });
+        await expect(async () => await findTransactionSignature(connection, reference)).rejects.toThrow('not found');
     });
 });
