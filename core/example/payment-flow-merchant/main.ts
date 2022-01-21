@@ -1,4 +1,5 @@
 import { encodeURL } from '../../src/encodeURL';
+import { findTransactionSignature, FindTransactionSignatureError } from '../../src/findTransactionSignature';
 import { MERCHANT_WALLET } from './constant';
 import { establishConnection } from './establishConnection';
 import { findTransaction } from './findTransaction';
@@ -54,7 +55,36 @@ async function main() {
      * Important to note that we can only find the transaction when it's **confirmed**
      */
     console.log('\n5. Find the transaction');
-    const { signature } = await findTransaction(connection, reference);
+    let signatureInfo;
+
+    const { signature } = await new Promise((resolve, reject) => {
+        /**
+         * Retry until we find the transaction
+         *
+         * If a transaction with the given reference can't be found, the `findTransactionSignature`
+         * function will throw an error. There are a few reasons why this could be a false negative:
+         *
+         * - Transaction is not yet confirmed
+         * - Customer is yet to approve/complete the transaction
+         *
+         * You can implement a polling strategy to query for the transaction periodically.
+         */
+        const interval = setInterval(async () => {
+            console.count('Checking for transaction...');
+            try {
+                signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+                console.log('\n 🖌  Signature found: ', signatureInfo.signature);
+                clearInterval(interval);
+                resolve(signatureInfo);
+            } catch (error: any) {
+                if (!(error instanceof FindTransactionSignatureError)) {
+                    console.error(error);
+                    clearInterval(interval);
+                    reject(error);
+                }
+            }
+        }, 250);
+    });
 
     // Update payment status
     paymentStatus = 'confirmed';
