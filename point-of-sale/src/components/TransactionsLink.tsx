@@ -5,7 +5,7 @@ import * as styles from './TransactionsLink.module.css';
 
 export const TransactionsLink: FC = () => {
     return (
-        <Link to="/transactions" className={styles.link}>
+        <Link to="transactions" className={styles.link}>
             <span className={styles.icon}>
                 <Activity />
             </span>
