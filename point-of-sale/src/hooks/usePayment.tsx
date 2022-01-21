@@ -86,7 +86,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('new');
+        navigate('new', { replace: true });
     }, [navigate]);
 
     const generate = useCallback(() => {
