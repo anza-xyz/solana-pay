@@ -1,5 +1,5 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal } from '@solana/wallet-adapter-react-ui';
+import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import React, { FC, useEffect } from 'react';
 import { Amount } from '../components/Amount';
 import { BackButton } from '../components/BackButton';
@@ -25,6 +25,7 @@ export const PendingPage: FC = () => {
         <div className={styles.root}>
             <div className={styles.header}>
                 <BackButton onClick={reset}>Cancel Payment</BackButton>
+                <WalletMultiButton />
             </div>
             <div className={styles.main}>
                 <div className={styles.amount}>
