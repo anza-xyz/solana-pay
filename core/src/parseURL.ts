@@ -7,7 +7,7 @@ export interface ParsedURL {
     /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
     amount: BigNumber | undefined;
     /** The mint address of the SPL token */
-    token: PublicKey | undefined;
+    splToken: PublicKey | undefined;
     /** An array of public keys used to identify this transaction */
     reference: PublicKey[] | undefined;
     /** A label to be used by the wallet provider to identify this transaction */
@@ -54,11 +54,11 @@ export function parseURL(url: string): ParsedURL {
         if (amount.isNegative()) throw new ParseURLError('amount negative');
     }
 
-    let token: PublicKey | undefined;
-    const tokenParam = searchParams.get('spl-token');
-    if (tokenParam != null) {
+    let splToken: PublicKey | undefined;
+    const splTokenParam = searchParams.get('spl-token');
+    if (splTokenParam != null) {
         try {
-            token = new PublicKey(tokenParam);
+            splToken = new PublicKey(splTokenParam);
         } catch (error) {
             throw new ParseURLError('token invalid');
         }
@@ -81,7 +81,7 @@ export function parseURL(url: string): ParsedURL {
     return {
         recipient,
         amount,
-        token,
+        splToken,
         reference,
         label,
         message,

@@ -23,7 +23,7 @@ export async function validateTransactionSignature(
     signature: TransactionSignature,
     recipient: PublicKey,
     amount: BigNumber,
-    token?: PublicKey,
+    splToken?: PublicKey,
     reference?: PublicKey | PublicKey[],
     finality?: Finality
 ): Promise<TransactionResponse> {
@@ -32,7 +32,7 @@ export async function validateTransactionSignature(
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
     if (response.meta.err) throw response.meta.err;
 
-    if (!token) {
+    if (!splToken) {
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
@@ -41,7 +41,7 @@ export async function validateTransactionSignature(
 
         if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
     } else {
-        const recipientATA = await getAssociatedTokenAddress(token, recipient);
+        const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
         const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
         if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
 

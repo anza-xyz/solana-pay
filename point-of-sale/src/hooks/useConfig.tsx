@@ -6,7 +6,7 @@ import { MAX_CONFIRMATIONS } from '../utils/constants';
 export interface ConfigContextState {
     recipient: PublicKey;
     label: string;
-    token: PublicKey;
+    splToken: PublicKey;
     icon: ReactElement;
     symbol: string;
     decimals: Digits;
@@ -24,7 +24,7 @@ export interface ConfigProviderProps {
     children: ReactNode;
     recipient: PublicKey;
     label: string;
-    token: PublicKey;
+    splToken: PublicKey;
     icon: ReactElement;
     symbol: string;
     decimals: Digits;
@@ -36,7 +36,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     children,
     recipient,
     label,
-    token,
+    splToken,
     icon,
     symbol,
     decimals,
@@ -45,7 +45,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
 }) => {
     return (
         <ConfigContext.Provider
-            value={{ recipient, label, token, icon, symbol, decimals, minDecimals, requiredConfirmations }}
+            value={{ recipient, label, splToken, icon, symbol, decimals, minDecimals, requiredConfirmations }}
         >
             {children}
         </ConfigContext.Provider>

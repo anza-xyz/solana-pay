@@ -10,8 +10,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useConfig } from './useConfig';
+import { useNavigateWithQuery } from './useNavigateWithQuery';
 
 export enum PaymentStatus {
     New = 'New',
@@ -51,7 +51,7 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { recipient, token, label, requiredConfirmations } = useConfig();
+    const { recipient, splToken, label, requiredConfirmations } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
@@ -61,7 +61,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState(0);
-    const navigate = useNavigate();
+    const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
     const url = useMemo(
@@ -69,13 +69,13 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             encodeURL({
                 recipient,
                 amount,
-                token,
+                splToken,
                 reference,
                 label,
                 message,
                 memo,
             }),
-        [recipient, amount, token, reference, label, message, memo]
+        [recipient, amount, splToken, reference, label, message, memo]
     );
 
     const reset = useCallback(() => {
@@ -86,7 +86,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('/new');
+        navigate('/new', { replace: true });
     }, [navigate]);
 
     const generate = useCallback(() => {
@@ -105,11 +105,11 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
-                    const { recipient, amount, token, reference, memo } = parseURL(url);
+                    const { recipient, amount, splToken, reference, memo } = parseURL(url);
                     if (!amount) return;
 
                     const transaction = await createTransaction(connection, publicKey, recipient, amount, {
-                        token,
+                        splToken,
                         reference,
                         memo,
                     });
@@ -147,7 +147,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
-                    navigate('/confirmed');
+                    navigate('/confirmed', { replace: true });
                 }
             } catch (error: any) {
                 if (!(error instanceof FindTransactionSignatureError)) {
@@ -174,7 +174,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     signature,
                     recipient,
                     amount,
-                    token,
+                    splToken,
                     reference,
                     'confirmed'
                 );
@@ -191,7 +191,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         return () => {
             changed = true;
         };
-    }, [status, signature, amount, connection, recipient, token, reference]);
+    }, [status, signature, amount, connection, recipient, splToken, reference]);
 
     // When the status is valid, wait for the transaction to finalize
     useEffect(() => {
