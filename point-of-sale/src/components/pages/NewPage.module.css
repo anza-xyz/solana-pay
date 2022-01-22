@@ -10,11 +10,6 @@
     justify-content: center;
 }
 
-.buttons {
-    display: flex;
-    justify-content: space-between;
-}
-
 .body {
     flex: 1;
     display: flex;
@@ -22,18 +17,27 @@
     align-items: center;
 }
 
+.footer {
+    margin: 24px;
+    font-size: 14px;
+}
+
 .side {
     display: flex;
     flex-direction: column;
 }
 
-.header {
+.top {
+    align-self: flex-end;
+}
+
+.summary {
     flex: 1;
 }
 
-.footer {
+.bottom {
     margin: 24px;
-    text-align: center;
+    align-self: center;
 }
 
 @media (max-width: 767px) {
@@ -57,7 +61,7 @@
         color: #000000;
     }
 
-    .header {
+    .summary {
         margin: 48px;
     }
 }

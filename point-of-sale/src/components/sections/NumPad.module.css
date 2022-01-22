@@ -31,6 +31,10 @@
     cursor: pointer;
     font-size: 32px;
     font-weight: 700;
+    line-height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 :global(html.light) .button {

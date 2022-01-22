@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 export const USDCIcon: FC = () => {
     return (
-        <svg height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
+        <svg fill="none" height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="m16 32c8.8366 0 16-7.1634 16-16 0-8.83656-7.1634-16-16-16-8.83656 0-16 7.16344-16 16 0 8.8366 7.16344 16 16 16z"
                 fill="#2775ca"

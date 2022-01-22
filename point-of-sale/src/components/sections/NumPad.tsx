@@ -3,6 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
+import { BackspaceIcon } from '../images/BackspaceIcon';
 import * as styles from './NumPad.module.css';
 
 interface NumPadInputButton {
@@ -65,7 +66,7 @@ export const NumPad: FC = () => {
                     <NumPadButton input="." onInput={onInput} />
                     <NumPadButton input={0} onInput={onInput} />
                     <button className={styles.button} type="button" onClick={onBackspace}>
-                        ⌫
+                        <BackspaceIcon/>
                     </button>
                 </div>
             </div>
