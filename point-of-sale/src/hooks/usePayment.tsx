@@ -51,7 +51,7 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { recipient, token, label, requiredConfirmations } = useConfig();
+    const { recipient, splToken, label, requiredConfirmations } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
@@ -69,13 +69,13 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             encodeURL({
                 recipient,
                 amount,
-                token,
+                splToken,
                 reference,
                 label,
                 message,
                 memo,
             }),
-        [recipient, amount, token, reference, label, message, memo]
+        [recipient, amount, splToken, reference, label, message, memo]
     );
 
     const reset = useCallback(() => {
@@ -105,11 +105,11 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
-                    const { recipient, amount, token, reference, memo } = parseURL(url);
+                    const { recipient, amount, splToken, reference, memo } = parseURL(url);
                     if (!amount) return;
 
                     const transaction = await createTransaction(connection, publicKey, recipient, amount, {
-                        token,
+                        splToken,
                         reference,
                         memo,
                     });
@@ -174,7 +174,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     signature,
                     recipient,
                     amount,
-                    token,
+                    splToken,
                     reference,
                     'confirmed'
                 );
@@ -191,7 +191,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         return () => {
             changed = true;
         };
-    }, [status, signature, amount, connection, recipient, token, reference]);
+    }, [status, signature, amount, connection, recipient, splToken, reference]);
 
     // When the status is valid, wait for the transaction to finalize
     useEffect(() => {
