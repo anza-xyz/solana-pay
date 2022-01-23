@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
 export interface EncodeURLParams {
     amount?: BigNumber;
@@ -15,7 +16,7 @@ export interface EncodeURLComponents extends EncodeURLParams {
 }
 
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
-    let url = `solana:` + encodeURIComponent(recipient.toBase58());
+    let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
     const encodedParams = encodeURLParams(params);
     if (encodedParams) {
