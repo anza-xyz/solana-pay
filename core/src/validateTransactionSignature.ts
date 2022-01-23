@@ -44,8 +44,6 @@ export async function validateTransactionSignature(
         const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
         if (preAmount.plus(amount).lt(postAmount))
             throw new ValidateTransactionSignatureError('amount not transferred');
-
-        // TODO: what if a token was used to pay for gas?
     }
 
     if (reference) {
