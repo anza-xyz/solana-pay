@@ -40,11 +40,11 @@ export function parseURL(url: string): ParsedURL {
         if (amount.isNegative()) throw new ParseURLError('amount negative');
     }
 
-    let token: PublicKey | undefined;
-    const tokenParam = searchParams.get('spl-token');
-    if (tokenParam != null) {
+    let splToken: PublicKey | undefined;
+    const splTokenParam = searchParams.get('spl-token');
+    if (splTokenParam != null) {
         try {
-            token = new PublicKey(tokenParam);
+            splToken = new PublicKey(splTokenParam);
         } catch (error) {
             throw new ParseURLError('token invalid');
         }
@@ -67,7 +67,7 @@ export function parseURL(url: string): ParsedURL {
     return {
         recipient,
         amount,
-        splToken: token,
+        splToken,
         reference,
         label,
         message,
