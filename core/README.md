@@ -140,7 +140,7 @@ The parsed `amount` is always interpreted to be a decimal number of "user" units
 
 The `label` and `message` are only for display by the wallets and are not encoded into the on-chain transaction. `label` could be the merchant name or the brand, and you could use the `message` to describe the purchase to the user.
 
-The `memo` can be used to record a message on chain with the transaction.
+The `memo` can be used to record a message on-chain with the transaction.
 
 The `reference` allows for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
 
@@ -463,11 +463,11 @@ Potential use cases where the amount could be empty:
 
 The `label` and `message` are only for display and are not encoded into the on-chain transaction.
 
-The `memo` can be used to record a message on chain with the transaction.
+The `memo` can be used to record a message on-chain with the transaction.
 
 The `reference` allow for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
 
-The `spl-token` parameter is optional. If empty, it symbolises this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
+The `spl-token` parameter is optional. If empty, it symbolizes this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
 
 #### 3. Create transaction
 
@@ -488,7 +488,7 @@ const url =
 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
 /**
- * Create the transaction with the paramaters decoded from the URL
+ * Create the transaction with the parameters decoded from the URL
  */
 const payer = CUSTOMER_WALLET.publicKey;
 const tx = await createTransaction(connection, payer, recipient, amount as BigNumber, {
@@ -541,7 +541,7 @@ console.log('label: ', label);
 console.log('message: ', message);
 
 /**
-* Create the transaction with the paramaters decoded from the URL
+* Create the transaction with the parameters decoded from the URL
 */
 const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
 reference,
