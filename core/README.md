@@ -85,8 +85,8 @@ async function main() {
     const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
 }
 ```
-</details>
 
+</details>
 
 #### 2. Create a payment request link
 
@@ -129,6 +129,7 @@ Solana pay uses a standard URL scheme across wallets for native SOL and SPL Toke
 ```
 
 See [full code snippet][7]
+
 </details>
 
 <br>
@@ -182,6 +183,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
 ```
 
 See [full code snippet][7]
+
 </details>
 
 #### 3. Encode link into a QR code
@@ -210,10 +212,10 @@ Now that you've created a payment link, you need a way to show it to your custom
 ```
 
 See [full code snippet][7]
+
 </details>
 
 <br>
-
 
 ![](https://i.imgur.com/pa0mQBz.png)
 
@@ -241,6 +243,7 @@ The QR code needs to be visible on your payment page.
     // append QR code to the element
     qrCode.append(element);
 ```
+
 </details>
 <br>
 
@@ -288,14 +291,15 @@ When a customer approves the payment request in their wallet, this transaction e
 ```
 
 See [full code snippet][7]
+
 </details>
 
 ##### 4.1 Retries
 
 If a transaction with the given reference can't be found, the `findTransactionSignature` function will throw an error. There are a few reasons why this could be:
 
-- Transaction is not yet confirmed
-- Customer is yet to approve/complete the transaction
+-   Transaction is not yet confirmed
+-   Customer is yet to approve/complete the transaction
 
 <details>
     <summary>
@@ -339,6 +343,7 @@ If a transaction with the given reference can't be found, the `findTransactionSi
 ```
 
 See [full code snippet][7]
+
 </details>
 
 ##### 4.2 Validating the transaction
@@ -378,6 +383,7 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
 ```
 
 See [full code snippet][7]
+
 </details>
 
 #### Best practices
@@ -388,15 +394,15 @@ We recommend handling a customer session in a secure environment. Building a sec
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
-3. Merchant backend (server)  generates a reference public key and stores it in a database with the expected amount for the shopping cart / pending purchase (unique to each customer's checkout session).
+3. Merchant backend (server) generates a reference public key and stores it in a database with the expected amount for the shopping cart / pending purchase (unique to each customer's checkout session).
 4. Merchant backend redirects the user to the confirmation page with the generated reference public key.
 5. The confirmation page redirects to the merchant with the transaction signature.
 6. Merchant backend checks that the transaction is valid for the checkout session by validating the transaction with the reference and amount stored in step 3.
 
 The steps outlined above prevents:
 
-- A different transaction from being used to trick the merchant
-- The frontend from being manipulated to show a confirmed transaction
+-   A different transaction from being used to trick the merchant
+-   The frontend from being manipulated to show a confirmed transaction
 
 ### Wallet Integration
 
@@ -435,16 +441,18 @@ As a wallet provider, you will have to parse the received URL to extract the par
 import { parseURL } from '@solana/pay';
 
 /**
-* For example only
-*
-* The URL that triggers the wallet interaction; follows the Solana Pay URL scheme
-* The parameters needed to create the correct transaction is encoded within the URL
-*/
-const url = "solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678";
+ * For example only
+ *
+ * The URL that triggers the wallet interaction; follows the Solana Pay URL scheme
+ * The parameters needed to create the correct transaction is encoded within the URL
+ */
+const url =
+    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 ```
 
 See [full code snippet][7]
+
 </details>
 
 <br>
@@ -455,8 +463,8 @@ The parsed `amount` is always interpreted to be a decimal number of "user" units
 
 Potential use cases where the amount could be empty:
 
-- accepting donations
-- accepting tips
+-   accepting donations
+-   accepting tips
 
 The `label` and `message` are only for display and are not encoded into the on-chain transaction.
 
@@ -480,12 +488,13 @@ The `payer` **should** be the public key of the current users' wallet.
 ```typescript
 import { parseURL, createTransaction } from '@solana/pay';
 
-const url = "solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678";
+const url =
+    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
 /**
-* Create the transaction with the paramaters decoded from the URL
-*/
+ * Create the transaction with the paramaters decoded from the URL
+ */
 const payer = CUSTOMER_WALLET.publicKey;
 const tx = await createTransaction(connection, payer, recipient, amount as BigNumber, {
     reference,
@@ -494,6 +503,7 @@ const tx = await createTransaction(connection, payer, recipient, amount as BigNu
 ```
 
 See [full code snippet][7]
+
 </details>
 
 <br>
@@ -525,7 +535,6 @@ With the transaction formed. The user must be prompted to approve the transactio
 
 The `label` and `message` **should** be shown to the user, as it gives added context to the user on the transaction.
 
-
 <details>
     <summary>
         Finally, use <code>sendAndConfirmTransaction</code> to complete the transaction.
@@ -551,169 +560,15 @@ sendAndConfirmTransaction(connection, tx, [CUSTOMER_WALLET]);
 ```
 
 See [full code snippet][7]
+
 </details>
-
-<!--
-## Usage
-
-The SDK provides helper utilities for integrations with dApps and wallet providers.
-
-For more detailed documentation, checkout our [example](#getting-started) above.
-
-### Creating a payment request URL
-
-```ts=
-const recipient = new Keypair().publicKey;
-const amount = new BigNumber(20);
-const reference1 = new Keypair().publicKey;
-const reference2 = new Keypair().publicKey;
-
-const reference = [reference1, reference2];
-const label = 'Jungle Cats store';
-const message = 'Jungle Cats store - your order - #001234';
-const memo = 'JC#4098';
-
-const url = encodeURL(recipient, {
-    amount,
-    label,
-    message,
-    memo,
-    reference
-});
-console.log(url); // solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=9.5
-```
-
-| Params       |  Type                      | Required/Default | Description                                                                                                                                                                                                                                         |
-| ------------ | -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `recipient`  | `PublicKey`                | **`required`**   | The address the payment should be made to. It **must** be a native SOL address.                                                                                                                                                                                                          |
-| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider                                                                                                           |
-| `spl-token`  | `PublicKey`                |                  | The mint address of the SPL token. If `null` the transaction will be for native SOL                                                                                                                                                                 |
-| `reference`  | `PublicKey \| PublicKey[]` |                  | An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.  |
-| `label`      | `string`                   |                  | *Label to be shown; should be the merchant name                                                         |
-| `message`    | `string`                   |                  | *Message to be shown; should describe the transaction to the user                                       |
-| `memo`       | `string`                   |                  | Creates an additional transaction for the [Memo Program][2]                                             |
-
-> \* It's to the discression of the wallet provider to implement
-
-### Creating a QR code
-
-```ts
-import { createQR } from '@solana/pay'
-
-const recipient = new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'); // addess the payment should be made to
-const url = encodeURL(recipient);
-const qr = createQR(url);
-```
-
-| Params       | Type     | Required/Default | Description                       |
-| ------------ | -------- | ---------------- | --------------------------------- |
-| `data`       | `string` | **`required`**   | The URL to encode in the QR code. |
-| `size`       | `number` | `512`            | Size of canvas in `px`            |
-| `background` | `string` | `white`          | Background color for QR code      |
-| `color`      | `string` | `black`          | Color for QR code pattern         |
-
-> 👆🏽The QR code needs to be visible on your payment page. Instructions on how to place this on your payment page can be found [here](https://github.com/kozakdenys/qr-code-styling) for your framework of choice.
-
-### Finding the transaction
-
-```ts
-import { findTransactionSignature } from '@solana/pay'
-import { clusterApiUrl, Connection } from '@solana/web3.js';
-
-(async () => {
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-    const reference1 = new PublicKey('FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8')
-    const signatureInfo = await findTransactionSignature(connection, reference1); // `reference1` is our reference public key that we used when creating the payment link
-    console.log('signature: ', signatureInfo.signature)
-})
-```
-
-| Params       | Type                          | Required/Default | Description                                                                                            |
-| ------------ | ----------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------ |
-| `connection` | `Connection`                  | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                          |
-| `reference`  | `PublicKey`                   | **`required`**   | A `PublicKey` that was included as a reference in the transaction                                      |
-| `options`    | `SignaturesForAddressOptions` |                  | Options for `getSignaturesForAddress`                                                                  |
-| `finality`   | `Finality`                    |                  | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalized` |
-
-### Validating the transaction
-
-```ts=
-// 🚨 CODE SNIPPET TO BE UPDATED
-
-import { validateTransactionSignature, findTransactionSignature } from '@solana/pay';
-import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-
-(async () => {
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-    const reference1 = new PublicKey('FWZedVtyKQtP4CXhT7XDnLidRADrJknmZGA2qNjpTPg8');
-    const signatureInfo = await findTransactionSignature(connection, reference1);
-    const recipient = new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN');
-    const amount = new BigNumber(9.5);
-
-    const ref = await validateTransactionSignature(connection, signature, recipient, amount);
-})
-```
-
-| Params       | Type                       | Required/Default | Description                                                                                                        |
-| ------------ | -------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `connection` | `Connection`               | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                                      |
-| `signature`  | `TransactionSignature`     | **`required`**   | The signature to validate                                                                                          |
-| `recipient`  | `PublicKey`                | **`required`**   | The address the payment was made to.                                                                               |
-| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that was transferred.                                                               |
-| `spl-token`  | `PublicKey`                |                  | If the transfer was for a SPL token, this is the mint address of the SPL token.                                    |
-| `reference`  | `PublicKey \| PublicKey[]` |                  | A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used. |
-| `finality`   | `Finality`                 |                  | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalised`             |
-
-### Parsing a payment request URL
-
-```ts
-import { parseURL } from '@solana/pay';
-
-const url = "solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678"; // 🚨 for example only
-const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
-```
-
-| Params | Type     | Required/Default | Description             |
-| ------ | -------- | ---------------- | ----------------------- |
-| `url`  | `string` |  **`required`**  | The payment request url |
-
-### Create a transaction from the URL
-
-```ts
-import { createTransaction, parseURL } from '@solana/pay';
-import { Keypair, Connection } from '@solana/web3.js';
-
-(async () => {
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
-    const url = "solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678"; // 🚨 for example only
-
-    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
-
-    const payer = new Keypair.generate().publicKey // 🚨 for example only; who is paying for the transaction
-
-    const transaction = await createTransaction(connection, payer, recipient, amount, {
-        reference,
-        memo
-    });
-})
-```
-
-| Params       | Type                       | Required/Default | Description                                                                                            |
-| ------------ | --------------------------------- | --- | ---------------------------------------------------------------------------------------------------- |
-| `connection` | `Connection`               | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                          |
-| `payer`      | `PublicKey`                | **`required`**   | `PublicKey` of the payer                                  |
-| `recipient`  | `PublicKey`                | **`required`**   | The **native SOL** address the payment should be made to.                                                                   |
-| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that was transferred.                                                   |
-| `spl-token`  | `PublicKey`                |                  | If the transfer was for a SPL token, this is the mint address of the SPL token.                        |
-| `reference`  | `PublicKey \| PublicKey[]` |                  | A `PublicKey` that was included as a reference in the transaction                                      |
-| `memo`       |   `string`                 |                  | Creates an additional transaction for the [Memo Program][2]   |
--->
 
 ## License
 
 The Solana Pay JavaScript SDK is open source and available under the Apache License, Version 2.0. See the [LICENSE]() file for more info.
 
 <!-- References -->
+
 [1]: https://github.com/kozakdenys/qr-code-styling
 [2]: https://spl.solana.com/memo
 [3]: https://github.com/solana-labs/solana/issues/19535
