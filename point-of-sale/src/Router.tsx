@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { App } from './App';
-import { ConfirmedPage } from './pages/ConfirmedPage';
-import { NewPage } from './pages/NewPage';
-import { PendingPage } from './pages/PendingPage';
-import { TransactionsPage } from './pages/TransactionsPage';
+import { useLinkWithQuery } from './hooks/useLinkWithQuery';
+import { ConfirmedPage } from './components/pages/ConfirmedPage';
+import { NewPage } from './components/pages/NewPage';
+import { PendingPage } from './components/pages/PendingPage';
+import { TransactionsPage } from './components/pages/TransactionsPage';
 
 // TODO: add finalized view
 
@@ -13,6 +14,7 @@ export const Router: FC = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<App />}>
+                    <Route index element={<IndexRedirect />} />
                     <Route path="new" element={<NewPage />} />
                     <Route path="pending" element={<PendingPage />} />
                     <Route path="confirmed" element={<ConfirmedPage />} />
@@ -21,4 +23,9 @@ export const Router: FC = () => {
             </Routes>
         </BrowserRouter>
     );
+};
+
+export const IndexRedirect: FC = () => {
+    const to = useLinkWithQuery('/new');
+    return <Navigate to={to} replace />;
 };

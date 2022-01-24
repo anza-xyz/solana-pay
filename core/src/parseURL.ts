@@ -1,10 +1,11 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
 export interface ParsedURL {
     recipient: PublicKey;
     amount: BigNumber | undefined;
-    token: PublicKey | undefined;
+    splToken: PublicKey | undefined;
     reference: PublicKey[] | undefined;
     label: string | undefined;
     message: string | undefined;
@@ -19,7 +20,7 @@ export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
 
     const { protocol, pathname, searchParams } = new URL(url);
-    if (protocol !== 'solana:') throw new ParseURLError('protocol invalid');
+    if (protocol !== URL_PROTOCOL) throw new ParseURLError('protocol invalid');
     if (!pathname) throw new ParseURLError('recipient missing');
 
     let recipient: PublicKey;
@@ -39,11 +40,11 @@ export function parseURL(url: string): ParsedURL {
         if (amount.isNegative()) throw new ParseURLError('amount negative');
     }
 
-    let token: PublicKey | undefined;
-    const tokenParam = searchParams.get('spl-token');
-    if (tokenParam != null) {
+    let splToken: PublicKey | undefined;
+    const splTokenParam = searchParams.get('spl-token');
+    if (splTokenParam != null) {
         try {
-            token = new PublicKey(tokenParam);
+            splToken = new PublicKey(splTokenParam);
         } catch (error) {
             throw new ParseURLError('token invalid');
         }
@@ -66,7 +67,7 @@ export function parseURL(url: string): ParsedURL {
     return {
         recipient,
         amount,
-        token,
+        splToken,
         reference,
         label,
         message,
