@@ -583,15 +583,15 @@ const url = encodeURL(recipient, {
 console.log(url); // solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=9.5
 ```
 
-| Params       |  Type    | Required/Default                      | Description                                                                                                                                                                                                                                         |
-| ------------ | --- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `recipient`  |   `PublicKey`  | **`true`**      | The address the payment should be made to. It **must** be a native SOL address.                                                                                                                                                                                                          |
-| `amount`     |  `BigNumber`   |                | The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider                                                                                                           |
-| `spl-token`      |   `PublicKey`  |                 | The mint address of the SPL token. If `null` the transaction will be for native SOL                                                                                                                                                                 |
-| `reference` |  `PublicKey \| PublicKey[]`   |  | An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.  |
-| `label`      |  `string`   |                    | *Label to be shown; should be the merchant name |
-| `message`    |   `string`  |                    | *Message to be shown; should describe the transaction to the user |
-| `memo`       |   `string`  |                    | Creates an additional transaction for the [Memo Program][2] |
+| Params       |  Type                      | Required/Default | Description                                                                                                                                                                                                                                         |
+| ------------ | -------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `recipient`  | `PublicKey`                | **`required`**   | The address the payment should be made to. It **must** be a native SOL address.                                                                                                                                                                                                          |
+| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider                                                                                                           |
+| `spl-token`  | `PublicKey`                |                  | The mint address of the SPL token. If `null` the transaction will be for native SOL                                                                                                                                                                 |
+| `reference`  | `PublicKey \| PublicKey[]` |                  | An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.  |
+| `label`      | `string`                   |                  | *Label to be shown; should be the merchant name                                                         |
+| `message`    | `string`                   |                  | *Message to be shown; should describe the transaction to the user                                       |
+| `memo`       | `string`                   |                  | Creates an additional transaction for the [Memo Program][2]                                             |
 
 > \* It's to the discression of the wallet provider to implement
 
@@ -605,12 +605,12 @@ const url = encodeURL(recipient);
 const qr = createQR(url);
 ```
 
-| Params       |  Type   | Required/Default        | Description                       |
-| ------------ | --- | ------------------------- | --------------------------------- |
-| `data`       |  `string`   | **`required`**  | The URL to encode in the QR code. |
-| `size`       |  `number`   | `512`            | Size of canvas in `px`            |
-| `background` |  `string`   | `white`          | Background color for QR code      |
-| `color`      |  `string`   | `black`          | Color for QR code pattern         |
+| Params       | Type     | Required/Default | Description                       |
+| ------------ | -------- | ---------------- | --------------------------------- |
+| `data`       | `string` | **`required`**   | The URL to encode in the QR code. |
+| `size`       | `number` | `512`            | Size of canvas in `px`            |
+| `background` | `string` | `white`          | Background color for QR code      |
+| `color`      | `string` | `black`          | Color for QR code pattern         |
 
 > 👆🏽The QR code needs to be visible on your payment page. Instructions on how to place this on your payment page can be found [here](https://github.com/kozakdenys/qr-code-styling) for your framework of choice.
 
@@ -628,12 +628,12 @@ import { clusterApiUrl, Connection } from '@solana/web3.js';
 })
 ```
 
-| Params       |   Type  | Required/Default                         | Description                                                                                            |
-| ------------ | --- | ------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| `connection` |   `Connection`  | **`required`**        | A connection to a fullnode JSON RPC endpoint.                                                          |
-| `reference`  |  `PublicKey`   | **`required`**          | A `PublicKey` that was included as a reference in the transaction                                      |
-| `options`    |  `SignaturesForAddressOptions`   |  | Options for `getSignaturesForAddress`                                                                  |
-| `finality`   |  `Finality`   |                   | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalized` |
+| Params       | Type                          | Required/Default | Description                                                                                            |
+| ------------ | ----------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------ |
+| `connection` | `Connection`                  | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                          |
+| `reference`  | `PublicKey`                   | **`required`**   | A `PublicKey` that was included as a reference in the transaction                                      |
+| `options`    | `SignaturesForAddressOptions` |                  | Options for `getSignaturesForAddress`                                                                  |
+| `finality`   | `Finality`                    |                  | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalized` |
 
 ### Validating the transaction
 
@@ -654,15 +654,15 @@ import { clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 })
 ```
 
-| Params       | Type                            |  Required/Default   | Description                                                                                            |
-| ------------ | --------------------------------------- | --- | ------------------------------------------------------------------------------------------------------ |
-| `connection` | `Connection`           |  **`required`**    | A connection to a fullnode JSON RPC endpoint.                                                          |
-| `signature`  | `TransactionSignature` |  **`required`**    | The signature to validate                                                                              |
-| `recipient`  | `PublicKey`            |   **`required`**   | The address the payment was made to.                                                                   |
-| `amount`     | `BigNumber`                      |     | The amount of SOL or SPL token that was transferred.                                                   |
-| `spl-token`      | `PublicKey`                      |     | If the transfer was for a SPL token, this is the mint address of the SPL token.                        |
-| `reference` | `PublicKey \| PublicKey[]`    |     | A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used.                                      |
-| `finality`   | `Finality`                      |     | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalised` |
+| Params       | Type                       | Required/Default | Description                                                                                                        |
+| ------------ | -------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `connection` | `Connection`               | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                                      |
+| `signature`  | `TransactionSignature`     | **`required`**   | The signature to validate                                                                                          |
+| `recipient`  | `PublicKey`                | **`required`**   | The address the payment was made to.                                                                               |
+| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that was transferred.                                                               |
+| `spl-token`  | `PublicKey`                |                  | If the transfer was for a SPL token, this is the mint address of the SPL token.                                    |
+| `reference`  | `PublicKey \| PublicKey[]` |                  | A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used. |
+| `finality`   | `Finality`                 |                  | A subset of Commitment levels, which are at least optimistically confirmed; `confirmed` or `finalised`             |
 
 ### Parsing a payment request URL
 
@@ -673,9 +673,9 @@ const url = "solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&refe
 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 ```
 
-| Params | Type              |  Required/Default   | Description             |
-| ------ | ------------------------- | --- | ----------------------- |
-| `url`  | `string` |  **`required`**   | The payment request url |
+| Params | Type     | Required/Default | Description             |
+| ------ | -------- | ---------------- | ----------------------- |
+| `url`  | `string` |  **`required`**  | The payment request url |
 
 ### Create a transaction from the URL
 
@@ -698,15 +698,15 @@ import { Keypair, Connection } from '@solana/web3.js';
 })
 ```
 
-| Params       | Type                            |  Required/Default   | Description                                                                                            |
-| ------------ | --------------------------------------- | --- | ------------------------------------------------------------------------------------------------------ |
-| `connection` | `Connection`           |  **`required`**    | A connection to a fullnode JSON RPC endpoint.                                                          |
-| `payer`  | `PublicKey` |  **`required`**    | `PublicKey` of the payer                                  |
-| `recipient`  | `PublicKey`            |   **`required`**   | The **native SOL** address the payment should be made to.                                                                   |
-| `amount`     | `BigNumber`                      |     | The amount of SOL or SPL token that was transferred.                                                   |
-| `spl-token`      | `PublicKey`                      |     | If the transfer was for a SPL token, this is the mint address of the SPL token.                        |
-| `reference` | `PublicKey \| PublicKey[]`    |     | A `PublicKey` that was included as a reference in the transaction                                      |
-| `memo`       |   `string`  |                    | Creates an additional transaction for the [Memo Program][2]   |
+| Params       | Type                       | Required/Default | Description                                                                                            |
+| ------------ | --------------------------------- | --- | ---------------------------------------------------------------------------------------------------- |
+| `connection` | `Connection`               | **`required`**   | A connection to a fullnode JSON RPC endpoint.                                                          |
+| `payer`      | `PublicKey`                | **`required`**   | `PublicKey` of the payer                                  |
+| `recipient`  | `PublicKey`                | **`required`**   | The **native SOL** address the payment should be made to.                                                                   |
+| `amount`     | `BigNumber`                |                  | The amount of SOL or SPL token that was transferred.                                                   |
+| `spl-token`  | `PublicKey`                |                  | If the transfer was for a SPL token, this is the mint address of the SPL token.                        |
+| `reference`  | `PublicKey \| PublicKey[]` |                  | A `PublicKey` that was included as a reference in the transaction                                      |
+| `memo`       |   `string`                 |                  | Creates an additional transaction for the [Memo Program][2]   |
 -->
 
 ## License
