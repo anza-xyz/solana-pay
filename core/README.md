@@ -10,19 +10,19 @@ Businesses and developers can use Solana Pay to accept payments in SOL or any SP
 
 ## How it works
 
-**Web app to mobile wallet**
+### Web app to mobile wallet
 
 ![](https://i.imgur.com/zagGsM3.png)
 
 Payment requests can be encoded as a URL according to the scheme, scanned using a QR code, sent and confirmed by the wallet, and discovered by the app.
 
-**Web app to browser wallet**
+### Web app to browser wallet
 
 ![](https://i.imgur.com/MXxGMeZ.png)
 
 With a Solana Pay button, you could integrate an embeddable payment button that can be added to your existing app.
 
-**Mobile app to mobile wallet**
+### Mobile app to mobile wallet
 
 ![](https://i.imgur.com/GKCWbKG.png)
 
