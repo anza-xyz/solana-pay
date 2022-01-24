@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
 export interface EncodeURLParams {
     /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
@@ -35,7 +36,7 @@ export interface EncodeURLComponents extends EncodeURLParams {
  * @param encodeURLParams.memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
  */
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
-    let url = `solana:` + encodeURIComponent(recipient.toBase58());
+    let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
     const encodedParams = encodeURLParams(params);
     if (encodedParams) {

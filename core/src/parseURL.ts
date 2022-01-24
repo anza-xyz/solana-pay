@@ -1,5 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
 export interface ParsedURL {
     /** The address the payment should be made to. It **must** be a native SOL address. */
@@ -34,7 +35,7 @@ export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
 
     const { protocol, pathname, searchParams } = new URL(url);
-    if (protocol !== 'solana:') throw new ParseURLError('protocol invalid');
+    if (protocol !== URL_PROTOCOL) throw new ParseURLError('protocol invalid');
     if (!pathname) throw new ParseURLError('recipient missing');
 
     let recipient: PublicKey;
