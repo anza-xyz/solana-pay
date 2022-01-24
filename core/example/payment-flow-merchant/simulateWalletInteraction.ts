@@ -1,8 +1,7 @@
-import { Connection, Keypair, LAMPORTS_PER_SOL, sendAndConfirmTransaction, SystemProgram } from '@solana/web3.js';
+import { Connection, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { parseURL } from '../../src/parseURL';
-import { createTransaction } from '../../src/createTransaction';
-import { CUSTOMER_WALLET } from './constant';
+import { createTransaction, parseURL } from '../../src';
+import { CUSTOMER_WALLET } from './constants';
 
 export async function simulateWalletInteraction(connection: Connection, url: string) {
     /**

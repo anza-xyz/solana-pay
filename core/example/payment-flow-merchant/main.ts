@@ -1,9 +1,12 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { encodeURL } from '../../src/encodeURL';
-import { findTransactionSignature, FindTransactionSignatureError } from '../../src/findTransactionSignature';
-import { validateTransactionSignature } from '../../src/validateTransactionSignature';
-import { MERCHANT_WALLET } from './constant';
+import {
+    encodeURL,
+    findTransactionSignature,
+    FindTransactionSignatureError,
+    validateTransactionSignature,
+} from '../../src';
+import { MERCHANT_WALLET } from './constants';
 import { establishConnection } from './establishConnection';
 import { simulateCheckout } from './simulateCheckout';
 import { simulateWalletInteraction } from './simulateWalletInteraction';
