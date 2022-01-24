@@ -1,11 +1,13 @@
 .button {
-    background: none;
-    border: 0;
-    font-size: 14px;
-    line-height: 16px;
-    cursor: pointer;
-    font-weight: 500;
-    display: inline-flex;
-    gap: 8px;
+    height: 48px;
     padding: 16px;
+    border: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 16px;
+    background: none;
+    cursor: pointer;
 }

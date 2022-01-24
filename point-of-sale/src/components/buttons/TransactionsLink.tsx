@@ -9,9 +9,7 @@ export const TransactionsLink: FC = () => {
 
     return (
         <Link to={to} className={styles.link}>
-            <span className={styles.icon}>
-                <ActivityIcon />
-            </span>
+            <ActivityIcon />
             Recent Transactions
         </Link>
     );
