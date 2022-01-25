@@ -9,7 +9,7 @@ You can use the code as a reference or run it yourself to start accepting decent
 To build and run this app locally, you'll need:
 
 -   Node.js v14+
--   yarn
+-   Yarn
 -   <details>
         <summary> Setup two wallets on <a href="https://phantom.app">Phantom</a> (Merchant and Customer) </summary>
 
@@ -77,7 +77,7 @@ open http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name
 
 ## License
 
-This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
+The Solana Pay Point of Sale app is open source and available under the Apache License, Version 2.0. See the [LICENSE](./LICENSE) file for more info.
 
 <!-- Links -->
 
