@@ -42,7 +42,11 @@ The complete example code can be found [here][5].
 
 #### Requirements
 
-Before you can receive payments, you'll need to obtain a native SOL address. This doesn't cost anything, and you can use [Phantom](https://phantom.app/) or [FTX.us](https://ftx.us/) to get set up.
+Before you can receive payments, you'll need to obtain a native SOL address. This doesn't cost anything, and you can use any wallet to get started.
+
+If you want to receive USDC or another SPL token on Solana, you'll need to create a token account, which may require a small amount of SOL.
+
+One way to do both is to use FTX / FTX.us, which will provide a native SOL deposit address and an associated USDC token account to receive payments.
 
 ---
 
@@ -464,7 +468,7 @@ The `memo` can be used to record a message on chain with the transaction.
 
 The `reference` allow for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
 
-The `spl-token` parameter is optional. If empty, it symbolises this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
+The `spl-token` parameter is optional. If empty, it symbolizes this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
 
 #### 3. Create transaction
 
