@@ -5,12 +5,12 @@ import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
-import { USDCIcon } from './components/images/USDCIcon';
+import { SOLIcon } from './components/images/SOLIcon';
 import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
-import { ENDPOINT, TOKEN } from './utils/constants';
+import { ENDPOINT } from './utils/constants';
 
 export const App: FC = () => {
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
@@ -41,11 +41,10 @@ export const App: FC = () => {
                         <ConfigProvider
                             recipient={recipient}
                             label={label}
-                            splToken={TOKEN}
-                            icon={<USDCIcon />}
-                            symbol="USDC"
-                            decimals={6}
-                            minDecimals={2}
+                            icon={<SOLIcon />}
+                            symbol="SOL"
+                            decimals={9}
+                            minDecimals={1}
                             requiredConfirmations={9}
                         >
                             <TransactionsProvider>
