@@ -8,29 +8,29 @@ You can use the code as a reference or run it yourself to start accepting decent
 
 To build and run this app locally, you'll need:
 
--   Node version 14
+-   Node.js v14+
 -   yarn
 -   <details>
-        <summary> Setup two wallets on <a href="https://phantom.app/">Phantom</a> (Merchant and Payee) </summary>
+        <summary> Setup two wallets on <a href="https://phantom.app">Phantom</a> (Merchant and Customer) </summary>
 
     #### 1. Create merchant wallet
 
-    Follow the [guide][1] on how to create a wallet. This wallet is the recipient / recieving address.
+    Follow the [guide][1] on how to create a wallet. This wallet will provide the recipient address.
 
-    #### 2. Create Payee wallet
+    #### 2. Create customer wallet
 
-    Follow the [guide][1] on how to create a wallet. This wallet will be paying for the goods/services.
+    Follow the [guide][1] on how to create another wallet. This wallet will be paying for the goods/services.
 
     #### 3. Set Phantom to connect to devnet
 
     1. Click the settings icon in the Phantom window
     2. Select the "Change network" option and select "Devnet"
 
-    #### 4. Airdrop SOL to payee wallet
+    #### 4. Airdrop SOL to customer wallet
 
-    Use [solfaucet][3] to airdrop SOL to the payee wallet.
+    Use [solfaucet][3] to airdrop SOL to the customer wallet.
 
-    > You'll need SOL in the payee wallet to pay for the goods/services + transaction fees
+    > You'll need SOL in the customer wallet to pay for the goods/services + transaction fees
 
  </details>
 
@@ -42,7 +42,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 Clone the repository
 
-**With https:**
+**With Git**
 
 ```shell
 git clone https://github.com/solana-labs/solana-pay.git
@@ -69,9 +69,15 @@ Start the local dev server
 yarn start
 ```
 
+Open the point of sale app
+
+```shell
+open http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name
+```
+
 ## License
 
-This project is licensed under the Apache License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for details.
 
 <!-- Links -->
 
