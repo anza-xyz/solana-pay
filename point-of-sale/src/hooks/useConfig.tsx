@@ -6,7 +6,7 @@ import { MAX_CONFIRMATIONS } from '../utils/constants';
 export interface ConfigContextState {
     recipient: PublicKey;
     label: string;
-    splToken: PublicKey;
+    splToken: PublicKey | undefined;
     icon: ReactElement;
     symbol: string;
     decimals: Digits;
@@ -24,7 +24,7 @@ export interface ConfigProviderProps {
     children: ReactNode;
     recipient: PublicKey;
     label: string;
-    splToken: PublicKey;
+    splToken?: PublicKey;
     icon: ReactElement;
     symbol: string;
     decimals: Digits;
