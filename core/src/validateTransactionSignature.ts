@@ -20,31 +20,31 @@ export async function validateTransactionSignature(
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
     if (response.meta.err) throw response.meta.err;
 
+    let preAmount: BigNumber,
+        postAmount: BigNumber;
     if (!splToken) {
-        const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
-        if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
+        const accountIndex = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
+        if (accountIndex === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
-        const preAmount = new BigNumber(response.meta.preBalances[index]);
-        const postAmount = new BigNumber(response.meta.postBalances[index]);
-
-        if (preAmount.plus(amount) < postAmount) throw new ValidateTransactionSignatureError('amount not transferred');
+        preAmount = new BigNumber(response.meta.preBalances[accountIndex]);
+        postAmount = new BigNumber(response.meta.postBalances[accountIndex]);
     } else {
         const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
-        const index = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
-        if (index === -1) throw new ValidateTransactionSignatureError('recipient not found');
+        const accountIndex = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
+        if (accountIndex === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
-        const preBalance = response.meta.preTokenBalances?.find((x) => x.accountIndex === index);
+        const preBalance = response.meta.preTokenBalances?.find((x) => x.accountIndex === accountIndex);
         if (!preBalance?.uiTokenAmount.uiAmountString) throw new ValidateTransactionSignatureError('balance not found');
 
-        const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === index);
+        const postBalance = response.meta.postTokenBalances?.find((x) => x.accountIndex === accountIndex);
         if (!postBalance?.uiTokenAmount.uiAmountString)
             throw new ValidateTransactionSignatureError('balance not found');
 
-        const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
-        const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
-        if (preAmount.plus(amount).lt(postAmount))
-            throw new ValidateTransactionSignatureError('amount not transferred');
+        preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
+        postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
     }
+
+    if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
 
     if (reference) {
         if (!Array.isArray(reference)) {
