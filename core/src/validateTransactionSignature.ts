@@ -1,5 +1,12 @@
 import { getAssociatedTokenAddress } from '@solana/spl-token';
-import { Connection, Finality, PublicKey, TransactionResponse, TransactionSignature } from '@solana/web3.js';
+import {
+    Connection,
+    Finality,
+    LAMPORTS_PER_SOL,
+    PublicKey,
+    TransactionResponse,
+    TransactionSignature,
+} from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 export class ValidateTransactionSignatureError extends Error {
@@ -20,17 +27,18 @@ export async function validateTransactionSignature(
     if (!response.meta) throw new ValidateTransactionSignatureError('missing meta');
     if (response.meta.err) throw response.meta.err;
 
-    let preAmount: BigNumber,
-        postAmount: BigNumber;
+    let preAmount: BigNumber, postAmount: BigNumber;
     if (!splToken) {
         const accountIndex = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
         if (accountIndex === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
-        preAmount = new BigNumber(response.meta.preBalances[accountIndex]);
-        postAmount = new BigNumber(response.meta.postBalances[accountIndex]);
+        preAmount = new BigNumber(response.meta.preBalances[accountIndex]).div(LAMPORTS_PER_SOL);
+        postAmount = new BigNumber(response.meta.postBalances[accountIndex]).div(LAMPORTS_PER_SOL);
     } else {
         const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
-        const accountIndex = response.transaction.message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
+        const accountIndex = response.transaction.message.accountKeys.findIndex((pubkey) =>
+            pubkey.equals(recipientATA)
+        );
         if (accountIndex === -1) throw new ValidateTransactionSignatureError('recipient not found');
 
         const preBalance = response.meta.preTokenBalances?.find((x) => x.accountIndex === accountIndex);
