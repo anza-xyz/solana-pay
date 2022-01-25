@@ -66,7 +66,7 @@ export const NumPad: FC = () => {
                     <NumPadButton input="." onInput={onInput} />
                     <NumPadButton input={0} onInput={onInput} />
                     <button className={styles.button} type="button" onClick={onBackspace}>
-                        <BackspaceIcon/>
+                        <BackspaceIcon />
                     </button>
                 </div>
             </div>
