@@ -22,7 +22,7 @@ export async function simulateWalletInteraction(connection: Connection, url: str
     await getPayer(connection);
 
     /**
-     * Create the transaction with the paramaters decoded from the URL
+     * Create the transaction with the parameters decoded from the URL
      */
     const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
         reference,
