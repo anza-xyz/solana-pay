@@ -1,8 +1,4 @@
----
-title: Specification
----
-
-## Summary
+# Summary
 
 A standard URI schema to encode Solana transaction requests and manage their lifecycle to enable payment use cases. Rough consensus on this spec has been reached, and WIP implementations exist in Phantom, FTX, and Slope.
 

@@ -20,7 +20,11 @@ const sidebars = {
 
   tutorialSidebar: [
     'introduction',
-    'spec',
+    {
+      type: 'doc',
+      id: 'spec', // document id
+      label: 'Specification', // sidebar label
+    },
     {
       type: 'category',
       label: 'Core',
