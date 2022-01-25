@@ -1,6 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
+export const URL_PROTOCOL = 'solana:';
+
 /** @internal */
 export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 

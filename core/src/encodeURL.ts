@@ -1,9 +1,10 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
 export interface EncodeURLParams {
     amount?: BigNumber;
-    token?: PublicKey;
+    splToken?: PublicKey;
     reference?: PublicKey | PublicKey[];
     label?: string;
     message?: string;
@@ -15,7 +16,7 @@ export interface EncodeURLComponents extends EncodeURLParams {
 }
 
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
-    let url = `solana:` + encodeURIComponent(recipient.toBase58());
+    let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
     const encodedParams = encodeURLParams(params);
     if (encodedParams) {
@@ -25,15 +26,15 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-export function encodeURLParams({ amount, token, reference, label, message, memo }: EncodeURLParams): string {
+export function encodeURLParams({ amount, splToken, reference, label, message, memo }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
         params.push(['amount', String(amount)]);
     }
 
-    if (token) {
-        params.push(['spl-token', token.toBase58()]);
+    if (splToken) {
+        params.push(['spl-token', splToken.toBase58()]);
     }
 
     if (reference) {

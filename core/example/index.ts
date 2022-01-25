@@ -1,7 +1,6 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { findTransactionSignature, validateTransactionSignature } from '../lib/types';
-import { createTransaction, encodeURL, parseURL } from '../src';
+import { createTransaction, encodeURL, findTransactionSignature, parseURL, validateTransactionSignature } from '../src';
 
 (async function () {
     const cluster = 'devnet';
@@ -34,10 +33,10 @@ import { createTransaction, encodeURL, parseURL } from '../src';
     console.log(originalURL);
 
     // Wallet gets URL from deep link / QR code
-    const { recipient, amount, token, reference, label, message, memo } = parseURL(originalURL);
+    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(originalURL);
 
     // Apps can encode the URL from the required and optional parameters
-    const encodedURL = encodeURL({ recipient, amount, token, reference, label, message, memo });
+    const encodedURL = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
 
     console.log(originalURL);
     console.log(encodedURL);
@@ -48,13 +47,13 @@ import { createTransaction, encodeURL, parseURL } from '../src';
     const airdrop = await connection.requestAirdrop(wallet.publicKey, LAMPORTS_PER_SOL);
     await connection.confirmTransaction(airdrop, 'confirmed');
 
-    if (token) {
-        await createAssociatedTokenAccount(connection, wallet, token, wallet.publicKey, { commitment: 'confirmed' });
+    if (splToken) {
+        await createAssociatedTokenAccount(connection, wallet, splToken, wallet.publicKey, { commitment: 'confirmed' });
     }
 
     // Create a transaction to transfer native SOL or SPL tokens
     const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount, {
-        token,
+        splToken,
         reference,
         memo,
     });
@@ -83,5 +82,12 @@ import { createTransaction, encodeURL, parseURL } from '../src';
     console.log(found.memo);
 
     // Merchant app should always validate that the transaction transferred the expected amount to the recipient
-    const response = await validateTransactionSignature(connection, found.signature, recipient, amount, token, reference);
+    const response = await validateTransactionSignature(
+        connection,
+        found.signature,
+        recipient,
+        amount,
+        splToken,
+        reference
+    );
 })();
