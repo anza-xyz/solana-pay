@@ -14,9 +14,9 @@ export class ValidateTransactionSignatureError extends Error {
  * @param signature -  The signature to validate.
  * @param recipient - The address the payment was made to.
  * @param amount - The amount of SOL or SPL token that was transferred.
- * @param token - The mint address of the SPL token.
+ * @param splToken - The mint address of the SPL token.
  * @param reference - A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used.
- * @param finality - A subset of Commitment levels, which are at least optimistically confirmed
+ * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed
  */
 export async function validateTransactionSignature(
     connection: Connection,

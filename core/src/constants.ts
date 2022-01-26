@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
+/** @internal */
 export const URL_PROTOCOL = 'solana:';
 
 /** @internal */
