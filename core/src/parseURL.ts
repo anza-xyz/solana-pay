@@ -15,7 +15,7 @@ export interface ParsedURL {
     label: string | undefined;
     /** A message to be used by the wallet provider to identify this transaction */
     message: string | undefined;
-    /** Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo) */
+    /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
     memo: string | undefined;
 }
 
