@@ -8,7 +8,7 @@ You can use the code as a reference or run it yourself to start accepting decent
 
 To build and run this app locally, you'll need:
 
--   Node.js v14+
+-   Node.js v14.17.0 or above
 -   Yarn
 -   <details>
         <summary> Setup two wallets on <a href="https://phantom.app">Phantom</a> (Merchant and Customer) </summary>
