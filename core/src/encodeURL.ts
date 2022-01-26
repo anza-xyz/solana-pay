@@ -33,7 +33,7 @@ export interface EncodeURLComponents extends EncodeURLParams {
  * @param encodeURLParams.reference - An array of public keys used to identify this transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.
  * @param encodeURLParams.label - A label to be used by the wallet provider to identify this transaction; should be the merchant name
  * @param encodeURLParams.message - A message to be used by the wallet provider to identify this transaction; should describe the transaction to the user
- * @param encodeURLParams.memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
+ * @param encodeURLParams.memo - Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo)
  */
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
     let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
