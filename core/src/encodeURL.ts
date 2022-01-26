@@ -13,7 +13,7 @@ export interface EncodeURLParams {
     label?: string;
     /** A message to be used by the wallet provider to identify this transaction */
     message?: string;
-    /** Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo) */
+    /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
     memo?: string;
 }
 
