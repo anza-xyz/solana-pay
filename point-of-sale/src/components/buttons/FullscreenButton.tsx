@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { isFullscreen, toggleFullscreen } from '../../utils/fullscreen';
-import * as styles from './FullscreenButton.module.css';
 import { MaximizeIcon } from '../images/MaximizeIcon';
 import { MinimizeIcon } from '../images/MinimizeIcon';
+import * as styles from './FullscreenButton.module.css';
 
 export const FullscreenButton: FC = () => {
     const [fullscreen, setFullscreen] = useState(isFullscreen());

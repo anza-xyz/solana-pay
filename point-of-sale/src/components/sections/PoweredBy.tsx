@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import * as styles from './PoweredBy.module.css';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
+import * as styles from './PoweredBy.module.css';
 
 export const PoweredBy: FC = () => {
     return (

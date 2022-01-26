@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
+import { usePayment } from '../../hooks/usePayment';
 import { BackButton } from '../buttons/BackButton';
+import { TransactionsLink } from '../buttons/TransactionsLink';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Progress } from '../sections/Progress';
-import { TransactionsLink } from '../buttons/TransactionsLink';
-import { usePayment } from '../../hooks/usePayment';
 import * as styles from './ConfirmedPage.module.css';
 
 export const ConfirmedPage: FC = () => {
