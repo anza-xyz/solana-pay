@@ -13,7 +13,7 @@ export class FindTransactionSignatureError extends Error {
  * @param connection - A connection to the cluster.
  * @param reference - A `PublicKey` that was included as a reference in the transaction.
  * @param {SignaturesForAddressOptions} options - Options for getSignaturesForAddress.
- * @param finality - A subset of Commitment levels, which are at least optimistically confirmed
+ * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed
  */
 export async function findTransactionSignature(
     connection: Connection,
