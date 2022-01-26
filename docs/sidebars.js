@@ -19,7 +19,11 @@ const sidebars = {
   // But you can create a sidebar manually
 
   tutorialSidebar: [
-    'introduction',
+    {
+      type: 'doc',
+      id: 'introduction', // document id
+      label: 'Solana Pay', // sidebar label
+    },
     {
       type: 'doc',
       id: 'spec', // document id
@@ -27,13 +31,8 @@ const sidebars = {
     },
     {
       type: 'category',
-      label: 'Core',
+      label: 'Getting Started',
       items: ['core/overview', 'core/merchant-integration', 'core/wallet-integration'],
-    },
-    {
-      type: 'category',
-      label: 'Point of Sale',
-      items: [],
     },
   ],
 };
