@@ -2,6 +2,8 @@
 
 Solana Pay is a standard protocol and set of reference implementations that enable developers to incorporate decentralized payments into their apps and services.
 
+[Read the specification.](SPEC.md)
+
 The Solana blockchain confirms transactions in less than a second and costs on average $0.0005, providing users a seamless experience with no intermediaries.
 
 [Read the docs to get started.](core)
