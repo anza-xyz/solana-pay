@@ -35,7 +35,7 @@ export interface CreateTransactionParams {
  * @param {CreateTransactionParams} createTransactionParams - Additional parameters
  * @param createTransactionParams.splToken - The mint address of the SPL token.
  * @param createTransactionParams.reference - An array of public keys used to identify this transaction.
- * @param createTransactionParams.memo - Creates an additional transaction for the [Memo Program](https://spl.solana.com/memo)
+ * @param createTransactionParams.memo - Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo)
  */
 export async function createTransaction(
     connection: Connection,
