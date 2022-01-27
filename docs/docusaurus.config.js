@@ -1,6 +1,8 @@
 // @ts-check
 // Note: type annotations allow type checking and IDEs autocompletion
 
+const path = require('path');
+
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
@@ -39,6 +41,10 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        defaultMode: 'dark',
+        respectPrefersColorScheme: true,
+      },
       navbar: {
         logo: {
           alt: 'Solana Logo',
@@ -50,6 +56,11 @@ const config = {
             href: 'https://github.com/solana-labs/solana-pay',
             label: 'GitHub',
             position: 'right',
+          },
+          {
+            to: 'api',
+            label: 'API',
+            position: 'left',
           },
         ],
       },
@@ -90,6 +101,21 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+
+  plugins: [
+    [
+      'docusaurus-plugin-typedoc-api',
+      {
+        projectRoot: path.join(__dirname, '..'),
+        packages: ['core'],
+        typedocOptions: {
+          excludeInternal: true,
+          excludePrivate: true,
+        },
+        tsconfigName: 'core/tsconfig.json',
+      },
+    ],
+  ],
 };
 
 module.exports = config;
