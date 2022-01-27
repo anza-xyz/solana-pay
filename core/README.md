@@ -94,7 +94,7 @@ async function main() {
 
 #### 2. Create a payment request link
 
-Solana pay uses a standard URL scheme across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -137,22 +137,6 @@ See [full code snippet][6]
 </details>
 
 <br>
-
-The full scheme:
-
-`solana:<ADDRESS>?amount=<AMOUNT>?label=<LABEL>?message=<MESSAGE>?memo=<MEMO>?spl-token=<MINT_ADDRESS>`
-
-| Parameter | Description                                                                          |
-|-----------|--------------------------------------------------------------------------------------|
-| recipient | Native SOL address, e.g. our merchant's address                                      |
-| amount    | Decimal number of unit, e.g. SOL instead of lamports                                 |
-| label     | For wallet display only, not on-chain. Could be a merchant name or a brand           |
-| message   | For wallet display only, not on-chain. Could be a purchase description               |
-| memo      | Can be used to record a message on-chain                                             |
-| reference | Unique ID in the form of a public key for payment request to locate the transaction  |
-| spl-token | Optional mint address of the spl-token for transfers                                           |
-
-**Note**: The provided decimal fractions for `amount` must not exceed nine decimal places for SOL or the token's decimal places for the mint. If done, the URL will be considered malformed and rejected.
 
 ##### Optional. SPL token transfer
 
@@ -437,7 +421,7 @@ yarn add @solana/pay @solana/web3.js
 
 #### 2. Parse payment request link
 
-As a wallet provider, you will have to parse the received URL to extract the parameters.
+As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../SPEC.md).
 
 <details>
     <summary>Parse the URL to retrieve all possible fields:</summary>
@@ -463,18 +447,6 @@ See [full code snippet][9]
 </details>
 
 <br>
-
-| Parameter | Description                                                                          |
-|-----------|--------------------------------------------------------------------------------------|
-| recipient | Native SOL address and payee, e.g. our merchant's address                                      |
-| amount    | Decimal number of unit, e.g. SOL instead of lamports                                 |
-| label     | For wallet display only, not on-chain. Could be a merchant name or a brand           |
-| message   | For wallet display only, not on-chain. Could be a purchase description               |
-| memo      | Can be used to record a message on-chain                                             |
-| reference | Unique ID in the form of a public key for payment request to locate the transaction  |
-| spl-token | Optional mint address of the spl-token for transfers                                           |
-
-**Note**: The provided decimal fractions for `amount` must not exceed nine decimal places for SOL or the token's decimal places for the mint. If done, the URL will be considered malformed and rejected. If there is no `amount` specified, you **must** prompt the user to enter an amount. Amount could be empty in the case of accepting donations or tips.
 
 #### 3. Create transaction
 
