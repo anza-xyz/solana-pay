@@ -1,26 +1,60 @@
-import React from 'react';
-import './App.css';
-import { Switch, Route } from "react-router-dom";
-import { Landing } from './components/Landing';
-import { PaymentSessionProvider } from './providers/PaymentSessionProvider';
-import { Payment } from './components/Payment';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
+import { clusterApiUrl } from '@solana/web3.js';
+import React, { FC, ReactNode, useMemo } from 'react';
+import { Payment } from './pages/Payment';
+import { SessionProvider, useSession } from './hooks/useSession';
+import { SlopeWalletAdapter } from '@solana/wallet-adapter-slope';
+import { PaymentProvider } from './hooks/usePayment';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { Onboard } from './pages/Onboard';
 
-function App() {
+require('./app.scss');
+
+require('@solana/wallet-adapter-react-ui/styles.css');
+
+export const App: FC = () => {
   return (
-    <PaymentSessionProvider>
-      <Switch>
-        <Route exact path="/">
-          <Landing />
-        </Route>
-        <Route exact path="/error">
-          <h1>Some error!</h1>
-        </Route>
-        <Route exact path="/pay">
-          <Payment />
-        </Route>
-      </Switch>
-    </PaymentSessionProvider>
+    <Context>
+      <Content />
+    </Context>
   );
-}
+};
 
-export default App;
+const Context: FC<{ children: ReactNode }> = ({ children }) => {
+  const network = WalletAdapterNetwork.Devnet;
+
+  const endpoint = useMemo(() => clusterApiUrl(network), [network]);
+
+  const wallets = useMemo(() => [
+    new PhantomWalletAdapter(),
+    new TorusWalletAdapter(),
+    new SlopeWalletAdapter()
+  ], []);
+
+  return (
+    <ConnectionProvider endpoint={endpoint}>
+      <WalletProvider wallets={wallets}>
+        <SessionProvider>
+          <PaymentProvider>
+            {children}
+          </PaymentProvider>
+        </SessionProvider>
+      </WalletProvider>
+    </ConnectionProvider>
+  );
+};
+
+const Content: FC = () => {
+  const { scope } = useSession();
+
+  switch (scope) {
+    case "payment":
+      return <Payment />;
+    case "onboarding":
+      return <Onboard />;
+    default:
+      return null;
+  }
+}
