@@ -9,7 +9,7 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-/** @ignore */
+/** @internal */
 export class ValidateTransactionSignatureError extends Error {
     name = 'ValidateTransactionSignatureError';
 }

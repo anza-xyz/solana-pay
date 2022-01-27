@@ -19,7 +19,7 @@ export interface ParsedURL {
     memo: string | undefined;
 }
 
-/** @ignore */
+/** @internal */
 export class ParseURLError extends Error {
     name = 'ParseURLError';
 }

@@ -46,8 +46,7 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-/** @ignore */
-export function encodeURLParams({ amount, splToken, reference, label, message, memo }: EncodeURLParams): string {
+function encodeURLParams({ amount, splToken, reference, label, message, memo }: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {

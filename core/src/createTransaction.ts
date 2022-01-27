@@ -10,7 +10,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { MEMO_PROGRAM_ID, SOL_DECIMALS, TEN } from './constants';
 
-/** @ignore */
+/** @internal */
 export class CreateTransactionError extends Error {
     name = 'CreateTransactionError';
 }
