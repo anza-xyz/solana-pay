@@ -1,72 +1,91 @@
-# Summary
+# Solana Pay Specification
 
-A standard URI schema to encode Solana transaction requests and manage their lifecycle to enable payment use cases. Rough consensus on this spec has been reached, and WIP implementations exist in Phantom, FTX, and Slope.
+## Summary
+A standard protocol to encode Solana transaction requests within URLs to enable payments and other use cases.
+
+Rough consensus on this spec has been reached, and implementations exist in Phantom, FTX, and Slope.
 
 This standard draws inspiration from [BIP 21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki) and [EIP 681](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-681.md).
 
 ## Motivation
+A standard URL protocol for requesting native SOL and SPL Token transfers allows for a better user experience across wallets and apps in the Solana ecosystem.
 
-A standard URI scheme across wallets for native SOL and SPL Token payments (transfers) allows for a better user experience across wallets and apps in the Solana ecosystem.
+Applications should ensure that a payment transaction has been confirmed and contains a transfer of the expected amount and type before they release the goods or services being sold.
 
-Applications looking to accept payments also must ensure that a transaction has been confirmed and has the expected amount before they can release the goods or services being sold. By standardizing an approach to solving those problems we ensure application and wallet developers only have to adhere to one standard rather than each wallet defining it's own.
+By standardizing a simple approach to solving those problems, we ensure compatibility of applications and wallets.
 
 ## Specification
-
-### Syntax
-
 ```
-amount                  = Amount user must pay
-memo                    = Displayed to the user before authorization
-spl-token               = Optional mint address of expected token
-label                   = Name of receiver
-message                 = Description of transaction for the user
-reference               = Unique account address to identify the transaction
+solana:<recipient>?amount=<amount>&label=<label>&message=<message>&memo=<memo>&reference=<reference>
 ```
 
-#### Amount
+### Recipient
+A single `recipient` field is required as the pathname. The value must be the base58-encoded public key of a native SOL account. Associated token accounts must not be used.
 
-The `amount` field is always interpreted to be a decimal number of "user" units. For SOL, that's SOL and not lamports. For tokens, `uiAmountString` and not `amount` (reference: [Token Balances Structure](https://docs.solana.com/developing/clients/jsonrpc-api#token-balances-structure)). If the provided decimal fractions exceed what's supported for SOL (9) or the token (mint specific), the URL must be considered malformed URL and rejected. Scientific notation is prohibited. If the amount is not provided, the wallet should prompt the user for the amount.
+Instead, to request an SPL token transfer, the `spl-token` field must be used to specify an SPL Token mint, from which the associated token address of the recipient address must be derived.
 
-#### Memo
+### Amount
+A single `amount` field is allowed as an optional query parameter. The value must be a decimal number of "user" units. For SOL, that's SOL and not lamports. For tokens, `uiAmountString` and not `amount` (reference: [Token Balances Structure](https://docs.solana.com/developing/clients/jsonrpc-api#token-balances-structure)).
 
-A memo=string field is also permitted, where the provided string should be encoded as an [SPL Memo](https://spl.solana.com/memo) instruction in the payment transaction. It's recommended that the memo field be displayed to the user before they authorize the transaction. The SPL Memo instruction MUST be included immediately BEFORE the SOL or SPL Token transfer instruction; this placement is essential to avoid ambiguity when multiple transfers are batched together in a single transaction.
+If the provided decimal places exceed what's supported for SOL (9) or the token (mint specific), the URL must be considered malformed and rejected. Scientific notation is prohibited.
 
-#### SPL Token
+If the amount is not provided, the wallet must prompt the user for the amount.
 
-For SPL Token transfers, an additional spl-token=<MINT_ADDRESS>, is required to define the token type. If no spl-token= field is specified, the URL describes a native SOL transfer. For SPL Token transfers, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used. Transfers to auxiliary token accounts are not supported.
+### Label
+A single `label` field is allowed as an optional query parameter. The value must be a URL-encoded string that describes the source of the payment request.
 
-#### Reference
+For example, this might be the name of a merchant, a store, an application, or a user making the request. Wallets should display the label to the user.
 
-If `reference` is provided, a unique account address should be generated and included as a value.
+### Message
+A single `message` field is allowed as an optional query parameter. The value must be a URL-encoded string that describes the nature of the payment request.
 
-If `reference` parameters are included, the wallet should attach them as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer` instruction.
+For example, this might be the name of an item being purchased. Wallets should display the message to the user.
 
-This allows any transaction using the reference address to be located on chain with the `[getSignaturesForAddress](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress)` RPC method.
+### Memo
+A single `memo` field is allowed as an optional query parameter. The value must be a URL-encoded string that will be included in an [SPL Memo](https://spl.solana.com/memo) instruction in the payment transaction.
 
-Multiple `reference` parameters should be supported if the requester wishes to categorize transactions on chain.
+Wallets should display the memo to the user. The SPL Memo instruction must be included immediately before the SOL or SPL Token transfer instruction to avoid ambiguity with other instructions in the transaction.
 
-#### Examples
+### SPL Token
+A single `spl-token` field is allowed as an optional query parameter. The value must be the base58-encoded public key of an SPL Token mint account.
 
+If the field is not provided, the URL describes a native SOL transfer. If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used.
+
+Wallets must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
+
+### Reference
+Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
+
+If the fields are provided, wallets must attach them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction.
+
+The public key values may or may not be unique to the payment request, and may or may not correspond to an account on Solana. [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) may be used to locate a transaction using `reference` fields.
+
+## Examples
 URL describing a transfer for 1 SOL:
-
 ```
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId1234
 ```
 
-URL describing a transfer for $0.01 SPL USDC
-
+URL describing a transfer for 0.01 USDC
 ```
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678
 ```
 
-URL describing a generic SOL transfer with a recipient name and memo. The user should be prompted for the exact amount while authorizing the transfer:
-
+URL describing a generic SOL transfer. The user must be prompted for the exact amount.
 ```
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
 ```
 
-### Supported Wallets
+## Supporting Wallets
 
-* Phantom
-* FTX
-* Slope
+* Phantom (iOS: link to app)
+* FTX (iOS: link to app, Android: link to app)
+* Slope (iOS: link to app, Android: link to app)
+
+## Extensions
+
+Additional fields may be incorporated into this specification to enable new use cases while ensuring compatibility with apps and wallets.
+
+Please open a Github issue to propose changes to the specification and solicit feedback from application and wallet developers.
+
+[An actual example of such a proposal.](https://github.com/solana-labs/solana-pay/issues/26)

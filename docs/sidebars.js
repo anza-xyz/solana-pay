@@ -26,7 +26,7 @@ const sidebars = {
     },
     {
       type: 'doc',
-      id: 'spec', // document id
+      id: 'SPEC', // document id
       label: 'Specification', // sidebar label
     },
     {
