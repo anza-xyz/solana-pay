@@ -9,10 +9,22 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
+/** @ignore */
 export class ValidateTransactionSignatureError extends Error {
     name = 'ValidateTransactionSignatureError';
 }
 
+/**
+ * Validate a transaction signature
+ *
+ * @param connection - A connection to the cluster.
+ * @param signature -  The signature to validate.
+ * @param recipient - The address the payment was made to.
+ * @param amount - The amount of SOL or SPL token that was transferred.
+ * @param splToken - The mint address of the SPL token.
+ * @param reference - A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used.
+ * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed
+ */
 export async function validateTransactionSignature(
     connection: Connection,
     signature: TransactionSignature,

@@ -9,10 +9,19 @@ import QRCodeStyling, {
     TypeNumber,
 } from 'qr-code-styling';
 
+/**
+ * Create a QR code.
+ *
+ * @param data - The URL to encode in the QR code.
+ * @param size - Size of canvas in `px`.
+ * @param background - Background color for QR code.
+ * @param color - Color for QR code pattern.
+ */
 export function createQR(data: string, size = 512, background = 'white', color = 'black'): QRCodeStyling {
     return new QRCodeStyling(createQROptions(data, size, background, color));
 }
 
+/** @ignore */
 export function createQROptions(data: string, size = 512, background = 'white', color = 'black'): Options {
     return {
         type: 'svg' as DrawType,
