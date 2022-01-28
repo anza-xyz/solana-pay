@@ -92,7 +92,7 @@ async function main() {
 
 #### 2. Create a payment request link
 
-Solana pay uses a standard URL scheme across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -135,16 +135,6 @@ See [full code snippet][6]
 </details>
 
 <br>
-
-The `recipient` must be a native SOL address. So, for our merchant example, the recipient is the merchant's native SOL wallet address.
-
-The parsed `amount` is always interpreted to be a decimal number of "user" units. For SOL, that's SOL and not lamports. If the provided decimal fractions exceed nine for SOL or the token specific mint decimal, the URL must be considered a malformed URL and rejected. The wallet should prompt the user if the parsed URL does not contain an amount.
-
-The `label` and `message` are only for display by the wallets and are not encoded into the on-chain transaction. `label` could be the merchant name or the brand, and you could use the `message` to describe the purchase to the user.
-
-The `memo` can be used to record a message on-chain with the transaction.
-
-The `reference` allows for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
 
 ##### Optional. SPL token transfer
 
@@ -288,6 +278,8 @@ const signatureInfo = await findTransactionSignature(connection, reference, unde
 paymentStatus = 'confirmed';
 ```
 
+**Note**: The `findTransactionSignature` function uses `confirmed` as the default finality value. This can, on rare occasions, result in a transaction that is not fully complete. For full finality, use `finalized`. This can result in slower transaction completion.
+
 See [full code snippet][7]
 
 </details>
@@ -365,7 +357,7 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
  * found matches the transaction that you expected.
  */
 console.log('\n6. 🔗 Validate transaction \n');
-const amountInLamports = convertToLamports(amount); // 🚨 Recommend to change this, conversion to be done in validateTransactionSignature
+const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
 try {
     await validateTransactionSignature(connection, signature, MERCHANT_WALLET, amountInLamports, undefined, reference);
@@ -427,7 +419,7 @@ yarn add @solana/pay @solana/web3.js
 
 #### 2. Parse payment request link
 
-As a wallet provider, you will have to parse the received URL to extract the parameters.
+As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../SPEC.md).
 
 <details>
     <summary>Parse the URL to retrieve all possible fields:</summary>
@@ -453,23 +445,6 @@ See [full code snippet][9]
 </details>
 
 <br>
-
-The `recipient` is a native SOL address and the payee.
-
-The parsed `amount` is always interpreted to be a decimal number of "user" units. For SOL, that's SOL and not lamports. If the provided decimal fractions exceed nine for SOL or the token specific mint decimal, the URL must be considered a malformed URL and rejected. If there is no `amount`, you **must** prompt the user to enter an amount.
-
-Potential use cases where the amount could be empty:
-
-- accepting donations
-- accepting tips
-
-The `label` and `message` are only for display and are not encoded into the on-chain transaction.
-
-The `memo` can be used to record a message on-chain with the transaction.
-
-The `reference` allow for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
-
-The `spl-token` parameter is optional. If empty, it symbolizes this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
 
 #### 3. Create transaction
 
