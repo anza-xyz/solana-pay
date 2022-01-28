@@ -41,8 +41,8 @@ export const App: FC = () => {
                         <ConfigProvider
                             recipient={recipient}
                             label={label}
-                            icon={<SOLIcon />}
                             symbol="SOL"
+                            icon={<SOLIcon />}
                             decimals={9}
                             minDecimals={1}
                             requiredConfirmations={9}
