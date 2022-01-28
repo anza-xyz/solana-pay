@@ -10,7 +10,7 @@ import { ConfigProvider } from './hooks/useConfig';
 import { PaymentProvider } from './hooks/usePayment';
 import { ThemeProvider } from './hooks/useTheme';
 import { TransactionsProvider } from './hooks/useTransactions';
-import { ENDPOINT } from './utils/constants';
+import { DEVNET_ENDPOINT } from './utils/constants';
 
 export const App: FC = () => {
     const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
@@ -35,7 +35,7 @@ export const App: FC = () => {
 
     return recipient && label ? (
         <ThemeProvider>
-            <ConnectionProvider endpoint={ENDPOINT}>
+            <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
                 <WalletProvider wallets={wallets} autoConnect>
                     <WalletModalProvider>
                         <ConfigProvider
