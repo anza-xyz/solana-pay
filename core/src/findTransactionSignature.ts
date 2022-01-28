@@ -1,6 +1,6 @@
 import { ConfirmedSignatureInfo, Connection, Finality, PublicKey, SignaturesForAddressOptions } from '@solana/web3.js';
 
-/** @ignore */
+/** @internal */
 export class FindTransactionSignatureError extends Error {
     name = 'FindTransactionSignatureError';
 }

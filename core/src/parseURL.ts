@@ -9,17 +9,17 @@ export interface ParsedURL {
     amount: BigNumber | undefined;
     /** The mint address of the SPL token */
     splToken: PublicKey | undefined;
-    /** An array of public keys used to identify this transaction */
+    /** An array of public keys used to identify the transaction */
     reference: PublicKey[] | undefined;
-    /** A label to be used by the wallet provider to identify this transaction */
+    /** A label to be used by the wallet provider to identify the transaction */
     label: string | undefined;
-    /** A message to be used by the wallet provider to identify this transaction */
+    /** A message to be used by the wallet provider to identify the transaction */
     message: string | undefined;
     /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
     memo: string | undefined;
 }
 
-/** @ignore */
+/** @internal */
 export class ParseURLError extends Error {
     name = 'ParseURLError';
 }
