@@ -7,8 +7,8 @@ export interface ConfigContextState {
     recipient: PublicKey;
     label: string;
     splToken: PublicKey | undefined;
-    icon: ReactElement;
     symbol: string;
+    icon: ReactElement;
     decimals: Digits;
     minDecimals: Digits;
     requiredConfirmations: number;
@@ -25,8 +25,8 @@ export interface ConfigProviderProps {
     recipient: PublicKey;
     label: string;
     splToken?: PublicKey;
-    icon: ReactElement;
     symbol: string;
+    icon: ReactElement;
     decimals: Digits;
     minDecimals: Digits;
     requiredConfirmations: number;
@@ -45,7 +45,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
 }) => {
     return (
         <ConfigContext.Provider
-            value={{ recipient, label, splToken, icon, symbol, decimals, minDecimals, requiredConfirmations }}
+            value={{ recipient, label, splToken, symbol, icon, decimals, minDecimals, requiredConfirmations }}
         >
             {children}
         </ConfigContext.Provider>
