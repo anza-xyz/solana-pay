@@ -42,8 +42,8 @@ export const App: FC = () => {
                             recipient={recipient}
                             label={label}
                             splToken={MAINNET_USDC_MINT}
-                            icon={<USDCIcon />}
                             symbol="USDC"
+                            icon={<USDCIcon />}
                             decimals={6}
                             minDecimals={2}
                             requiredConfirmations={9}

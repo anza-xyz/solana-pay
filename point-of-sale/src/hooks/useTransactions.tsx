@@ -148,14 +148,14 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                         const program = instruction.program;
                         const type = instruction.parsed?.type;
 
-                        const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
-                            ({ pubkey }) => pubkey.equals(recipient || associatedToken)
-                        );
-                        if (accountIndex === -1) return;
-
                         let preAmount: BigNumber, postAmount: BigNumber;
                         if (!associatedToken) {
                             if (!(program === 'system' && type === 'transfer')) return;
+
+                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                                ({ pubkey }) => pubkey.equals(recipient)
+                            );
+                            if (accountIndex === -1) return;
 
                             const preBalance = parsedConfirmedTransaction.meta.preBalances[accountIndex];
                             const postBalance = parsedConfirmedTransaction.meta.postBalances[accountIndex];
@@ -163,7 +163,12 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             preAmount = new BigNumber(preBalance).div(LAMPORTS_PER_SOL);
                             postAmount = new BigNumber(postBalance).div(LAMPORTS_PER_SOL);
                         } else {
-                            if (!(program === 'token' && (type === 'transfer' || type === 'transferChecked'))) return;
+                            if (!(program === 'spl-token' && (type === 'transfer' || type === 'transferChecked'))) return;
+
+                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                                ({ pubkey }) => pubkey.equals(associatedToken)
+                            );
+                            if (accountIndex === -1) return;
 
                             const preBalance = parsedConfirmedTransaction.meta.preTokenBalances?.find(
                                 (x) => x.accountIndex === accountIndex
