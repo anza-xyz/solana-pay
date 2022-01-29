@@ -14,7 +14,8 @@
     "write-heading-ids": "docusaurus write-heading-ids",
     "copy-spec": "cp ../SPEC.md ./src",
     "prebuild": "yarn copy-spec",
-    "prestart": "yarn copy-spec"
+    "prestart": "yarn copy-spec",
+    "postinstall": "cd ../core && yarn install"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.14",
