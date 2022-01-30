@@ -1,32 +1,53 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { URL_PROTOCOL } from './constants';
 
-export interface ParsedURL {
-    recipient: PublicKey;
-    amount: BigNumber | undefined;
-    token: PublicKey | undefined;
-    reference: PublicKey[] | undefined;
-    label: string | undefined;
-    message: string | undefined;
-    memo: string | undefined;
-}
-
+/**
+ * Thrown when a URL can't be parsed as a Solana Pay URL.
+ */
 export class ParseURLError extends Error {
     name = 'ParseURLError';
 }
 
+/**
+ * Parsed components of a Solana Pay URL.
+ */
+export interface ParsedURL {
+    /** The address the payment should be made to. It **must** be a native SOL address. */
+    recipient: PublicKey;
+    /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
+    amount: BigNumber | undefined;
+    /** The mint address of the SPL token */
+    splToken: PublicKey | undefined;
+    /** An array of public keys used to identify the transaction */
+    reference: PublicKey[] | undefined;
+    /** A label to be used by the wallet provider to identify the transaction */
+    label: string | undefined;
+    /** A message to be used by the wallet provider to identify the transaction */
+    message: string | undefined;
+    /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
+    memo: string | undefined;
+}
+
+/**
+ * Parse the components of a Solana Pay URL.
+ *
+ * **Reference** implementation for wallet providers.
+ *
+ * @param url - A Solana Pay URL
+ */
 export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
 
     const { protocol, pathname, searchParams } = new URL(url);
-    if (protocol !== 'solana:') throw new ParseURLError('protocol invalid');
+    if (protocol !== URL_PROTOCOL) throw new ParseURLError('protocol invalid');
     if (!pathname) throw new ParseURLError('recipient missing');
 
     let recipient: PublicKey;
     try {
         recipient = new PublicKey(pathname);
     } catch (error) {
-        throw new ParseURLError('ParseURLError: recipient invalid');
+        throw new ParseURLError('recipient invalid');
     }
 
     let amount: BigNumber | undefined;
@@ -39,11 +60,11 @@ export function parseURL(url: string): ParsedURL {
         if (amount.isNegative()) throw new ParseURLError('amount negative');
     }
 
-    let token: PublicKey | undefined;
-    const tokenParam = searchParams.get('spl-token');
-    if (tokenParam != null) {
+    let splToken: PublicKey | undefined;
+    const splTokenParam = searchParams.get('spl-token');
+    if (splTokenParam != null) {
         try {
-            token = new PublicKey(tokenParam);
+            splToken = new PublicKey(splTokenParam);
         } catch (error) {
             throw new ParseURLError('token invalid');
         }
@@ -66,7 +87,7 @@ export function parseURL(url: string): ParsedURL {
     return {
         recipient,
         amount,
-        token,
+        splToken,
         reference,
         label,
         message,
