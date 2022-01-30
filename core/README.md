@@ -30,8 +30,8 @@ Payment requests could be encoded as a deep link. The app prepares a payment req
 
 Learn how to integrate Solana Pay in your website, application or wallet.
 
-- [Merchant Integration](./merchant_integration)
-- [Wallet Integration](./wallet_integration)
+- [Merchant Integration](./MERCHANT_INTEGRATION.md)
+- [Wallet Integration](./WALLET_INTEGRATION.md)
 
 ## License
 
