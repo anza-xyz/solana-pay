@@ -27,7 +27,7 @@ yarn add @solana/pay @solana/web3.js
 
 ## 2. Parse payment request link
 
-As a wallet provider, you will have to parse the received URL to extract the parameters.
+As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../SPEC.md).
 
 <details>
     <summary>Parse the URL to retrieve all possible fields:</summary>
@@ -51,25 +51,6 @@ const { recipient, amount, splToken, reference, label, message, memo } = parseUR
 See [full code snippet][9]
 
 </details>
-
-<br/>
-
-The `recipient` is a native SOL address and the payee.
-
-The parsed `amount` is always interpreted to be a decimal number of "user" units. For SOL, that's SOL and not lamports. If the provided decimal fractions exceed nine for SOL or the token specific mint decimal, the URL must be considered a malformed URL and rejected. If there is no `amount`, you **must** prompt the user to enter an amount.
-
-Potential use cases where the amount could be empty:
-
-- accepting donations
-- accepting tips
-
-The `label` and `message` are only for display and are not encoded into the on-chain transaction.
-
-The `memo` can be used to record a message on-chain with the transaction.
-
-The `reference` allow for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
-
-The `spl-token` parameter is optional. If empty, it symbolizes this transfer is for native SOL. Otherwise, it's the SPL token mint address. The provided decimal fractions in the `amount` must not exceed the decimal count for this mint. Otherwise, the URL must be considered malformed.
 
 ## 3. Create transaction
 
@@ -102,8 +83,6 @@ const tx = await createTransaction(connection, payer, recipient, amount as BigNu
 See [full code snippet][10]
 
 </details>
-
-<br/>
 
 This transaction **should** represent the original intent of the payment request link. The example implementation walks through the steps on how to construct the transaction:
 
@@ -160,18 +139,8 @@ See [full code snippet][11]
 
 </details>
 
-
-
 <!-- References -->
 
-[1]: https://github.com/kozakdenys/qr-code-styling
-[2]: https://spl.solana.com/memo
-[3]: https://github.com/solana-labs/solana/issues/19535
-[4]: https://github.com/solana-labs/solana-pay/tree/master/point-of-sale
-[5]: https://github.com/solana-labs/solana-pay/tree/master/core/example/payment-flow-merchant
-[6]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateCheckout.ts
-[7]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/main.ts#L61
-[8]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/main.ts#L105
 [9]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L13
 [10]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L27
 [11]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L35
