@@ -20,16 +20,11 @@
 
 .footer {
     margin: 24px;
-    font-size: 14px;
 }
 
 .side {
     display: flex;
     flex-direction: column;
-}
-
-.top {
-    align-self: flex-end;
 }
 
 .summary {
@@ -44,6 +39,11 @@
 @media (max-width: 767px) {
     .root {
         flex-direction: column;
+    }
+
+    .top {
+        display: flex;
+        justify-content: space-between;
     }
 }
 
@@ -60,6 +60,10 @@
     :global(html.dark) .side {
         background: var(--theme-dark-side-background);
         color: var(--theme-dark-side-color);
+    }
+
+    .top {
+        align-self: flex-end;
     }
 
     .summary {

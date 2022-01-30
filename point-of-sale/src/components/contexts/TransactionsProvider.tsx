@@ -6,35 +6,15 @@ import {
     PublicKey,
     RpcResponseAndContext,
     SignatureStatus,
-    TransactionConfirmationStatus,
-    TransactionError,
     TransactionSignature,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import React, { createContext, FC, ReactNode, useContext, useEffect, useState } from 'react';
-import { arraysEqual } from '../utils/arraysEqual';
-import { MAX_CONFIRMATIONS } from '../utils/constants';
-import { useConfig } from './useConfig';
-
-export interface Transaction {
-    signature: TransactionSignature;
-    amount: string;
-    timestamp: number;
-    error: TransactionError | null;
-    status: TransactionConfirmationStatus;
-    confirmations: number;
-}
-
-export interface TransactionsContextState {
-    transactions: Transaction[];
-    loading: boolean;
-}
-
-export const TransactionsContext = createContext<TransactionsContextState>({} as TransactionsContextState);
-
-export function useTransactions(): TransactionsContextState {
-    return useContext(TransactionsContext);
-}
+import React, { FC, ReactNode, useEffect, useState } from 'react';
+import { useConfig } from '../../hooks/useConfig';
+import { Transaction, TransactionsContext } from '../../hooks/useTransactions';
+import { Confirmations } from '../../types';
+import { arraysEqual } from '../../utils/arraysEqual';
+import { MAX_CONFIRMATIONS } from '../../utils/constants';
 
 export interface TransactionsProviderProps {
     children: ReactNode;
@@ -89,6 +69,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                     const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
                     return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
                 });
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 console.error(error);
             } finally {
@@ -187,7 +168,9 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
                         const amount = postAmount.minus(preAmount).toString();
                         const confirmations =
-                            status === 'finalized' ? MAX_CONFIRMATIONS : signatureStatus.confirmations || 0;
+                            status === 'finalized'
+                                ? MAX_CONFIRMATIONS
+                                : ((signatureStatus.confirmations || 0) as Confirmations);
 
                         return {
                             signature,

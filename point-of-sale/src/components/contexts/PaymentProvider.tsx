@@ -9,41 +9,11 @@ import {
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import React, { createContext, FC, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useConfig } from './useConfig';
-import { useNavigateWithQuery } from './useNavigateWithQuery';
-
-export enum PaymentStatus {
-    New = 'New',
-    Pending = 'Pending',
-    Confirmed = 'Confirmed',
-    Valid = 'Valid',
-    Invalid = 'Invalid',
-    Finalized = 'Finalized',
-}
-
-export interface PaymentContextState {
-    amount: BigNumber | undefined;
-    setAmount(amount: BigNumber | undefined): void;
-    message: string | undefined;
-    setMessage(message: string | undefined): void;
-    memo: string | undefined;
-    setMemo(memo: string | undefined): void;
-    reference: PublicKey | undefined;
-    signature: TransactionSignature | undefined;
-    status: PaymentStatus;
-    confirmations: number;
-    progress: number;
-    url: string;
-    reset(): void;
-    generate(): void;
-}
-
-export const PaymentContext = createContext<PaymentContextState>({} as PaymentContextState);
-
-export function usePayment(): PaymentContextState {
-    return useContext(PaymentContext);
-}
+import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { useConfig } from '../../hooks/useConfig';
+import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
+import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
+import { Confirmations } from '../../types';
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -60,7 +30,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [reference, setReference] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
-    const [confirmations, setConfirmations] = useState(0);
+    const [confirmations, setConfirmations] = useState<Confirmations>(0);
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
@@ -105,6 +75,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
+                    console.log(url);
+
                     const { recipient, amount, splToken, reference, memo } = parseURL(url);
                     if (!amount) return;
 
@@ -149,6 +121,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     setStatus(PaymentStatus.Confirmed);
                     navigate('/confirmed', { replace: true });
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 if (!(error instanceof FindTransactionSignatureError)) {
                     console.error(error);
@@ -182,6 +155,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 if (!changed) {
                     setStatus(PaymentStatus.Valid);
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 console.log(error);
                 setStatus(PaymentStatus.Invalid);
@@ -206,13 +180,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 if (status.err) throw status.err;
 
                 if (!changed) {
-                    setConfirmations(status.confirmations || 0);
+                    setConfirmations((status.confirmations || 0) as Confirmations);
 
                     if (status.confirmationStatus === 'finalized') {
                         clearInterval(interval);
                         setStatus(PaymentStatus.Finalized);
                     }
                 }
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 console.log(error);
             }

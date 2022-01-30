@@ -7,9 +7,9 @@ import { BackButton } from '../buttons/BackButton';
 import { Amount } from '../sections/Amount';
 import { PoweredBy } from '../sections/PoweredBy';
 import { QRCode } from '../sections/QRCode';
-import * as styles from './PendingPage.module.pcss';
+import * as css from './PendingRoute.module.pcss';
 
-export const PendingPage: FC = () => {
+export const PendingRoute: FC = () => {
     const { symbol } = useConfig();
     const { amount, reset } = usePayment();
     const { publicKey } = useWallet();
@@ -22,23 +22,23 @@ export const PendingPage: FC = () => {
     }, [publicKey, setVisible]);
 
     return (
-        <div className={styles.root}>
-            <div className={styles.header}>
+        <div className={css.root}>
+            <div className={css.header}>
                 <BackButton onClick={reset}>Cancel Payment</BackButton>
                 <WalletMultiButton />
             </div>
-            <div className={styles.main}>
-                <div className={styles.amount}>
+            <div className={css.main}>
+                <div className={css.amount}>
                     <Amount amount={amount} />
                 </div>
-                <div className={styles.symbol}>{symbol}</div>
-                <div className={styles.code}>
+                <div className={css.symbol}>{symbol}</div>
+                <div className={css.code}>
                     <QRCode />
                 </div>
-                <div className={styles.scan}>Scan this code with your Solana Pay wallet</div>
-                <div className={styles.confirm}>You'll be asked to confirm the transaction</div>
+                <div className={css.scan}>Scan this code with your Solana Pay wallet</div>
+                <div className={css.confirm}>You'll be asked to approve the transaction</div>
             </div>
-            <div className={styles.footer}>
+            <div className={css.footer}>
                 <PoweredBy />
             </div>
         </div>

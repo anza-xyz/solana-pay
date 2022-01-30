@@ -4,21 +4,21 @@ import { BackButton } from '../buttons/BackButton';
 import { TransactionsLink } from '../buttons/TransactionsLink';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Progress } from '../sections/Progress';
-import * as styles from './ConfirmedPage.module.pcss';
+import * as css from './ConfirmedRoute.module.pcss';
 
-export const ConfirmedPage: FC = () => {
+export const ConfirmedRoute: FC = () => {
     const { reset } = usePayment();
 
     return (
-        <div className={styles.root}>
-            <div className={styles.header}>
+        <div className={css.root}>
+            <div className={css.header}>
                 <BackButton onClick={reset}>Start Over</BackButton>
                 <TransactionsLink />
             </div>
-            <div className={styles.main}>
+            <div className={css.main}>
                 <Progress />
             </div>
-            <div className={styles.footer}>
+            <div className={css.footer}>
                 <PoweredBy />
             </div>
         </div>

@@ -1,18 +1,6 @@
-import React, { createContext, FC, ReactNode, useContext, useLayoutEffect } from 'react';
-import { useLocalStorage } from './useLocalStorage';
-
-export type Theme = 'light' | 'dark';
-
-export interface ThemeContextState {
-    theme: Theme;
-    setTheme(theme: Theme): void;
-}
-
-export const ThemeContext = createContext<ThemeContextState>({} as ThemeContextState);
-
-export function useTheme(): ThemeContextState {
-    return useContext(ThemeContext);
-}
+import React, { FC, ReactNode, useLayoutEffect } from 'react';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { Theme, ThemeContext } from '../../hooks/useTheme';
 
 export interface ThemeProviderProps {
     children: ReactNode;

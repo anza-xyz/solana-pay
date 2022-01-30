@@ -3,7 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { buildStyles, CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
-import * as styles from './Progress.module.pcss';
+import * as css from './Progress.module.pcss';
 
 export const Progress: FC = () => {
     const { status, progress } = usePayment();
@@ -20,20 +20,20 @@ export const Progress: FC = () => {
     }, [status, progress]);
 
     const interpolated = useMemo(() => interpolate(['#8752f3', '#5497d5', '#43b4ca', '#28e0b9', '#19fb9b']), []);
-    const pathColor = useMemo(() => interpolated(value), [interpolated, value]);
+    const styles = useMemo(
+        () =>
+            buildStyles({
+                pathTransitionDuration: 0.5,
+                pathColor: interpolated(value),
+                trailColor: 'rgba(0,0,0,.1)',
+            }),
+        [interpolated, value]
+    );
 
     return (
-        <div className={styles.root}>
-            <CircularProgressbar
-                maxValue={1}
-                value={value}
-                styles={buildStyles({
-                    pathTransitionDuration: 0.5,
-                    pathColor,
-                    trailColor: 'rgba(0,0,0,.1)',
-                })}
-            />
-            <div className={styles.text}>{text}</div>
+        <div className={css.root}>
+            <CircularProgressbar maxValue={1} value={value} styles={styles} />
+            <div className={css.text}>{text}</div>
         </div>
     );
 };
