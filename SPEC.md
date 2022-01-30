@@ -1,7 +1,3 @@
----
-slug: /spec
----
-
 # Solana Pay Specification
 
 ## Summary
