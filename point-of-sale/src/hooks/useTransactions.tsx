@@ -1,6 +1,7 @@
 import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import {
+    LAMPORTS_PER_SOL,
     ParsedConfirmedTransaction,
     PublicKey,
     RpcResponseAndContext,
@@ -44,7 +45,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
     pollInterval ||= 10000;
 
     const { connection } = useConnection();
-    const { recipient, token } = useConfig();
+    const { recipient, splToken } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
     const [signatures, setSignatures] = useState<TransactionSignature[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -52,10 +53,12 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
     // Get the ATA for the recipient and token
     useEffect(() => {
+        if (!splToken) return;
+
         let changed = false;
 
         (async () => {
-            const associatedToken = await getAssociatedTokenAddress(token, recipient);
+            const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
             if (changed) return;
 
             setAssociatedToken(associatedToken);
@@ -65,11 +68,10 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             changed = true;
             setAssociatedToken(undefined);
         };
-    }, [token, recipient]);
+    }, [splToken, recipient]);
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {
-        if (!associatedToken) return;
         let changed = false;
 
         const run = async () => {
@@ -77,7 +79,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                 setLoading(true);
 
                 const confirmedSignatureInfos = await connection.getSignaturesForAddress(
-                    associatedToken,
+                    associatedToken || recipient,
                     { limit: 10 },
                     'confirmed'
                 );
@@ -102,11 +104,11 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             clearInterval(interval);
             setSignatures([]);
         };
-    }, [associatedToken, connection]);
+    }, [connection, associatedToken, recipient]);
 
     // When the signatures change, poll and update the transactions
     useEffect(() => {
-        if (!signatures.length || !associatedToken) return;
+        if (!signatures.length) return;
         let changed = false;
 
         const run = async () => {
@@ -140,22 +142,49 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                         const status = signatureStatus.confirmationStatus;
                         if (!timestamp || !status) return;
 
-                        const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
-                            ({ pubkey }) => pubkey.equals(associatedToken)
-                        );
-                        if (accountIndex === -1) return;
+                        if (parsedConfirmedTransaction.transaction.message.instructions.length !== 1) return;
+                        const instruction = parsedConfirmedTransaction.transaction.message.instructions[0];
+                        if (!('program' in instruction)) return;
+                        const program = instruction.program;
+                        const type = instruction.parsed?.type;
 
-                        const preBalance = parsedConfirmedTransaction.meta.preTokenBalances?.find(
-                            (x) => x.accountIndex === accountIndex
-                        );
-                        const postBalance = parsedConfirmedTransaction.meta.postTokenBalances?.find(
-                            (x) => x.accountIndex === accountIndex
-                        );
-                        if (!preBalance?.uiTokenAmount.uiAmountString || !postBalance?.uiTokenAmount.uiAmountString)
-                            return;
+                        let preAmount: BigNumber, postAmount: BigNumber;
+                        if (!associatedToken) {
+                            if (!(program === 'system' && type === 'transfer')) return;
 
-                        const preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
-                        const postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
+                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                                ({ pubkey }) => pubkey.equals(recipient)
+                            );
+                            if (accountIndex === -1) return;
+
+                            const preBalance = parsedConfirmedTransaction.meta.preBalances[accountIndex];
+                            const postBalance = parsedConfirmedTransaction.meta.postBalances[accountIndex];
+
+                            preAmount = new BigNumber(preBalance).div(LAMPORTS_PER_SOL);
+                            postAmount = new BigNumber(postBalance).div(LAMPORTS_PER_SOL);
+                        } else {
+                            if (!(program === 'spl-token' && (type === 'transfer' || type === 'transferChecked')))
+                                return;
+
+                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                                ({ pubkey }) => pubkey.equals(associatedToken)
+                            );
+                            if (accountIndex === -1) return;
+
+                            const preBalance = parsedConfirmedTransaction.meta.preTokenBalances?.find(
+                                (x) => x.accountIndex === accountIndex
+                            );
+                            if (!preBalance?.uiTokenAmount.uiAmountString) return;
+
+                            const postBalance = parsedConfirmedTransaction.meta.postTokenBalances?.find(
+                                (x) => x.accountIndex === accountIndex
+                            );
+                            if (!postBalance?.uiTokenAmount.uiAmountString) return;
+
+                            preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
+                            postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
+                        }
+
                         const amount = postAmount.minus(preAmount).toString();
                         const confirmations =
                             status === 'finalized' ? MAX_CONFIRMATIONS : signatureStatus.confirmations || 0;
@@ -180,7 +209,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             changed = true;
             clearInterval(interval);
         };
-    }, [signatures, connection, associatedToken, pollInterval]);
+    }, [signatures, connection, associatedToken, recipient, pollInterval]);
 
     return <TransactionsContext.Provider value={{ transactions, loading }}>{children}</TransactionsContext.Provider>;
 };

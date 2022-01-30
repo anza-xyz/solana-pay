@@ -1,6 +1,6 @@
 {
     "name": "@solana/pay",
-    "version": "0.1.0-alpha.0",
+    "version": "0.1.0-alpha.5",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
@@ -25,7 +25,8 @@
         "clean": "shx rm -rf lib/*",
         "build": "yarn clean && tsc -p tsconfig.json && tsc-esm -p tsconfig.json && tsc -p tsconfig.cjs.json",
         "postbuild": "echo '{\"type\":\"commonjs\"}' | npx json > lib/cjs/package.json && echo '{\"type\":\"module\"} ' | npx json > lib/esm/package.json",
-        "example": "node --experimental-specifier-resolution=node --loader ts-node/esm test/index.ts",
+        "example": "node --experimental-specifier-resolution=node --loader ts-node/esm example/index.ts",
+        "example:merchant": "node --experimental-specifier-resolution=node --loader ts-node/esm example/payment-flow-merchant/main.ts",
         "test": "jest",
         "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
