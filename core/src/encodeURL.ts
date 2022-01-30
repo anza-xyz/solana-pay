@@ -2,6 +2,9 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { URL_PROTOCOL } from './constants';
 
+/**
+ * Optional query parameters to encode in a Solana Pay URL.
+ */
 export interface EncodeURLParams {
     /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
     amount?: BigNumber;
@@ -17,23 +20,26 @@ export interface EncodeURLParams {
     memo?: string;
 }
 
+/**
+ * Required and optional URL components to encode in a Solana Pay URL.
+ */
 export interface EncodeURLComponents extends EncodeURLParams {
     /** The address the payment should be made to. It **must** be a native SOL address. */
     recipient: PublicKey;
 }
 
 /**
- * Encode params into URL
+ * Encode a Solana Pay URL from required and optional components.
  *
- * @param {EncodeURLComponents} encodeURLParams
+ * @param {EncodeURLComponents} components
  *
- * @param encodeURLParams.recipient - The address the payment should be made to. It **must** be a native SOL address.
- * @param encodeURLParams.amount - The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units. If `null` the user will be requested to enter an amount by the wallet provider.
- * @param encodeURLParams.splToken - The mint address of the SPL token. If `null` the transaction will be for native SOL
- * @param encodeURLParams.reference - An array of public keys used to identify the transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.
- * @param encodeURLParams.label - A label to be used by the wallet provider to identify the transaction; should be the merchant name
- * @param encodeURLParams.message - A message to be used by the wallet provider to identify the transaction; should describe the transaction to the user
- * @param encodeURLParams.memo - Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo)
+ * @param components.recipient - The address the payment should be made to. It **must** be a native SOL address.
+ * @param components.amount - The amount of SOL or SPL token that should be transferred. It is always interpreted to be a decimal number of "user" units. If not provided, the user will be requested to enter an amount by the wallet provider.
+ * @param components.splToken - The mint address of an SPL token. If not provided, the URL represents a native SOL transfer.
+ * @param components.reference - A public key (or array of public keys) that must be referenced by the transaction. They are the **only** way you'll be able to ensure that the customer has completed this transaction and payment is complete.
+ * @param components.label - A label to be used by the wallet provider to identify the transaction; should be the merchant name
+ * @param components.message - A message to be used by the wallet provider to identify the transaction; should describe the transaction to the user
+ * @param components.memo - Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo)
  */
 export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
     let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());

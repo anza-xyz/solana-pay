@@ -92,7 +92,7 @@ async function main() {
 
 #### 2. Create a payment request link
 
-Solana pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -123,7 +123,7 @@ const memo = 'JC#4098';
 /**
  * Create a payment request link
  *
- * Solana pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+ * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
 console.log('3. 💰 Create a payment request link \n');
@@ -166,7 +166,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     /**
      * Create a payment request link
      *
-     * Solana pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+     * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
      * Several parameters are encoded within the link representing an intent to collect payment from a customer.
      */
     console.log('3. 💰 Create a payment request link \n');
@@ -191,7 +191,7 @@ Now that you've created a payment link, you need a way to show it to your custom
 /**
  * Create a payment request link
  *
- * Solana pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+ * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
 console.log('3. 💰 Create a payment request link \n');
