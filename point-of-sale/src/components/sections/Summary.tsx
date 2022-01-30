@@ -3,7 +3,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Amount } from './Amount';
-import * as styles from './Summary.module.css';
+import * as styles from './Summary.module.pcss';
 
 export const Summary: FC = () => {
     const { symbol } = useConfig();

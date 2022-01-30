@@ -4,7 +4,7 @@ import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
 import { BackspaceIcon } from '../images/BackspaceIcon';
-import * as styles from './NumPad.module.css';
+import * as styles from './NumPad.module.pcss';
 
 interface NumPadInputButton {
     input: Digits | '.';

@@ -4,7 +4,7 @@ import { BackButton } from '../buttons/BackButton';
 import { FullscreenButton } from '../buttons/FullscreenButton';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Transactions } from '../sections/Transactions';
-import * as styles from './TransactionsPage.module.css';
+import * as styles from './TransactionsPage.module.pcss';
 
 export const TransactionsPage: FC = () => {
     const navigate = useNavigate();

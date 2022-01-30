@@ -7,7 +7,7 @@ import { BackButton } from '../buttons/BackButton';
 import { Amount } from '../sections/Amount';
 import { PoweredBy } from '../sections/PoweredBy';
 import { QRCode } from '../sections/QRCode';
-import * as styles from './PendingPage.module.css';
+import * as styles from './PendingPage.module.pcss';
 
 export const PendingPage: FC = () => {
     const { symbol } = useConfig();

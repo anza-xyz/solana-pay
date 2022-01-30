@@ -5,7 +5,7 @@ import { TransactionsLink } from '../buttons/TransactionsLink';
 import { NumPad } from '../sections/NumPad';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
-import * as styles from './NewPage.module.css';
+import * as styles from './NewPage.module.pcss';
 
 export const NewPage: FC = () => {
     return (

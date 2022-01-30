@@ -4,7 +4,7 @@ import { BackButton } from '../buttons/BackButton';
 import { TransactionsLink } from '../buttons/TransactionsLink';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Progress } from '../sections/Progress';
-import * as styles from './ConfirmedPage.module.css';
+import * as styles from './ConfirmedPage.module.pcss';
 
 export const ConfirmedPage: FC = () => {
     const { reset } = usePayment();
