@@ -12,10 +12,10 @@ describe('parseURL', () => {
                 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
-                expect(amount.eq(new BigNumber(0.01))).toBe(true);
+                expect(amount!.eq(new BigNumber(0.01))).toBe(true);
                 expect(splToken).toBeUndefined();
                 expect(reference).toHaveLength(1);
-                expect(reference[0].equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
+                expect(reference![0]!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
                 expect(memo).toBe('OrderId5678');
@@ -28,8 +28,8 @@ describe('parseURL', () => {
                 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
-                expect(amount.eq(new BigNumber(0.01))).toBe(true);
-                expect(splToken.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBeUndefined();
+                expect(amount!.eq(new BigNumber(0.01))).toBe(true);
+                expect(splToken!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
                 expect(reference).toBeUndefined();
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
@@ -46,7 +46,7 @@ describe('parseURL', () => {
                 expect(amount).toBeUndefined();
                 expect(splToken).toBeUndefined();
                 expect(reference).toHaveLength(1);
-                expect(reference[0].equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
+                expect(reference![0]!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
                 expect(memo).toBe('OrderId5678');
