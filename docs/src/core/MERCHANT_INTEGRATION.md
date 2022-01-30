@@ -11,7 +11,11 @@ The complete example code can be found [here][5].
 
 ## Requirements
 
-Before you can receive payments, you'll need to obtain a native SOL address. This doesn't cost anything, and you can use [Phantom](https://phantom.app/) or [FTX.us](https://ftx.us/) to get set up.
+Before you can receive payments, you'll need to obtain a native SOL address. This doesn't cost anything, and you can use any wallet to get started.
+
+If you want to receive USDC or another SPL token on Solana, you'll need to create a token account, which may require a small amount of SOL.
+
+One way to do both is to use FTX / FTX.us, which will provide a native SOL deposit address and an associated USDC token account to receive payments.
 
 ---
 
@@ -59,7 +63,7 @@ async function main() {
 
 ## 2. Create a payment request link
 
-Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -100,18 +104,6 @@ const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, me
 See [full code snippet][6]
 
 </details>
-
-<br/>
-
-The `recipient` must be a native SOL address. So, for our merchant example, the recipient is the merchant's native SOL wallet address.
-
-The parsed `amount` is always interpreted to be a decimal number of "user" units. For SOL, that's SOL and not lamports. If the provided decimal fractions exceed nine for SOL or the token specific mint decimal, the URL must be considered a malformed URL and rejected. The wallet should prompt the user if the parsed URL does not contain an amount.
-
-The `label` and `message` are only for display by the wallets and are not encoded into the on-chain transaction. `label` could be the merchant name or the brand, and you could use the `message` to describe the purchase to the user.
-
-The `memo` can be used to record a message on-chain with the transaction.
-
-The `reference` allows for the transaction to be located on-chain. For this, you should use a random, unique public key. You can think of this as a unique ID for the payment request that the Solana Pay protocol uses to locate the transaction.
 
 ### Optional. SPL token transfer
 
@@ -210,7 +202,6 @@ qrCode.append(element);
 ```
 
 </details>
-<br/>
 
 Instructions on integrating with your framework of choice can be found [here][1].
 
@@ -254,6 +245,8 @@ const signatureInfo = await findTransactionSignature(connection, reference, unde
 // Update payment status
 paymentStatus = 'confirmed';
 ```
+
+**Note**: The `findTransactionSignature` function uses `confirmed` as the default finality value. This can, on rare occasions, result in a transaction that is not fully complete. For full finality, use `finalized`. This can result in slower transaction completion.
 
 See [full code snippet][7]
 
@@ -332,7 +325,7 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
  * found matches the transaction that you expected.
  */
 console.log('\n6. 🔗 Validate transaction \n');
-const amountInLamports = convertToLamports(amount); // 🚨 Recommend to change this, conversion to be done in validateTransactionSignature
+const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
 try {
     await validateTransactionSignature(connection, signature, MERCHANT_WALLET, amountInLamports, undefined, reference);
@@ -378,6 +371,3 @@ The steps outlined above prevents:
 [6]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateCheckout.ts
 [7]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/main.ts#L61
 [8]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/main.ts#L105
-[9]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L13
-[10]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L27
-[11]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L35
