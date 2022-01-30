@@ -163,7 +163,8 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             preAmount = new BigNumber(preBalance).div(LAMPORTS_PER_SOL);
                             postAmount = new BigNumber(postBalance).div(LAMPORTS_PER_SOL);
                         } else {
-                            if (!(program === 'spl-token' && (type === 'transfer' || type === 'transferChecked'))) return;
+                            if (!(program === 'spl-token' && (type === 'transfer' || type === 'transferChecked')))
+                                return;
 
                             const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
                                 ({ pubkey }) => pubkey.equals(associatedToken)
