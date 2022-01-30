@@ -19,7 +19,7 @@
         "nuke": "shx rm -rf node_modules yarn.lock"
     },
     "dependencies": {
-        "@solana/pay": "^0.1.0-alpha.3",
+        "@solana/pay": "^0.1.0-alpha.5",
         "@solana/spl-token": "^0.2.0-alpha.2",
         "@solana/wallet-adapter-base": "^0.9.2",
         "@solana/wallet-adapter-react": "^0.15.2",
@@ -46,7 +46,7 @@
         "@types/react-dom": "^17.0.11",
         "@typescript-eslint/eslint-plugin": "^5.10.1",
         "@typescript-eslint/parser": "^5.10.1",
-        "eslint": "^8.7.0",
+        "eslint": "^8.8.0",
         "eslint-config-prettier": "^8.3.0",
         "eslint-plugin-prettier": "^4.0.0",
         "eslint-plugin-react": "^7.28.0",

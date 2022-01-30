@@ -10,11 +10,16 @@ import {
 import BigNumber from 'bignumber.js';
 import { MEMO_PROGRAM_ID, SOL_DECIMALS, TEN } from './constants';
 
-/** @internal */
+/**
+ * Thrown when a valid transaction can't be created from the inputs provided.
+ */
 export class CreateTransactionError extends Error {
     name = 'CreateTransactionError';
 }
 
+/**
+ * Optional parameters for creating a Solana Pay transaction.
+ */
 export interface CreateTransactionParams {
     /** The mint address of the SPL token */
     splToken?: PublicKey;
@@ -25,7 +30,7 @@ export interface CreateTransactionParams {
 }
 
 /**
- * Create a transaction
+ * Create a Solana Pay transaction.
  *
  * **Reference** implementation for wallet providers.
  *

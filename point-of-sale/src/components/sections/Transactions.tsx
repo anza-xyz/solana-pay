@@ -44,7 +44,7 @@ const Transaction: FC<{ transaction: Transaction }> = ({ transaction }) => {
             <div className={styles.icon}>{icon}</div>
             <div className={styles.left}>
                 <div className={styles.amount}>
-                    <Amount amount={amount} />
+                    <Amount amount={amount} showZero />
                     {NON_BREAKING_SPACE + symbol}
                 </div>
                 <div className={styles.signature}>{signature}</div>

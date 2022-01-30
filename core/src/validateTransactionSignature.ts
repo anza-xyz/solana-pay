@@ -9,13 +9,15 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
-/** @internal */
+/**
+ * Thrown when a transaction doesn't contain a valid Solana Pay transfer.
+ */
 export class ValidateTransactionSignatureError extends Error {
     name = 'ValidateTransactionSignatureError';
 }
 
 /**
- * Validate a transaction signature
+ * Validate that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
  *
  * @param connection - A connection to the cluster.
  * @param signature -  The signature to validate.
@@ -64,7 +66,7 @@ export async function validateTransactionSignature(
         postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
     }
 
-    if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
+    if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransactionSignatureError('amount not transferred');
 
     if (reference) {
         if (!Array.isArray(reference)) {
