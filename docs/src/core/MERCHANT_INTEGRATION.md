@@ -1,5 +1,6 @@
 ---
 title: Merchant Integration
+slug: /core/merchant-integration
 ---
 
 This section describes how a merchant can integrate Solana Pay into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
