@@ -11,7 +11,7 @@ const config = {
   title: 'Solana Pay Docs',
   tagline:
     'Solana Pay is a standard protocol and set of reference implementations that enable developers to incorporate decentralized payments into their apps and services.',
-  url: 'https://pay.solana.com',
+  url: 'https://docs.solanapay.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
