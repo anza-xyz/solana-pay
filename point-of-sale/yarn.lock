@@ -1067,10 +1067,10 @@
   dependencies:
     buffer "~6.0.3"
 
-"@solana/pay@^0.1.0-alpha.4":
-  version "0.1.0-alpha.4"
-  resolved "https://registry.yarnpkg.com/@solana/pay/-/pay-0.1.0-alpha.4.tgz#e62457d90db9c657b027e495d02eecc707cccedf"
-  integrity sha512-HIcARWy198kVcuBFVFe53btMXKwbzshgbH1lheuR3Tmiopt/N+HTIXJa+Pgvoer79lLqoXcoRXDr0GL0v8RlYA==
+"@solana/pay@^0.1.0-alpha.5":
+  version "0.1.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/@solana/pay/-/pay-0.1.0-alpha.5.tgz#9aef5b6ec4b1fcb15564e5420dc5f21e72ff055c"
+  integrity sha512-2YYabOi2IppqCoNsfFPPb6NdEWsQ8l170IarW/Y6gfZBNBEvLhSXlGHztCaZEc9c78h1tD+tMopaK2u4fwH2sA==
   dependencies:
     "@solana/spl-token" "^0.2.0-alpha.1"
     "@solana/wallet-adapter-base" "^0.9.0"
