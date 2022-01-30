@@ -24,7 +24,7 @@ export const NumPad: FC = () => {
     const { symbol, decimals } = useConfig();
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
-    const [value, setValue] = useState('');
+    const [value, setValue] = useState('0');
     const onInput = useCallback(
         (key) =>
             setValue((value) => {
@@ -37,7 +37,7 @@ export const NumPad: FC = () => {
             }),
         [regExp]
     );
-    const onBackspace = useCallback(() => setValue((value) => (value.length ? value.slice(0, -1) : value)), []);
+    const onBackspace = useCallback(() => setValue((value) => (value.length ? (value.slice(0, -1) || '0') : value)), []);
 
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
