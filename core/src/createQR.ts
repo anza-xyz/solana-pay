@@ -10,24 +10,24 @@ import QRCodeStyling, {
 } from 'qr-code-styling';
 
 /**
- * Create a QR code.
+ * Create a QR code from a Solana Pay URL.
  *
- * @param data - The URL to encode in the QR code.
+ * @param url - The URL to encode in the QR code.
  * @param size - Size of canvas in `px`.
  * @param background - Background color for QR code.
  * @param color - Color for QR code pattern.
  */
-export function createQR(data: string, size = 512, background = 'white', color = 'black'): QRCodeStyling {
-    return new QRCodeStyling(createQROptions(data, size, background, color));
+export function createQR(url: string, size = 512, background = 'white', color = 'black'): QRCodeStyling {
+    return new QRCodeStyling(createQROptions(url, size, background, color));
 }
 
 /** @ignore */
-export function createQROptions(data: string, size = 512, background = 'white', color = 'black'): Options {
+export function createQROptions(url: string, size = 512, background = 'white', color = 'black'): Options {
     return {
         type: 'svg' as DrawType,
         width: size,
         height: size,
-        data,
+        data: url,
         margin: 0,
         qrOptions: {
             typeNumber: 0 as TypeNumber,

@@ -34,7 +34,7 @@ async function main() {
     /**
      * Create a payment request link
      *
-     * Solana pay uses a standard URI scheme across wallets for native SOL and SPL Token payments.
+     * Solana Pay uses a standard URI scheme across wallets for native SOL and SPL Token payments.
      * Several parameters are encoded within the link representing an intent to collect payment from a customer.
      */
     console.log('3. 💰 Create a payment request link \n');
