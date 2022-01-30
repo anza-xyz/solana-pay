@@ -64,7 +64,7 @@ export async function validateTransactionSignature(
         postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
     }
 
-    if (preAmount.plus(amount).lt(postAmount)) throw new ValidateTransactionSignatureError('amount not transferred');
+    if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransactionSignatureError('amount not transferred');
 
     if (reference) {
         if (!Array.isArray(reference)) {
