@@ -1,14 +1,14 @@
 import { Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { encodeURL } from '../src/encodeURL';
+import { encodeURL } from '../src';
 
 describe('encodeURL', () => {
     it('encodes a URL', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(1.99);
-        const splToken = new Keypair().publicKey;
-        const reference1 = new Keypair().publicKey;
-        const reference2 = new Keypair().publicKey;
+        const splToken = Keypair.generate().publicKey;
+        const reference1 = Keypair.generate().publicKey;
+        const reference2 = Keypair.generate().publicKey;
 
         const reference = [reference1, reference2];
         const label = 'label';
@@ -23,7 +23,7 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
 
         const url = encodeURL({ recipient });
 
@@ -31,7 +31,7 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient and amount', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(1);
 
         const url = encodeURL({ recipient, amount });
@@ -40,9 +40,9 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient, amount and token', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(100);
-        const splToken = new Keypair().publicKey;
+        const splToken = Keypair.generate().publicKey;
 
         const url = encodeURL({ recipient, amount, splToken });
 
@@ -50,9 +50,9 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient, amount and references', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(100000.123456);
-        const reference1 = new Keypair().publicKey;
+        const reference1 = Keypair.generate().publicKey;
         const reference = [reference1];
 
         const url = encodeURL({ recipient, amount, reference });
@@ -61,7 +61,7 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient, amount and label', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(1.99);
         const label = 'label';
 
@@ -71,7 +71,7 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient, amount and message', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(1);
         const message = 'message';
 
@@ -81,7 +81,7 @@ describe('encodeURL', () => {
     });
 
     it('encodes a url with recipient, amount and memo', () => {
-        const recipient = new Keypair().publicKey;
+        const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber(100);
         const memo = 'memo';
 
