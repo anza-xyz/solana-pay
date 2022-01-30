@@ -2,6 +2,16 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { URL_PROTOCOL } from './constants';
 
+/**
+ * Thrown when a URL can't be parsed as a Solana Pay URL.
+ */
+export class ParseURLError extends Error {
+    name = 'ParseURLError';
+}
+
+/**
+ * Parsed components of a Solana Pay URL.
+ */
 export interface ParsedURL {
     /** The address the payment should be made to. It **must** be a native SOL address. */
     recipient: PublicKey;
@@ -19,17 +29,12 @@ export interface ParsedURL {
     memo: string | undefined;
 }
 
-/** @internal */
-export class ParseURLError extends Error {
-    name = 'ParseURLError';
-}
-
 /**
- * Parse the URL based off the Solana Pay URI scheme
+ * Parse the components of a Solana Pay URL.
  *
  * **Reference** implementation for wallet providers.
  *
- * @param url - The payment request url
+ * @param url - A Solana Pay URL
  */
 export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
@@ -42,7 +47,7 @@ export function parseURL(url: string): ParsedURL {
     try {
         recipient = new PublicKey(pathname);
     } catch (error) {
-        throw new ParseURLError('ParseURLError: recipient invalid');
+        throw new ParseURLError('recipient invalid');
     }
 
     let amount: BigNumber | undefined;
