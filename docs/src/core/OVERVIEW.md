@@ -1,12 +1,13 @@
 ---
 title: Overview
+slug: /core/overview
 ---
 
 # Solana Pay
 
 `@solana/pay` is a JavaScript library for facilitating commerce on Solana by using a token transfer URL scheme. The URL scheme ensures that no matter the wallet or service used, the payment request must be created and interpreted in one standard way.
 
-[Read the draft specification.](SPEC.md)
+[Read the draft specification.](../SPEC.md)
 
 ## Why use Solana Pay
 
@@ -36,5 +37,5 @@ Payment requests could be encoded as a deep link. The app prepares a payment req
 
 Learn how to integrate Solana Pay in your website, application or wallet.
 
-- [Merchant Integration](/core/merchant-integration)
-- [Wallet Integration](/core/wallet-integration)
+- [Merchant Integration](./MERCHANT_INTEGRATION.md)
+- [Wallet Integration](./WALLET_INTEGRATION.md)
