@@ -21,10 +21,10 @@ export class ValidateTransactionSignatureError extends Error {
  *
  * @param connection - A connection to the cluster.
  * @param signature -  The signature to validate.
- * @param recipient - The address the payment was made to.
- * @param amount - The amount of SOL or SPL token that was transferred.
- * @param splToken - The mint address of the SPL token.
- * @param reference - A `PublicKey` that was included as a reference in the transaction. Must include all the references that were used.
+ * @param recipient - `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient)
+ * @param amount - `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount)
+ * @param splToken - `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token)
+ * @param reference -`reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference)
  * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed
  */
 export async function validateTransactionSignature(
