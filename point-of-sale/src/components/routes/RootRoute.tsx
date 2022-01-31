@@ -7,6 +7,7 @@ import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
+import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
@@ -37,34 +38,36 @@ export const RootRoute: FC = () => {
 
     return (
         <ThemeProvider>
-            {recipient && label ? (
-                <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
-                    <WalletProvider wallets={wallets} autoConnect>
-                        <WalletModalProvider>
-                            <ConfigProvider
-                                recipient={recipient}
-                                label={label}
-                                splToken={MAINNET_USDC_MINT}
-                                symbol="USDC"
-                                icon={<USDCIcon />}
-                                decimals={6}
-                                minDecimals={2}
-                                requiredConfirmations={9}
-                            >
-                                <TransactionsProvider>
-                                    <PaymentProvider>
-                                        <Outlet />
-                                    </PaymentProvider>
-                                </TransactionsProvider>
-                            </ConfigProvider>
-                        </WalletModalProvider>
-                    </WalletProvider>
-                </ConnectionProvider>
-            ) : (
-                <div className={css.logo}>
-                    <SolanaPayLogo width={240} height={88} />
-                </div>
-            )}
+            <FullscreenProvider>
+                {recipient && label ? (
+                    <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
+                        <WalletProvider wallets={wallets} autoConnect>
+                            <WalletModalProvider>
+                                <ConfigProvider
+                                    recipient={recipient}
+                                    label={label}
+                                    splToken={MAINNET_USDC_MINT}
+                                    symbol="USDC"
+                                    icon={<USDCIcon />}
+                                    decimals={6}
+                                    minDecimals={2}
+                                    requiredConfirmations={9}
+                                >
+                                    <TransactionsProvider>
+                                        <PaymentProvider>
+                                            <Outlet />
+                                        </PaymentProvider>
+                                    </TransactionsProvider>
+                                </ConfigProvider>
+                            </WalletModalProvider>
+                        </WalletProvider>
+                    </ConnectionProvider>
+                ) : (
+                    <div className={css.logo}>
+                        <SolanaPayLogo width={240} height={88} />
+                    </div>
+                )}
+            </FullscreenProvider>
         </ThemeProvider>
     );
 };

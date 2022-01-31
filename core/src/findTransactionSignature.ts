@@ -13,7 +13,7 @@ export class FindTransactionSignatureError extends Error {
  * @throws if signature can't be found
  *
  * @param connection - A connection to the cluster.
- * @param reference - A public key referenced by the transaction.
+ * @param reference - `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference)
  * @param {SignaturesForAddressOptions} options - Options for `getSignaturesForAddress`.
  * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed.
  */

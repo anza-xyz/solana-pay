@@ -34,6 +34,11 @@ const sidebars = {
       label: 'Getting Started',
       items: ['core/OVERVIEW', 'core/MERCHANT_INTEGRATION', 'core/WALLET_INTEGRATION'],
     },
+    {
+      type: 'link',
+      label: 'API Reference',
+      href: '/api',
+    },
   ],
 };
 
