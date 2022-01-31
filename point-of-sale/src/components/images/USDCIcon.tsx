@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, SVGProps } from 'react';
 
-export const USDCIcon: FC = () => {
+export const USDCIcon: FC<SVGProps<SVGSVGElement>> = ({ width = 32, height = 32 }) => {
     return (
-        <svg fill="none" height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg">
+        <svg width={width} height={height} fill="none" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
             <path
                 d="m16 32c8.8366 0 16-7.1634 16-16 0-8.83656-7.1634-16-16-16-8.83656 0-16 7.16344-16 16 0 8.8366 7.16344 16 16 16z"
                 fill="#2775ca"

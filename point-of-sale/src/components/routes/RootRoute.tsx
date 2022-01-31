@@ -62,7 +62,7 @@ export const RootRoute: FC = () => {
                 </ConnectionProvider>
             ) : (
                 <div className={css.logo}>
-                    <SolanaPayLogo />
+                    <SolanaPayLogo width={240} height={88} />
                 </div>
             )}
         </ThemeProvider>
