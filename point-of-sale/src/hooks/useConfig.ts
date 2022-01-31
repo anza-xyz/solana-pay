@@ -11,6 +11,7 @@ export interface ConfigContextState {
     decimals: Digits;
     minDecimals: Digits;
     requiredConfirmations: number;
+    connectWallet: boolean;
 }
 
 export const ConfigContext = createContext<ConfigContextState>({} as ConfigContextState);

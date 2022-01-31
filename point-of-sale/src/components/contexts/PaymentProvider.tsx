@@ -21,7 +21,7 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { recipient, splToken, label, requiredConfirmations } = useConfig();
+    const { recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
@@ -67,10 +67,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         }
     }, [status, reference, navigate]);
 
-    // TODO: remove this
     // Use the connected wallet to sign and send the transaction for now
     useEffect(() => {
-        if (status === PaymentStatus.Pending && publicKey) {
+        if (status === PaymentStatus.Pending && connectWallet && publicKey) {
             let changed = false;
 
             const run = async () => {
@@ -101,7 +100,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 clearTimeout(timeout);
             };
         }
-    }, [status, publicKey, url, connection, sendTransaction]);
+    }, [status, connectWallet, publicKey, url, connection, sendTransaction]);
 
     // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {

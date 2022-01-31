@@ -16,7 +16,11 @@ import { USDCIcon } from '../images/USDCIcon';
 import * as css from './RootRoute.module.pcss';
 
 export const RootRoute: FC = () => {
-    const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
+    const connectWallet = false;
+    const wallets = useMemo(
+        () => (connectWallet ? [new PhantomWalletAdapter(), new TorusWalletAdapter()] : []),
+        [connectWallet]
+    );
 
     const [params] = useSearchParams();
     const { recipient, label } = useMemo(() => {
@@ -41,7 +45,7 @@ export const RootRoute: FC = () => {
             <FullscreenProvider>
                 {recipient && label ? (
                     <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
-                        <WalletProvider wallets={wallets} autoConnect>
+                        <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
                                     recipient={recipient}
@@ -52,6 +56,7 @@ export const RootRoute: FC = () => {
                                     decimals={6}
                                     minDecimals={2}
                                     requiredConfirmations={9}
+                                    connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
                                         <PaymentProvider>

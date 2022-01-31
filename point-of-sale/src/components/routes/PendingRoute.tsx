@@ -10,22 +10,22 @@ import { QRCode } from '../sections/QRCode';
 import * as css from './PendingRoute.module.pcss';
 
 export const PendingRoute: FC = () => {
-    const { symbol } = useConfig();
+    const { symbol, connectWallet } = useConfig();
     const { amount, reset } = usePayment();
     const { publicKey } = useWallet();
     const { setVisible } = useWalletModal();
 
     useEffect(() => {
-        if (!publicKey) {
+        if (connectWallet && !publicKey) {
             setVisible(true);
         }
-    }, [publicKey, setVisible]);
+    }, [connectWallet, publicKey, setVisible]);
 
     return (
         <div className={css.root}>
             <div className={css.header}>
                 <BackButton onClick={reset}>Cancel Payment</BackButton>
-                <WalletMultiButton />
+                {connectWallet ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
                 <div className={css.amount}>

@@ -12,8 +12,9 @@ export interface ConfigProviderProps {
     symbol: string;
     icon: ReactElement;
     decimals: Digits;
-    minDecimals: Digits;
-    requiredConfirmations: number;
+    minDecimals?: Digits;
+    requiredConfirmations?: number;
+    connectWallet?: boolean;
 }
 
 export const ConfigProvider: FC<ConfigProviderProps> = ({
@@ -26,10 +27,21 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     decimals,
     minDecimals = 0,
     requiredConfirmations = MAX_CONFIRMATIONS,
+    connectWallet = false,
 }) => {
     return (
         <ConfigContext.Provider
-            value={{ recipient, label, splToken, symbol, icon, decimals, minDecimals, requiredConfirmations }}
+            value={{
+                recipient,
+                label,
+                splToken,
+                symbol,
+                icon,
+                decimals,
+                minDecimals,
+                requiredConfirmations,
+                connectWallet,
+            }}
         >
             {children}
         </ConfigContext.Provider>
