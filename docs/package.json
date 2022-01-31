@@ -19,7 +19,7 @@
     "copy-docs": "yarn copy-spec && yarn copy-merchant-doc && yarn copy-wallet-doc && yarn copy-overview-doc",
     "prebuild": "yarn copy-spec",
     "prestart": "yarn copy-spec",
-    "postinstall": "shx cd ../core && yarn install"
+    "postinstall": "cd ../core && yarn install"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.14",
