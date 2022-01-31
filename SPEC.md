@@ -78,9 +78,13 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
 
 ## Supporting Wallets
 
-* Phantom (iOS: link to app)
-* FTX (iOS: link to app, Android: link to app)
-* Slope (iOS: link to app, Android: link to app)
+* Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
+* FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
+
+## Coming Soon
+
+* Slope
+* Crypto Please
 
 ## Extensions
 
