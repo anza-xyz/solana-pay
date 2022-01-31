@@ -16,7 +16,11 @@ import { DEVNET_ENDPOINT } from '../../utils/constants';
 import * as css from './RootRoute.module.pcss';
 
 export const RootRoute: FC = () => {
-    const wallets = useMemo(() => [new PhantomWalletAdapter(), new TorusWalletAdapter()], []);
+    const connectWallet = false;
+    const wallets = useMemo(
+        () => (connectWallet ? [new PhantomWalletAdapter(), new TorusWalletAdapter()] : []),
+        [connectWallet]
+    );
 
     const [params] = useSearchParams();
     const { recipient, label } = useMemo(() => {
@@ -41,7 +45,7 @@ export const RootRoute: FC = () => {
             <FullscreenProvider>
                 {recipient && label ? (
                     <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
-                        <WalletProvider wallets={wallets} autoConnect>
+                        <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
                                     recipient={recipient}
@@ -51,6 +55,7 @@ export const RootRoute: FC = () => {
                                     decimals={9}
                                     minDecimals={1}
                                     requiredConfirmations={9}
+                                    connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
                                         <PaymentProvider>
