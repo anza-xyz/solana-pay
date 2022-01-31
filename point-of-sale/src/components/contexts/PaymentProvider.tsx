@@ -75,8 +75,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
-                    console.log(url);
-
                     const { recipient, amount, splToken, reference, memo } = parseURL(url);
                     if (!amount) return;
 
