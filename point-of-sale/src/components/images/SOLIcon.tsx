@@ -1,12 +1,12 @@
-import React, { FC } from 'react';
+import React, { FC, SVGProps } from 'react';
 
-export const SOLIcon: FC = () => {
+export const SOLIcon: FC<SVGProps<SVGSVGElement>> = ({ width = 32, height = 32 }) => {
     return (
         <svg
+            width={width}
+            height={height}
             fill="none"
-            height="32"
             viewBox="0 0 40 40"
-            width="32"
             xmlns="http://www.w3.org/2000/svg"
             xmlnsXlink="http://www.w3.org/1999/xlink"
         >
