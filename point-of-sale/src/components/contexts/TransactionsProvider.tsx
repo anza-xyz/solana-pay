@@ -128,10 +128,18 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                         if (!('program' in instruction)) return;
                         const program = instruction.program;
                         const type = instruction.parsed?.type;
+                        const info = instruction.parsed.info;
 
                         let preAmount: BigNumber, postAmount: BigNumber;
                         if (!associatedToken) {
+                            // Include only SystemProgram.transfer instructions
                             if (!(program === 'system' && type === 'transfer')) return;
+
+                            // Include only transfers to the recipient
+                            if (info?.destination !== recipient.toBase58()) return;
+
+                            // Exclude self-transfers
+                            if (info.source === recipient.toBase58()) return;
 
                             const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
                                 ({ pubkey }) => pubkey.equals(recipient)
@@ -144,8 +152,15 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             preAmount = new BigNumber(preBalance).div(LAMPORTS_PER_SOL);
                             postAmount = new BigNumber(postBalance).div(LAMPORTS_PER_SOL);
                         } else {
+                            // Include only TokenProgram.transfer / TokenProgram.transferChecked instructions
                             if (!(program === 'spl-token' && (type === 'transfer' || type === 'transferChecked')))
                                 return;
+
+                            // Include only transfers to the recipient ATA
+                            if (info?.destination !== associatedToken.toBase58()) return;
+
+                            // Exclude self-transfers
+                            if (info.source === associatedToken.toBase58()) return;
 
                             const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
                                 ({ pubkey }) => pubkey.equals(associatedToken)
@@ -165,6 +180,9 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             preAmount = new BigNumber(preBalance.uiTokenAmount.uiAmountString);
                             postAmount = new BigNumber(postBalance.uiTokenAmount.uiAmountString);
                         }
+
+                        // Exclude negative amounts
+                        if (postAmount.lt(preAmount)) return;
 
                         const amount = postAmount.minus(preAmount).toString();
                         const confirmations =
