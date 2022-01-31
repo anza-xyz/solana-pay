@@ -105,7 +105,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         }
     }, [status, publicKey, url, connection, sendTransaction]);
 
-    // When the status is waiting, poll for the transaction using the reference key
+    // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {
         if (!(status === PaymentStatus.Pending && reference && !signature)) return;
         let changed = false;
