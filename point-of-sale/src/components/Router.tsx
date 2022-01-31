@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { RootRoute } from './routes/RootRoute';
+import { useLinkWithQuery } from '../hooks/useLinkWithQuery';
 import { ConfirmedRoute } from './routes/ConfirmedRoute';
 import { NewRoute } from './routes/NewRoute';
 import { PendingRoute } from './routes/PendingRoute';
+import { RootRoute } from './routes/RootRoute';
 import { TransactionsRoute } from './routes/TransactionsRoute';
-import { useLinkWithQuery } from '../hooks/useLinkWithQuery';
 
 // TODO: add finalized view
 

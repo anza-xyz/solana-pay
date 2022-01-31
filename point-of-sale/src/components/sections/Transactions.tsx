@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import clsx from 'clsx';
 import { formatDistance } from 'date-fns';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -6,7 +7,6 @@ import { Transaction, useTransactions } from '../../hooks/useTransactions';
 import { NON_BREAKING_SPACE } from '../../utils/constants';
 import { Amount } from './Amount';
 import * as css from './Transactions.module.pcss';
-import clsx from 'clsx';
 
 export const Transactions: FC = () => {
     const { transactions } = useTransactions();

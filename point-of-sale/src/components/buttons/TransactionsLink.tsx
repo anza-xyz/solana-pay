@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Link } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
+import { Link } from 'react-router-dom';
 import { useLinkWithQuery } from '../../hooks/useLinkWithQuery';
 import { ActivityIcon } from '../images/ActivityIcon';
 import * as css from './TransactionsLink.module.pcss';
