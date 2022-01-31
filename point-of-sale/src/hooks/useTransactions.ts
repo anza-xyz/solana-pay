@@ -1,5 +1,5 @@
-import { createContext, useContext } from 'react';
 import { TransactionConfirmationStatus, TransactionError, TransactionSignature } from '@solana/web3.js';
+import { createContext, useContext } from 'react';
 import { Confirmations } from '../types';
 
 export interface Transaction {
