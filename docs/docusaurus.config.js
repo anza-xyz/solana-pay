@@ -59,7 +59,7 @@ const config = {
           },
           {
             to: 'api',
-            label: 'API',
+            label: 'API Reference',
             position: 'left',
           },
         ],
