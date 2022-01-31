@@ -6,6 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { ConfigProvider } from '../contexts/ConfigProvider';
+import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
@@ -37,33 +38,35 @@ export const RootRoute: FC = () => {
 
     return (
         <ThemeProvider>
-            {recipient && label ? (
-                <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
-                    <WalletProvider wallets={wallets} autoConnect>
-                        <WalletModalProvider>
-                            <ConfigProvider
-                                recipient={recipient}
-                                label={label}
-                                symbol="SOL"
-                                icon={<SOLIcon />}
-                                decimals={9}
-                                minDecimals={1}
-                                requiredConfirmations={9}
-                            >
-                                <TransactionsProvider>
-                                    <PaymentProvider>
-                                        <Outlet />
-                                    </PaymentProvider>
-                                </TransactionsProvider>
-                            </ConfigProvider>
-                        </WalletModalProvider>
-                    </WalletProvider>
-                </ConnectionProvider>
-            ) : (
-                <div className={css.logo}>
-                    <SolanaPayLogo width={240} height={88} />
-                </div>
-            )}
+            <FullscreenProvider>
+                {recipient && label ? (
+                    <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
+                        <WalletProvider wallets={wallets} autoConnect>
+                            <WalletModalProvider>
+                                <ConfigProvider
+                                    recipient={recipient}
+                                    label={label}
+                                    symbol="SOL"
+                                    icon={<SOLIcon />}
+                                    decimals={9}
+                                    minDecimals={1}
+                                    requiredConfirmations={9}
+                                >
+                                    <TransactionsProvider>
+                                        <PaymentProvider>
+                                            <Outlet />
+                                        </PaymentProvider>
+                                    </TransactionsProvider>
+                                </ConfigProvider>
+                            </WalletModalProvider>
+                        </WalletProvider>
+                    </ConnectionProvider>
+                ) : (
+                    <div className={css.logo}>
+                        <SolanaPayLogo width={240} height={88} />
+                    </div>
+                )}
+            </FullscreenProvider>
         </ThemeProvider>
     );
 };
