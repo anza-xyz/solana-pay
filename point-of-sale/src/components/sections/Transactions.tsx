@@ -1,18 +1,19 @@
 import BigNumber from 'bignumber.js';
+import clsx from 'clsx';
 import { formatDistance } from 'date-fns';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { Transaction, useTransactions } from '../../hooks/useTransactions';
 import { NON_BREAKING_SPACE } from '../../utils/constants';
 import { Amount } from './Amount';
-import * as styles from './Transactions.module.css';
+import * as css from './Transactions.module.pcss';
 
 export const Transactions: FC = () => {
     const { transactions } = useTransactions();
 
     return (
-        <div className={styles.root}>
-            <div className={styles.title}>Recent Transactions</div>
+        <div className={css.root}>
+            <div className={css.title}>Recent Transactions</div>
             {transactions.map((transaction) => (
                 <Transaction key={transaction.signature} transaction={transaction} />
             ))}
@@ -40,18 +41,18 @@ const Transaction: FC<{ transaction: Transaction }> = ({ transaction }) => {
     }, [getTime]);
 
     return (
-        <div className={styles.transaction}>
-            <div className={styles.icon}>{icon}</div>
-            <div className={styles.left}>
-                <div className={styles.amount}>
+        <div className={css.transaction}>
+            <div className={css.icon}>{icon}</div>
+            <div className={css.left}>
+                <div className={css.amount}>
                     <Amount amount={amount} showZero />
                     {NON_BREAKING_SPACE + symbol}
                 </div>
-                <div className={styles.signature}>{signature}</div>
+                <div className={css.signature}>{signature}</div>
             </div>
-            <div className={styles.right}>
-                <div className={styles.time}>{time}</div>
-                <div className={styles.status}>{transaction.status}</div>
+            <div className={css.right}>
+                <div className={css.time}>{time}</div>
+                <div className={clsx(css.status, css[`status-${transaction.status}`])}>{transaction.status}</div>
             </div>
         </div>
     );
