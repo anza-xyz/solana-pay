@@ -13,19 +13,19 @@ export class ParseURLError extends Error {
  * Parsed components of a Solana Pay URL.
  */
 export interface ParsedURL {
-    /** The address the payment should be made to. It **must** be a native SOL address. */
+    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient) */
     recipient: PublicKey;
-    /** The amount of SOL or SPL token that should be transferred. It  is always interpreted to be a decimal number of "user" units */
+    /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount) */
     amount: BigNumber | undefined;
-    /** The mint address of the SPL token */
+    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token) */
     splToken: PublicKey | undefined;
-    /** An array of public keys used to identify the transaction */
+    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference) */
     reference: PublicKey[] | undefined;
-    /** A label to be used by the wallet provider to identify the transaction */
+    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label) */
     label: string | undefined;
-    /** A message to be used by the wallet provider to identify the transaction */
+    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message) */
     message: string | undefined;
-    /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
+    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo) */
     memo: string | undefined;
 }
 
