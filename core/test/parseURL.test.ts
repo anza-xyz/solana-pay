@@ -7,12 +7,12 @@ describe('parseURL', () => {
         describe('when given correct params', () => {
             it('should parse successfully', () => {
                 const url =
-                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.000000001&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
                 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
-                expect(amount!.eq(new BigNumber(0.01))).toBe(true);
+                expect(amount!.eq(new BigNumber('0.000000001'))).toBe(true);
                 expect(splToken).toBeUndefined();
                 expect(reference).toHaveLength(1);
                 expect(reference![0]!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
@@ -23,12 +23,12 @@ describe('parseURL', () => {
 
             it('should parse with spl-token', () => {
                 const url =
-                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1.01&spl-token=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
                 const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
-                expect(amount!.eq(new BigNumber(0.01))).toBe(true);
+                expect(amount!.eq(new BigNumber('1.01'))).toBe(true);
                 expect(splToken!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
                 expect(reference).toBeUndefined();
                 expect(label).toBe('Michael');

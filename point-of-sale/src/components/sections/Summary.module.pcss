@@ -1,0 +1,46 @@
+.root {
+}
+
+.title {
+    line-height: 24px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.total {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    line-height: 24px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+:global(html.light) .title,
+:global(html.light) .total {
+    box-shadow: var(--theme-light-separator);
+}
+
+:global(html.dark) .title,
+:global(html.dark) .total {
+    box-shadow: var(--theme-dark-separator);
+}
+
+.totalLeft {
+    font-size: 14px;
+}
+
+.totalRight {
+    text-align: right;
+}
+
+.symbol {
+    font-size: 14px;
+    line-height: 32px;
+}
+
+.amount {
+    line-height: 32px;
+    font-size: 32px;
+    font-weight: 700;
+}

@@ -56,7 +56,7 @@ function encodeURLParams({ amount, splToken, reference, label, message, memo }: 
     const params: [string, string][] = [];
 
     if (amount) {
-        params.push(['amount', String(amount)]);
+        params.push(['amount', amount.toFixed(amount.decimalPlaces())]);
     }
 
     if (splToken) {
