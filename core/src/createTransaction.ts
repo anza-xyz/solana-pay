@@ -21,11 +21,11 @@ export class CreateTransactionError extends Error {
  * Optional parameters for creating a Solana Pay transaction.
  */
 export interface CreateTransactionParams {
-    /** The mint address of the SPL token */
+    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token) */
     splToken?: PublicKey;
-    /** An array of public keys used to identify the transaction */
+    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference) */
     reference?: PublicKey | PublicKey[];
-    /** Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo) */
+    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo) */
     memo?: string;
 }
 
@@ -36,12 +36,12 @@ export interface CreateTransactionParams {
  *
  * @param connection - A connection to the cluster.
  * @param payer - `PublicKey` of the payer.
- * @param recipient - The **native SOL** address the payment should be made to.
- * @param amount - The amount of SOL or SPL token that should be transferred.
+ * @param recipient - `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient)
+ * @param amount - `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount)
  * @param {CreateTransactionParams} createTransactionParams - Additional parameters
- * @param createTransactionParams.splToken - The mint address of the SPL token.
- * @param createTransactionParams.reference - An array of public keys used to identify the transaction.
- * @param createTransactionParams.memo - Creates an additional instruction for the [Memo Program](https://spl.solana.com/memo)
+ * @param createTransactionParams.splToken
+ * @param createTransactionParams.reference
+ * @param createTransactionParams.memo
  */
 export async function createTransaction(
     connection: Connection,
