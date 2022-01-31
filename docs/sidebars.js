@@ -21,7 +21,7 @@ const sidebars = {
   tutorialSidebar: [
     {
       type: 'doc',
-      id: 'introduction', // document id
+      id: 'INTRODUCTION', // document id
       label: 'Solana Pay', // sidebar label
     },
     {
@@ -32,7 +32,7 @@ const sidebars = {
     {
       type: 'category',
       label: 'Getting Started',
-      items: ['core/overview', 'core/merchant-integration', 'core/wallet-integration'],
+      items: ['core/OVERVIEW', 'core/MERCHANT_INTEGRATION', 'core/WALLET_INTEGRATION'],
     },
   ],
 };

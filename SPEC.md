@@ -25,11 +25,25 @@ A single `recipient` field is required as the pathname. The value must be the ba
 Instead, to request an SPL token transfer, the `spl-token` field must be used to specify an SPL Token mint, from which the associated token address of the recipient address must be derived.
 
 ### Amount
-A single `amount` field is allowed as an optional query parameter. The value must be a decimal number of "user" units. For SOL, that's SOL and not lamports. For tokens, `uiAmountString` and not `amount` (reference: [Token Balances Structure](https://docs.solana.com/developing/clients/jsonrpc-api#token-balances-structure)).
+A single `amount` field is allowed as an optional query parameter. The value must be a non-negative integer or decimal number of "user" units. For SOL, that's SOL and not lamports. For tokens, `uiAmountString` and not `amount` (reference: [Token Balances Structure](https://docs.solana.com/developing/clients/jsonrpc-api#token-balances-structure)).
 
-If the provided decimal places exceed what's supported for SOL (9) or the token (mint specific), the URL must be considered malformed and rejected. Scientific notation is prohibited.
+`0` is a valid value. If the value is a decimal number less than `1`, it must have a leading `0` before the `.`. Scientific notation is prohibited.
 
-If the amount is not provided, the wallet must prompt the user for the amount.
+If a value is not provided, the wallet must prompt the user for the amount. If the number of decimal places exceed what's supported for SOL (9) or the SPL token (mint specific), the wallet must reject the URL as malformed.
+
+### SPL Token
+A single `spl-token` field is allowed as an optional query parameter. The value must be the base58-encoded public key of an SPL Token mint account.
+
+If the field is not provided, the URL describes a native SOL transfer. If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used.
+
+Wallets must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
+
+### Reference
+Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
+
+If the fields are provided, wallets must attach them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction.
+
+The public key values may or may not be unique to the payment request, and may or may not correspond to an account on Solana. [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) may be used to locate a transaction using `reference` fields.
 
 ### Label
 A single `label` field is allowed as an optional query parameter. The value must be a URL-encoded string that describes the source of the payment request.
@@ -45,20 +59,6 @@ For example, this might be the name of an item being purchased. Wallets should d
 A single `memo` field is allowed as an optional query parameter. The value must be a URL-encoded string that will be included in an [SPL Memo](https://spl.solana.com/memo) instruction in the payment transaction.
 
 Wallets should display the memo to the user. The SPL Memo instruction must be included immediately before the SOL or SPL Token transfer instruction to avoid ambiguity with other instructions in the transaction.
-
-### SPL Token
-A single `spl-token` field is allowed as an optional query parameter. The value must be the base58-encoded public key of an SPL Token mint account.
-
-If the field is not provided, the URL describes a native SOL transfer. If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used.
-
-Wallets must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
-
-### Reference
-Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
-
-If the fields are provided, wallets must attach them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction.
-
-The public key values may or may not be unique to the payment request, and may or may not correspond to an account on Solana. [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) may be used to locate a transaction using `reference` fields.
 
 ## Examples
 URL describing a transfer for 1 SOL:
