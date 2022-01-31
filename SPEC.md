@@ -41,9 +41,9 @@ Wallets must derive the ATA address from the `recipient` and `spl-token` fields.
 ### Reference
 Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
 
-If the fields are provided, wallets must attach them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction.
+If the values are provided, wallets must attach them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
 
-The public key values may or may not be unique to the payment request, and may or may not correspond to an account on Solana. [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) may be used to locate a transaction using `reference` fields.
+Because Solana validators index transactions by these public keys, `reference` values can be used as client IDs (IDs usable before knowing the eventual payment transaction). The [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) RPC method can be used locate transactions this way.
 
 ### Label
 A single `label` field is allowed as an optional query parameter. The value must be a URL-encoded string that describes the source of the payment request.
