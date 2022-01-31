@@ -16,7 +16,9 @@ Use the `@solana/pay` JavaScript SDK to start accepting payments in your app tod
 ### Accept payments in person
 Run the open-source point-of-sale app to start accepting payments in-person. [Read the docs to get started.](point-of-sale)
 
-![Solana Pay](solana-pay.png)
+<p align="center">
+  <img style="max-width:375px;" src="solana-pay.png">
+</p>
 
 ## License
 

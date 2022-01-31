@@ -171,7 +171,9 @@ const qrCode = createQR(url);
 
 <br>
 
-![qr code](../solana-pay.png)
+<p align="center">
+  <img style="max-width:375px;" src="../solana-pay.png">
+</p>
 
 ### 3.1 Add the QR code to your payment page
 
