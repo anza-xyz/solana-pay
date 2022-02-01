@@ -365,7 +365,7 @@ The steps outlined above prevents:
 
 <!-- References -->
 
-[1]: https://github.com/kozakdenys/qr-code-styling
+[1]: https://github.com/solana-labs/qr-code-styling
 [2]: https://spl.solana.com/memo
 [3]: https://github.com/solana-labs/solana/issues/19535
 [4]: https://github.com/solana-labs/solana-pay/tree/master/point-of-sale

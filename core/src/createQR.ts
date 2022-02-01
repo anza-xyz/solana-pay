@@ -7,7 +7,7 @@ import QRCodeStyling, {
     Mode,
     Options,
     TypeNumber,
-} from 'qr-code-styling';
+} from '@solana/qr-code-styling';
 
 /**
  * Create a QR code from a Solana Pay URL.
