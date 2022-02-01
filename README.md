@@ -16,6 +16,29 @@ Use the `@solana/pay` JavaScript SDK to start accepting payments in your app tod
 ### Accept payments in person
 Run the open-source point-of-sale app to start accepting payments in-person. [Read the docs to get started.](point-of-sale/README.md)
 
+## Getting Involved
+
+Solana Pay is an open standard to facilitate commerce on Solana. We are looking for more contributors to help develop the ecosystem. Here are a few ideas if you're looking to get involved:
+
+### eCommerce Platform Integrations
+To get as many merchants accepting payments on Solana as possible we need to provide easy ways to set up Solana Pay on all eCommerce platforms. 
+
+Solana Labs has started a reference implementation for Shopify which you can see here to get a sense of how this might work.
+
+Here are some of the top eCommerce platforms that we're looking to integrate to:
+
+* WooCommerce
+* Magento
+* BigCommerce
+* Wix
+* Squarespace
+
+### Other possible projects
+* Mobile SDKs
+* Checkout UX Components
+
+Do you have another idea? Feel free to open an issue to discuss it with the community.
+
 ![Solana Pay](solana-pay.png)
 
 ## License
