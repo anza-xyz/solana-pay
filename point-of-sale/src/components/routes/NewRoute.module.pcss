@@ -17,9 +17,6 @@
     }
 
     .top {
-        position: absolute;
-        left: 0;
-        right: 0;
         display: flex;
         justify-content: space-between;
     }
@@ -31,6 +28,10 @@
         display: flex;
         flex-direction: column;
         justify-content: center;
+    }
+
+    :global(html.fullscreen) .top {
+        padding-top: 64px;
     }
 
     .side {
@@ -51,7 +52,11 @@
 
     .summary {
         flex: 1;
-        margin: 96px 48px 48px 48px;
+        margin: 48px;
+    }
+
+    :global(html.fullscreen) .summary {
+        padding-top: 64px;
     }
 
     .bottom {
