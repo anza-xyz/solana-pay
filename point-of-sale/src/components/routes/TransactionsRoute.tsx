@@ -19,9 +19,7 @@ export const TransactionsRoute: FC = () => {
             <div className={css.main}>
                 <Transactions />
             </div>
-            <div className={css.footer}>
-                <PoweredBy />
-            </div>
+            <PoweredBy />
         </div>
     );
 };

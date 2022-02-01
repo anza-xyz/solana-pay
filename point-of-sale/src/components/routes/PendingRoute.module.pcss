@@ -5,16 +5,15 @@
 }
 
 .header {
+    position: absolute;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between;
 }
 
 .header :global(.wallet-adapter-button) {
     margin: 32px;
-}
-
-:global(html.fullscreen .wallet-adapter-button) {
-    margin-top: 144px;
 }
 
 .main {
@@ -54,6 +53,11 @@
 }
 
 .footer {
-    margin: 24px;
     text-align: center;
+}
+
+@media (min-width: 768px) {
+    :global(html.fullscreen) .header {
+        margin-top: 128px;
+    }
 }
