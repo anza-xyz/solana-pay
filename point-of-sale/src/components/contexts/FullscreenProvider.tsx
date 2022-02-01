@@ -12,7 +12,11 @@ export const FullscreenProvider: FC<FullscreenProviderProps> = ({ children }) =>
     useLayoutEffect(() => {
         const listener = () => setFullscreen(isFullscreen());
         document.addEventListener('fullscreenchange', listener);
-        return () => document.removeEventListener('fullscreenchange', listener);
+        document.addEventListener('webkitfullscreenchange', listener);
+        return () => {
+            document.removeEventListener('fullscreenchange', listener);
+            document.removeEventListener('webkitfullscreenchange', listener);
+        };
     }, []);
 
     useLayoutEffect(() => {

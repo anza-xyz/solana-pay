@@ -1,8 +1,13 @@
 declare global {
     interface Document {
-        readonly webkitFullscreenElement: Element | null;
-        readonly mozFullScreenElement: Element | null;
-        readonly msFullscreenElement: Element | null;
+        readonly webkitCurrentFullScreenElement?: Element | null;
+        readonly webkitFullscreenElement?: Element | null;
+        readonly mozFullScreenElement?: Element | null;
+        readonly msFullscreenElement?: Element | null;
+
+        readonly fullscreen: boolean;
+        readonly webkitIsFullScreen?: boolean;
+        readonly mozFullScreen?: boolean;
 
         webkitExitFullscreen?: () => Promise<void>;
         mozCancelFullScreen?: () => Promise<void>;
@@ -21,9 +26,13 @@ export function isFullscreen(): boolean {
         typeof document !== 'undefined' &&
         !!(
             document.fullscreenElement ||
+            document.webkitCurrentFullScreenElement ||
             document.webkitFullscreenElement ||
             document.mozFullScreenElement ||
-            document.fullscreenElement
+            document.msFullscreenElement ||
+            document.fullscreen ||
+            document.webkitIsFullScreen ||
+            document.mozFullScreen
         )
     );
 }
