@@ -84,6 +84,7 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
 ## Coming Soon
 
 * Slope
+* Solflare
 * Crypto Please
 * Glow
 
