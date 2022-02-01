@@ -38,8 +38,6 @@ To build and run this app locally, you'll need:
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Installing / Set-up
-
 ### Clone the repository
 
 #### With Git
