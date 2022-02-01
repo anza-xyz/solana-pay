@@ -7,8 +7,6 @@ import { PendingRoute } from './routes/PendingRoute';
 import { RootRoute } from './routes/RootRoute';
 import { TransactionsRoute } from './routes/TransactionsRoute';
 
-// TODO: add finalized view
-
 export const Router: FC = () => {
     return (
         <BrowserRouter>
