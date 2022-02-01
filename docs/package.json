@@ -17,8 +17,6 @@
     "copy-wallet-doc": "shx cp ../core/WALLET_INTEGRATION.md ./src/core",
     "copy-overview-doc": "shx cp ../core/README.md ./src/core/OVERVIEW.md",
     "copy-docs": "yarn copy-spec && yarn copy-merchant-doc && yarn copy-wallet-doc && yarn copy-overview-doc",
-    "prebuild": "yarn copy-spec",
-    "prestart": "yarn copy-spec",
     "postinstall": "cd ../core && yarn install"
   },
   "dependencies": {
