@@ -5,11 +5,14 @@
 }
 
 .header {
-    position: absolute;
-    left: 0;
-    right: 0;
     display: flex;
     justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    :global(html.fullscreen) .header {
+        padding-top: 64px;
+    }
 }
 
 .header :global(.wallet-adapter-button) {
