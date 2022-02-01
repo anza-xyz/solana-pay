@@ -10,8 +10,15 @@
 }
 
 @media (min-width: 768px) {
+    .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
     :global(html.fullscreen) .header {
-        padding-top: 64px;
+        top: 64px;
     }
 }
 
