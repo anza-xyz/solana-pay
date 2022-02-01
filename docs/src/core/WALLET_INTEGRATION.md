@@ -3,6 +3,8 @@ title: Wallet Integration
 slug: /core/wallet-integration
 ---
 
+# Wallet Integration
+
 This section describes how a wallet provider can support payment links in their wallet. It shows how to parse the payment URL and create a transaction from it.
 
 This guide walks through an **example** implementation for wallet providers. The purpose of this is to make it easy for wallets to implement the protocol correctly.
@@ -86,7 +88,7 @@ See [full code snippet][10]
 
 This transaction **should** represent the original intent of the payment request link. The example implementation walks through the steps on how to construct the transaction:
 
-### Native SOL transfer
+**Native SOL transfer**
 
 1. Check that the payer and recipient accounts exist
 2. Check the payer and recipient are valid native accounts
@@ -95,7 +97,7 @@ This transaction **should** represent the original intent of the payment request
 5. If references were included, add them to the instruction
 6. If a memo was included, create an instruction for the memo program
 
-### SPL token transfer
+**SPL token transfer**
 
 1. Check that the payer and recipient accounts exist
 2. Check the token provided is an initialized mint
@@ -122,16 +124,16 @@ console.log('label: ', label);
 console.log('message: ', message);
 
 /**
-* Create the transaction with the parameters decoded from the URL
-*/
+ * Create the transaction with the parameters decoded from the URL
+ */
 const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
-reference,
-memo,
+    reference,
+    memo,
 });
 
 /**
-* Send the transaction to the network
-*/
+ * Send the transaction to the network
+ */
 sendAndConfirmTransaction(connection, tx, [CUSTOMER_WALLET]);
 ```
 
