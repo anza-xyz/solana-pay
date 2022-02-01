@@ -81,18 +81,6 @@ URL describing a generic SOL transfer. The user must be prompted for the exact a
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
 ```
 
-## Supporting Wallets
-
-* Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
-* FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
-
-## Coming Soon
-
-* Slope
-* Solflare
-* Crypto Please
-* Glow
-
 ## Extensions
 
 Additional fields may be incorporated into this specification to enable new use cases while ensuring compatibility with apps and wallets.
