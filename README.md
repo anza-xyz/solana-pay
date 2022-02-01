@@ -39,8 +39,8 @@ Here are some of the top eCommerce platforms that we're looking to integrate to:
 
 Do you have another idea? Feel free to open an issue to discuss it with the community.
 
-![Solana Pay](solana-pay.png)
-
 ## License
 
 Solana Pay is open source and available under the Apache License, Version 2.0. See the [LICENSE](./LICENSE) file for more info.
+
+![Solana Pay](solana-pay.png)
