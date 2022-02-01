@@ -64,7 +64,7 @@ gh repo clone solana-labs/solana-pay
 Install dependencies for point-of-sale
 
 ```shell
-cd solana-pay
+cd solana-pay && cd point-of-sale
 yarn install
 ```
 
