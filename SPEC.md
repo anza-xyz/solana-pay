@@ -85,6 +85,7 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
 
 * Slope
 * Crypto Please
+* Glow
 
 ## Extensions
 
