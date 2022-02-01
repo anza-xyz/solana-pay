@@ -14,16 +14,13 @@ export const NewRoute: FC = () => {
     return phone ? (
         <div className={css.root}>
             <div className={css.top}>
-                <TransactionsLink />
                 <FullscreenButton />
             </div>
             <div className={css.body}>
                 <NumPad />
                 <GenerateButton />
             </div>
-            <div className={css.footer}>
-                <PoweredBy />
-            </div>
+            <PoweredBy />
         </div>
     ) : (
         <div className={css.root}>
@@ -31,9 +28,7 @@ export const NewRoute: FC = () => {
                 <div className={css.body}>
                     <NumPad />
                 </div>
-                <div className={css.footer}>
-                    <PoweredBy />
-                </div>
+                <PoweredBy />
             </div>
             <div className={css.side}>
                 <div className={css.top}>

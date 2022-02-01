@@ -5,8 +5,17 @@
 }
 
 .header {
+    position: absolute;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+    :global(html.fullscreen) .header {
+        margin-top: 128px;
+    }
 }
 
 .main {
@@ -14,9 +23,4 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.footer {
-    margin: 24px;
-    text-align: center;
 }
