@@ -15,6 +15,7 @@ export const NewRoute: FC = () => {
         <div className={css.root}>
             <div className={css.top}>
                 <FullscreenButton />
+                <TransactionsLink />
             </div>
             <div className={css.body}>
                 <NumPad />
@@ -25,15 +26,15 @@ export const NewRoute: FC = () => {
     ) : (
         <div className={css.root}>
             <div className={css.main}>
+                <div className={css.top}>
+                    <FullscreenButton />
+                </div>
                 <div className={css.body}>
                     <NumPad />
                 </div>
                 <PoweredBy />
             </div>
             <div className={css.side}>
-                <div className={css.top}>
-                    <FullscreenButton />
-                </div>
                 <div className={css.summary}>
                     <Summary />
                     <GenerateButton />

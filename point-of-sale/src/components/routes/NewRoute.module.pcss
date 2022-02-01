@@ -18,6 +18,10 @@
 
     .top {
         position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
     }
 }
 
@@ -45,17 +49,9 @@
         color: var(--theme-dark-side-color);
     }
 
-    .top {
-        align-self: flex-end;
-    }
-
-    :global(html.fullscreen) .top {
-        margin-top: 128px;
-    }
-
     .summary {
         flex: 1;
-        margin: 48px;
+        margin: 96px 48px 48px 48px;
     }
 
     .bottom {

@@ -24,7 +24,7 @@ export const PendingRoute: FC = () => {
     return (
         <div className={css.root}>
             <div className={css.header}>
-                <BackButton onClick={reset}>Cancel Payment</BackButton>
+                <BackButton onClick={reset}>Cancel</BackButton>
                 {connectWallet ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
