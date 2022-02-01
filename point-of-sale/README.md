@@ -48,6 +48,13 @@ Clone the repository
 git clone https://github.com/solana-labs/solana-pay.git
 ```
 
+Install dependencies for point-of-sale
+
+```shell
+cd point-of-sale
+yarn install
+```
+
 **With Github CLI**
 
 ```shell
@@ -57,7 +64,7 @@ gh repo clone solana-labs/solana-pay
 Install dependencies for point-of-sale
 
 ```shell
-cd point-of-sale
+cd solana-pay
 yarn install
 ```
 
