@@ -5,6 +5,7 @@ import {
     FindTransactionSignatureError,
     parseURL,
     validateTransactionSignature,
+    ValidateTransactionSignatureError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
@@ -132,12 +133,12 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         };
     }, [status, reference, signature, connection, navigate]);
 
-    // When the status is confirmed, validate the transaction
+    // When the status is confirmed, validate the transaction against the provided params
     useEffect(() => {
         if (!(status === PaymentStatus.Confirmed && signature && amount)) return;
         let changed = false;
 
-        (async () => {
+        const run = async () => {
             try {
                 await validateTransactionSignature(
                     connection,
@@ -154,13 +155,25 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
-                console.log(error);
+                // If the RPC node doesn't have the transaction yet, try again
+                if (
+                    error instanceof ValidateTransactionSignatureError &&
+                    (error.message === 'not found' || error.message === 'missing meta')
+                ) {
+                    console.warn(error);
+                    timeout = setTimeout(run, 250);
+                    return;
+                }
+
+                console.error(error);
                 setStatus(PaymentStatus.Invalid);
             }
-        })();
+        };
+        let timeout = setTimeout(run, 0);
 
         return () => {
             changed = true;
+            clearTimeout(timeout);
         };
     }, [status, signature, amount, connection, recipient, splToken, reference]);
 
