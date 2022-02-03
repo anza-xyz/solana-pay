@@ -17,10 +17,10 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 
 * Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
 * FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
+* Slope ([iOS](https://apps.apple.com/us/app/slope-wallet/id1574624530), [Android](https://play.google.com/store/apps/details?id=com.wd.wallet))
 
 ### Coming Soon
 
-* Slope
 * Solflare
 * Crypto Please
 * Glow
