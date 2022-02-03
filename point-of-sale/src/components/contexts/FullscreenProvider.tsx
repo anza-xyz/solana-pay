@@ -9,6 +9,8 @@ export interface FullscreenProviderProps {
 export const FullscreenProvider: FC<FullscreenProviderProps> = ({ children }) => {
     const [fullscreen, setFullscreen] = useState(isFullscreen());
 
+    useLayoutEffect(() => setFullscreen(isFullscreen()), []);
+
     useLayoutEffect(() => {
         const listener = () => setFullscreen(isFullscreen());
         document.addEventListener('fullscreenchange', listener);
