@@ -37,6 +37,8 @@ Learn how to integrate Solana Pay in your website, application or wallet.
 
 - [Merchant Integration](./MERCHANT_INTEGRATION.md)
 - [Wallet Integration](./WALLET_INTEGRATION.md)
+- [API Reference](https://docs.solanapay.com/api/core)
+- [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
 
 ## License
 

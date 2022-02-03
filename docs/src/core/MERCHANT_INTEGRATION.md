@@ -114,7 +114,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
 <details>
     <summary>See code snippet</summary>
 
-```javascript
+```typescript
      /**
      * Simulate a checkout experience
      *
@@ -130,7 +130,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     const label = 'Jungle Cats store';
     const message = 'Jungle Cats store - your order - #001234';
     const memo = 'JC#4098';
-    const splToken = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)';
 
     /**
      * Create a payment request link
