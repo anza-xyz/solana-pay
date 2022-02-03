@@ -86,16 +86,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
                     if (!changed) {
                         await sendTransaction(transaction, connection);
-
-                        clearTimeout(timeout);
                     }
                 } catch (error) {
                     // If the transaction is declined or fails, try again
                     console.error(error);
-                    setTimeout(run, 3000);
+                    timeout = setTimeout(run, 5000);
                 }
             };
-            const timeout = setTimeout(run, 3000);
+            let timeout = setTimeout(run, 0);
 
             return () => {
                 changed = true;
