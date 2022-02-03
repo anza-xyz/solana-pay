@@ -68,7 +68,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         }
     }, [status, reference, navigate]);
 
-    // Use the connected wallet to sign and send the transaction for now
+    // If there's a connected wallet, use it to sign and send the transaction
     useEffect(() => {
         if (status === PaymentStatus.Pending && connectWallet && publicKey) {
             let changed = false;
@@ -90,6 +90,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                         clearTimeout(timeout);
                     }
                 } catch (error) {
+                    // If the transaction is declined or fails, try again
                     console.error(error);
                     setTimeout(run, 3000);
                 }
@@ -121,6 +122,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
+                // If the RPC node doesn't have the transaction signature yet, try again
                 if (!(error instanceof FindTransactionSignatureError)) {
                     console.error(error);
                 }
@@ -177,7 +179,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         };
     }, [status, signature, amount, connection, recipient, splToken, reference]);
 
-    // When the status is valid, wait for the transaction to finalize
+    // When the status is valid, poll for confirmations until the transaction is finalized
     useEffect(() => {
         if (!(status === PaymentStatus.Valid && signature)) return;
         let changed = false;
