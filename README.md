@@ -35,7 +35,7 @@ Solana Pay is an open standard to facilitate commerce on Solana. We are looking 
 ### eCommerce Platform Integrations
 To get as many merchants accepting payments on Solana as possible we need to provide easy ways to set up Solana Pay on all eCommerce platforms. 
 
-Solana Labs has started a reference implementation for Shopify which you can see here to get a sense of how this might work.
+Solana Labs has started a reference implementation for Shopify which you can see [here](https://github.com/solana-labs/solana-pay/blob/shopify/shopify) to get a sense of how this might work.
 
 Here are some of the top eCommerce platforms that we're looking to integrate to:
 
