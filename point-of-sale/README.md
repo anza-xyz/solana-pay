@@ -38,39 +38,30 @@ To build and run this app locally, you'll need:
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Installing / Set-up
+### Clone the repository
 
-Clone the repository
-
-**With Git**
-
+#### With Git
 ```shell
 git clone https://github.com/solana-labs/solana-pay.git
 ```
 
-**With Github CLI**
-
+#### With Github CLI
 ```shell
 gh repo clone solana-labs/solana-pay
 ```
 
-Install dependencies for point-of-sale
-
+### Install dependencies
 ```shell
-cd point-of-sale
+cd solana-pay/point-of-sale
 yarn install
 ```
 
-## How to run locally
-
-Start the local dev server
-
+### Start the local dev server
 ```shell
 yarn start
 ```
 
-Open the point of sale app
-
+### Open the point of sale app
 ```shell
 open http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name
 ```

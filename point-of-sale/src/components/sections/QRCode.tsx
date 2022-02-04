@@ -1,5 +1,5 @@
 import { createQROptions } from '@solana/pay';
-import QRCodeStyling from 'qr-code-styling';
+import QRCodeStyling from '@solana/qr-code-styling';
 import React, { FC, useLayoutEffect, useMemo, useRef } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { usePayment } from '../../hooks/usePayment';

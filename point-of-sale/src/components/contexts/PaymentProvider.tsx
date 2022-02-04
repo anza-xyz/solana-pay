@@ -5,6 +5,7 @@ import {
     FindTransactionSignatureError,
     parseURL,
     validateTransactionSignature,
+    ValidateTransactionSignatureError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
@@ -67,7 +68,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         }
     }, [status, reference, navigate]);
 
-    // Use the connected wallet to sign and send the transaction for now
+    // If there's a connected wallet, use it to sign and send the transaction
     useEffect(() => {
         if (status === PaymentStatus.Pending && connectWallet && publicKey) {
             let changed = false;
@@ -85,15 +86,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
                     if (!changed) {
                         await sendTransaction(transaction, connection);
-
-                        clearTimeout(timeout);
                     }
                 } catch (error) {
+                    // If the transaction is declined or fails, try again
                     console.error(error);
-                    setTimeout(run, 3000);
+                    timeout = setTimeout(run, 5000);
                 }
             };
-            const timeout = setTimeout(run, 3000);
+            let timeout = setTimeout(run, 0);
 
             return () => {
                 changed = true;
@@ -120,6 +120,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
+                // If the RPC node doesn't have the transaction signature yet, try again
                 if (!(error instanceof FindTransactionSignatureError)) {
                     console.error(error);
                 }
@@ -132,12 +133,12 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         };
     }, [status, reference, signature, connection, navigate]);
 
-    // When the status is confirmed, validate the transaction
+    // When the status is confirmed, validate the transaction against the provided params
     useEffect(() => {
         if (!(status === PaymentStatus.Confirmed && signature && amount)) return;
         let changed = false;
 
-        (async () => {
+        const run = async () => {
             try {
                 await validateTransactionSignature(
                     connection,
@@ -154,17 +155,29 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
-                console.log(error);
+                // If the RPC node doesn't have the transaction yet, try again
+                if (
+                    error instanceof ValidateTransactionSignatureError &&
+                    (error.message === 'not found' || error.message === 'missing meta')
+                ) {
+                    console.warn(error);
+                    timeout = setTimeout(run, 250);
+                    return;
+                }
+
+                console.error(error);
                 setStatus(PaymentStatus.Invalid);
             }
-        })();
+        };
+        let timeout = setTimeout(run, 0);
 
         return () => {
             changed = true;
+            clearTimeout(timeout);
         };
     }, [status, signature, amount, connection, recipient, splToken, reference]);
 
-    // When the status is valid, wait for the transaction to finalize
+    // When the status is valid, poll for confirmations until the transaction is finalized
     useEffect(() => {
         if (!(status === PaymentStatus.Valid && signature)) return;
         let changed = false;

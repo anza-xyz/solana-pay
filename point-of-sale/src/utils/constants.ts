@@ -7,7 +7,7 @@ export const NON_BREAKING_SPACE = '\u00a0';
 // GenesysGo's devnet endpoint doesn't retain historical transactions
 export const DEVNET_ENDPOINT = clusterApiUrl('devnet');
 
-export const MAINNET_ENDPOINT = 'https://ssc-dao.genesysgo.net';
+export const MAINNET_ENDPOINT = 'https://solanapay.genesysgo.net';
 
 // Mint DUMMY tokens on devnet @ https://spl-token-faucet.com
 export const DEVNET_DUMMY_MINT = new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr');

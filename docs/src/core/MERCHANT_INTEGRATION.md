@@ -3,6 +3,8 @@ title: Merchant Integration
 slug: /core/merchant-integration
 ---
 
+# Merchant Integration
+
 This section describes how a merchant can integrate Solana Pay into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
 
 This guide walks through an example of a QR code-based Point of Sale system that accepts payments via Solana Pay.
@@ -112,9 +114,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
 <details>
     <summary>See code snippet</summary>
 
-```diff
-    // -- snippet -- //
-
+```typescript
      /**
      * Simulate a checkout experience
      *
@@ -130,7 +130,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     const label = 'Jungle Cats store';
     const message = 'Jungle Cats store - your order - #001234';
     const memo = 'JC#4098';
-+   const splToken = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';
+    const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)';
 
     /**
      * Create a payment request link
@@ -139,8 +139,7 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
      * Several parameters are encoded within the link representing an intent to collect payment from a customer.
      */
     console.log('3. 💰 Create a payment request link \n');
--   const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo });
-+   const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo, splToken });
+    const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo, splToken });
 ```
 
 </details>
@@ -363,7 +362,7 @@ The steps outlined above prevents:
 
 <!-- References -->
 
-[1]: https://github.com/kozakdenys/qr-code-styling
+[1]: https://github.com/solana-labs/qr-code-styling
 [2]: https://spl.solana.com/memo
 [3]: https://github.com/solana-labs/solana/issues/19535
 [4]: https://github.com/solana-labs/solana-pay/tree/master/point-of-sale
