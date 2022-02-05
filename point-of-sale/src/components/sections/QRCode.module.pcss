@@ -1,0 +1,13 @@
+.root {
+    & svg {
+        display: block;
+    }
+}
+
+:global(html.light) .root {
+    background: var(--theme-light-qr-background);
+}
+
+:global(html.dark) .root {
+    background: var(--theme-dark-qr-background);
+}
