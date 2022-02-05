@@ -28,7 +28,7 @@ export function createQROptions(url: string, size = 512, background = 'white', c
         width: size,
         height: size,
         data: url,
-        margin: 0,
+        margin: 16,
         qrOptions: {
             typeNumber: 0 as TypeNumber,
             mode: 'Byte' as Mode,
