@@ -74,7 +74,7 @@ You can deploy this point of sale app to Vercel with a few clicks. Fork the proj
 
 Once the deployment finishes, navigate to
 ```
-https://<YOUR DEPLOYMENT URL>?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay
+https://<YOUR DEPLOYMENT URL>?recipient=<YOUR WALLET ADDRESS>&label=Your+Store+Name
 ```
 
 ## License
