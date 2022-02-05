@@ -66,6 +66,14 @@ yarn start
 open http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name
 ```
 
+## Deploying to Vercel
+
+You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
+
+![Solana Pay Point of Sale app Vercel configuration](solana-pay-point-of-sale-vercel.png)
+
+Once the deployment finishes, navigate to `https://<YOUR DEPLOYMENT URL>?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay`.
+
 ## License
 
 The Solana Pay Point of Sale app is open source and available under the Apache License, Version 2.0. See the [LICENSE](./LICENSE) file for more info.
