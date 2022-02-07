@@ -141,6 +141,14 @@ See [full code snippet][11]
 
 </details>
 
+## Deep linking
+
+Wallet providers building for mobile or wearable devices are encouraged to register their app as a handler for the Solana Pay URL scheme `solana:`.
+
+For example, when a payment request is presented as a QR code, the payer should ideally be able to read the code using the native scanning capability of their device and have the appropriate wallet open with the transaction prefilled.
+
+URLs can be embedded in the environment in web pages, QR codes, NFC tags and potential new formats. To avoid inadvertent transfer of tokens, care must be taken when designing wallets to ensure that transactions cannot accidentally be triggered and sent.
+
 <!-- References -->
 
 [9]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateWalletInteraction.ts#L13

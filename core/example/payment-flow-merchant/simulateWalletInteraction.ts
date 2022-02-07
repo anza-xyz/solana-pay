@@ -7,7 +7,7 @@ export async function simulateWalletInteraction(connection: Connection, url: str
     /**
      * For example only
      *
-     * The URL that triggers the wallet interaction; follows the Solana Pay URI scheme
+     * The URL that triggers the wallet interaction; follows the Solana Pay URL scheme
      * The parameters needed to create the correct transaction is encoded within the URL
      */
     const { recipient, message, memo, amount, reference, label } = parseURL(url);
