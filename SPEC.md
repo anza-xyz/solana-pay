@@ -12,6 +12,8 @@ A standard URL protocol for requesting native SOL and SPL Token transfers allows
 
 Applications should ensure that a payment transaction has been confirmed and contains a transfer of the expected amount and type before they release the goods or services being sold.
 
+Mobile wallets should ideally register to handle the URL scheme and provide a seamless yet secure experience when Solana Pay URLs are encountered in the environment.
+
 By standardizing a simple approach to solving those problems, we ensure compatibility of applications and wallets.
 
 ## Specification
