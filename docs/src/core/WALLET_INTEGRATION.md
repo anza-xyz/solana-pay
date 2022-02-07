@@ -143,7 +143,7 @@ See [full code snippet][11]
 
 ## Deep linking
 
-Wallet providers building for mobile or wearable devices are encouraged to register their app as a handler for the Solana Pay URI scheme.
+Wallet providers building for mobile or wearable devices are encouraged to register their app as a handler for the Solana Pay URL scheme `solana:`.
 
 For example, when a payment request is presented as a QR code, the payer should ideally be able to read the code using the native scanning capability of their device and have the appropriate wallet open with the transaction prefilled.
 
