@@ -96,7 +96,8 @@ const reference = new Keypair().publicKey;
 const label = 'Jungle Cats store';
 const message = 'Jungle Cats store - your order - #001234';
 const memo = 'JC#4098';
-
+const recipient = new PublicKey("MERCHANT_WALLET")
+ 
 /**
  * Create a payment request link
  *
@@ -104,7 +105,7 @@ const memo = 'JC#4098';
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
 console.log('3. 💰 Create a payment request link \n');
-const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo });
+const url = encodeURL({ recipient: recipient, amount, reference, label, message, memo });
 ```
 
 See [full code snippet][6]
