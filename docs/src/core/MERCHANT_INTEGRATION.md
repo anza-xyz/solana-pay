@@ -29,12 +29,14 @@ Install the packages and import them in your code.
 
 ```shell
 npm install @solana/pay @solana/web3.js --save
+npm install bignumber.js --save
 ```
 
 **yarn**
 
 ```shell
 yarn add @solana/pay @solana/web3.js
+yarn add bignumber.js
 ```
 
 ### 1.1 Establish a connection
@@ -49,7 +51,9 @@ When working on Solana, you will need to connect to the network. For our example
 <br/>
 
 ```typescript
-import { Cluster, clusterApiUrl, Connection } from '@solana/web3.js';
+import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import {encodeURL, createQR} from '@solana/pay'
+import BigNumber from 'bignumber.js'
 
 async function main() {
     // Variable to keep state of the payment status
