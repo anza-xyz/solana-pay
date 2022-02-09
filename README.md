@@ -19,6 +19,7 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 * Solflare
 * Crypto Please
 * Glow
+* Reactor Wallet
 
 ## How to use Solana Pay
 
