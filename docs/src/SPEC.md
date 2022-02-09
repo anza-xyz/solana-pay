@@ -80,7 +80,7 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd
 
 URL describing a generic SOL transfer. The user must be prompted for the exact amount.
 ```
-solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
+solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?label=Michael&memo=4321ABCD
 ```
 
 ## Extensions
