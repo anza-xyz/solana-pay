@@ -41,6 +41,8 @@ yarn add bignumber.js
 
 ### 1.1 Import necessary modules
 
+Import the modules used to work with Solana Pay.
+
 ```typescript
 import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
 import {encodeURL, createQR} from '@solana/pay'
