@@ -39,7 +39,15 @@ yarn add @solana/pay @solana/web3.js
 yarn add bignumber.js
 ```
 
-### 1.1 Establish a connection
+### 1.1 Import necessary modules
+
+```typescript
+import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import {encodeURL, createQR} from '@solana/pay'
+import BigNumber from 'bignumber.js'
+```
+
+### 1.2 Establish a connection
 
 When working on Solana, you will need to connect to the network. For our example, we will connect to `devnet`.
 
@@ -51,10 +59,6 @@ When working on Solana, you will need to connect to the network. For our example
 <br/>
 
 ```typescript
-import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import {encodeURL, createQR} from '@solana/pay'
-import BigNumber from 'bignumber.js'
-
 async function main() {
     // Variable to keep state of the payment status
     let paymentStatus: string;
