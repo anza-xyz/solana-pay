@@ -1,6 +1,6 @@
 import { Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { encodeURL } from '../src';
+import { encodeTransferRequestURL } from '../src';
 
 describe('encodeURL', () => {
     it('encodes a URL', () => {
@@ -15,7 +15,7 @@ describe('encodeURL', () => {
         const message = 'message';
         const memo = 'memo';
 
-        const url = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
+        const url = encodeTransferRequestURL({ recipient, amount, splToken, reference, label, message, memo });
 
         expect(url).toBe(
             `solana:${recipient}?amount=0.000000001&spl-token=${splToken}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
@@ -25,7 +25,7 @@ describe('encodeURL', () => {
     it('encodes a url with recipient', () => {
         const recipient = Keypair.generate().publicKey;
 
-        const url = encodeURL({ recipient });
+        const url = encodeTransferRequestURL({ recipient });
 
         expect(url).toBe(`solana:${recipient}`);
     });
@@ -34,7 +34,7 @@ describe('encodeURL', () => {
         const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber('1');
 
-        const url = encodeURL({ recipient, amount });
+        const url = encodeTransferRequestURL({ recipient, amount });
 
         expect(url).toBe(`solana:${recipient}?amount=1`);
     });
@@ -44,7 +44,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1.01');
         const splToken = Keypair.generate().publicKey;
 
-        const url = encodeURL({ recipient, amount, splToken });
+        const url = encodeTransferRequestURL({ recipient, amount, splToken });
 
         expect(url).toBe(`solana:${recipient}?amount=1.01&spl-token=${splToken}`);
     });
@@ -55,7 +55,7 @@ describe('encodeURL', () => {
         const reference1 = Keypair.generate().publicKey;
         const reference = [reference1];
 
-        const url = encodeURL({ recipient, amount, reference });
+        const url = encodeTransferRequestURL({ recipient, amount, reference });
 
         expect(url).toBe(`solana:${recipient}?amount=100000.123456&reference=${reference1}`);
     });
@@ -65,7 +65,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1.99');
         const label = 'label';
 
-        const url = encodeURL({ recipient, amount, label });
+        const url = encodeTransferRequestURL({ recipient, amount, label });
 
         expect(url).toBe(`solana:${recipient}?amount=1.99&label=${label}`);
     });
@@ -75,7 +75,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1');
         const message = 'message';
 
-        const url = encodeURL({ recipient, amount, message });
+        const url = encodeTransferRequestURL({ recipient, amount, message });
 
         expect(url).toBe(`solana:${recipient}?amount=1&message=${message}`);
     });
@@ -85,7 +85,7 @@ describe('encodeURL', () => {
         const amount = new BigNumber('100');
         const memo = 'memo';
 
-        const url = encodeURL({ recipient, amount, memo });
+        const url = encodeTransferRequestURL({ recipient, amount, memo });
 
         expect(url).toBe(`solana:${recipient}?amount=100&memo=${memo}`);
     });

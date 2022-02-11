@@ -1,6 +1,12 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { createTransaction, encodeURL, findTransactionSignature, parseURL, validateTransactionSignature } from '../src';
+import {
+    createTransaction, encodeTransferRequestURL,
+    findTransactionSignature,
+    parseURL,
+    TransferRequestURL,
+    validateTransactionSignature,
+} from '../src';
 
 (async function () {
     const cluster = 'devnet';
@@ -33,10 +39,10 @@ import { createTransaction, encodeURL, findTransactionSignature, parseURL, valid
     console.log(originalURL);
 
     // Wallet gets URL from deep link / QR code
-    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(originalURL);
+    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(originalURL) as TransferRequestURL;
 
     // Apps can encode the URL from the required and optional parameters
-    const encodedURL = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
+    const encodedURL = encodeTransferRequestURL({ recipient, amount, splToken, reference, label, message, memo });
 
     console.log(originalURL);
     console.log(encodedURL);
