@@ -19,6 +19,10 @@
         "nuke": "shx rm -rf node_modules yarn.lock"
     },
     "dependencies": {
+        "@emotion/react": "^11.7.1",
+        "@emotion/styled": "^11.6.0",
+        "@fontsource/roboto": "^4.5.3",
+        "@mui/material": "^5.4.1",
         "@solana/pay": "^0.1.2",
         "@solana/qr-code-styling": "^1.6.0-beta.0",
         "@solana/spl-token": "^0.2.0-alpha.2",

@@ -29,6 +29,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [message, setMessage] = useState<string>();
     const [memo, setMemo] = useState<string>();
     const [reference, setReference] = useState<PublicKey>();
+    const [raffleRef, setRaffleRef] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState<Confirmations>(0);
@@ -36,23 +37,34 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
     const url = useMemo(
-        () =>
-            encodeURL({
+        () => {
+            
+            let refArr: PublicKey | PublicKey[] | undefined;
+            if (reference && raffleRef) {
+                refArr = [reference, raffleRef];
+            } else {
+                refArr = reference;
+            }
+            console.log(`URL Changed: raffleRef=${raffleRef} refArr=${refArr}`);
+            // TODO(marius): use raffleRef
+            return encodeURL({
                 recipient,
                 amount,
                 splToken,
-                reference,
+                reference: refArr,
                 label,
                 message,
                 memo,
-            }),
-        [recipient, amount, splToken, reference, label, message, memo]
+            })
+        },
+        [recipient, amount, splToken, reference, raffleRef, label, message, memo]
     );
 
     const reset = useCallback(() => {
         setAmount(undefined);
         setMessage(undefined);
         setMemo(undefined);
+        setRaffleRef(undefined);
         setReference(undefined);
         setSignature(undefined);
         setStatus(PaymentStatus.New);
@@ -218,6 +230,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 setMessage,
                 memo,
                 setMemo,
+                setRaffleRef,
                 reference,
                 signature,
                 status,

@@ -20,6 +20,7 @@ export const QRCode: FC = () => {
         [theme]
     );
     const { url } = usePayment();
+    console.log(`Payment URL: ${url}`);
     const options = useMemo(() => createQROptions(url, size, background, color), [url, size, background, color]);
 
     const qr = useMemo(() => new QRCodeStyling(), []);
