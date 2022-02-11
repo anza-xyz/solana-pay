@@ -12,11 +12,11 @@
         "clean": "shx rm -rf dist .parcel-cache",
         "build": "yarn clean && parcel build src/index.html",
         "start": "yarn clean && parcel src/index.html",
-        "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint:fix": "eslint --fix . && yarn fmt",
-        "nuke": "shx rm -rf node_modules yarn.lock"
+        "nuke": "shx rm -rf node_modules yarn.lock",
+        "deploy": "shx cp .nojekyll dist/ && gh-pages --dist dist --dest app --dotfiles"
     },
     "dependencies": {
         "@solana/pay": "^0.1.2",

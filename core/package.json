@@ -28,11 +28,12 @@
         "example": "node --experimental-specifier-resolution=node --loader ts-node/esm example/index.ts",
         "example:merchant": "node --experimental-specifier-resolution=node --loader ts-node/esm example/payment-flow-merchant/main.ts",
         "test": "jest",
-        "docs": "shx rm -rf docs && typedoc && shx cp .nojekyll docs/",
+        "docs": "shx rm -rf docs && typedoc",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint": "eslint --ext .ts . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint:fix": "eslint --fix --ext .ts . && yarn fmt",
-        "nuke": "shx rm -rf node_modules yarn.lock"
+        "nuke": "shx rm -rf node_modules yarn.lock",
+        "deploy": "shx cp .nojekyll docs/ && gh-pages --dist docs --dest docs --dotfiles"
     },
     "dependencies": {
         "@solana/qr-code-styling": "^1.6.0-beta.0",
