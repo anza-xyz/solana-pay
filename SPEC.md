@@ -1,4 +1,5 @@
 # Solana Pay Specification
+Marius Fork - Frond end POS app
 
 ## Summary
 A standard protocol to encode Solana transaction requests within URLs to enable payments and other use cases.
