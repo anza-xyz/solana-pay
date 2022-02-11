@@ -10,12 +10,12 @@ export class FindTransactionSignatureError extends Error {
 /**
  * Find the oldest transaction signature referencing a given public key.
  *
- * @throws if signature can't be found
- *
  * @param connection - A connection to the cluster.
- * @param reference - `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference)
- * @param {SignaturesForAddressOptions} options - Options for `getSignaturesForAddress`.
- * @param {Finality} finality - A subset of Commitment levels, which are at least optimistically confirmed.
+ * @param reference - `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference).
+ * @param options - Options for `getSignaturesForAddress`.
+ * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
+ *
+ * @throws {FindTransactionSignatureError}
  */
 export async function findTransactionSignature(
     connection: Connection,

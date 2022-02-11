@@ -2,10 +2,16 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 /** @internal */
-export const URL_PROTOCOL = 'solana:';
+export const SOLANA_PROTOCOL = 'solana:';
+
+/** @internal */
+export const HTTPS_PROTOCOL = 'https:';
 
 /** @internal */
 export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
+
+/** @internal */
+export const EMPTY_PUBKEY = new PublicKey(0);
 
 /** @internal */
 export const SOL_DECIMALS = 9;

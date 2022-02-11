@@ -21,27 +21,24 @@ export class CreateTransactionError extends Error {
  * Optional parameters for creating a Solana Pay transaction.
  */
 export interface CreateTransactionParams {
-    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token) */
+    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
     splToken?: PublicKey;
-    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference) */
+    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
     reference?: PublicKey | PublicKey[];
-    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo) */
+    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
     memo?: string;
 }
 
 /**
  * Create a Solana Pay transaction.
  *
- * **Reference** implementation for wallet providers.
- *
  * @param connection - A connection to the cluster.
- * @param payer - `PublicKey` of the payer.
- * @param recipient - `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient)
- * @param amount - `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount)
- * @param {CreateTransactionParams} createTransactionParams - Additional parameters
- * @param createTransactionParams.splToken
- * @param createTransactionParams.reference
- * @param createTransactionParams.memo
+ * @param payer - Signer account within a wallet.
+ * @param recipient - `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient).
+ * @param amount - `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount).
+ * @param params - Optional parameters.
+ *
+ * @throws {CreateTransactionError}
  */
 export async function createTransaction(
     connection: Connection,
@@ -58,65 +55,9 @@ export async function createTransaction(
     if (!recipientInfo) throw new CreateTransactionError('recipient not found');
 
     // A native SOL or SPL token transfer instruction
-    let instruction: TransactionInstruction;
-
-    // If no SPL token mint is provided, transfer native SOL
-    if (!splToken) {
-        // Check that the payer and recipient are valid native accounts
-        if (!payerInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('payer owner invalid');
-        if (payerInfo.executable) throw new CreateTransactionError('payer executable');
-        if (!recipientInfo.owner.equals(SystemProgram.programId))
-            throw new CreateTransactionError('recipient owner invalid');
-        if (recipientInfo.executable) throw new CreateTransactionError('recipient executable');
-
-        // Check that the amount provided doesn't have greater precision than SOL
-        if (amount.decimalPlaces() > SOL_DECIMALS) throw new CreateTransactionError('amount decimals invalid');
-
-        // Convert input decimal amount to integer lamports
-        amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
-
-        // Check that the payer has enough lamports
-        const lamports = amount.toNumber();
-        if (lamports > payerInfo.lamports) throw new CreateTransactionError('insufficient funds');
-
-        // Create an instruction to transfer native SOL
-        instruction = SystemProgram.transfer({
-            fromPubkey: payer,
-            toPubkey: recipient,
-            lamports,
-        });
-    }
-    // Otherwise, transfer SPL tokens from payer's ATA to recipient's ATA
-    else {
-        // Check that the token provided is an initialized mint
-        const mint = await getMint(connection, splToken);
-        if (!mint.isInitialized) throw new CreateTransactionError('mint not initialized');
-
-        // Check that the amount provided doesn't have greater precision than the mint
-        if (amount.decimalPlaces() > mint.decimals) throw new CreateTransactionError('amount decimals invalid');
-
-        // Convert input decimal amount to integer tokens according to the mint decimals
-        amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
-
-        // Get the payer's ATA and check that the account exists and can send tokens
-        const payerATA = await getAssociatedTokenAddress(splToken, payer);
-        const payerAccount = await getAccount(connection, payerATA);
-        if (!payerAccount.isInitialized) throw new CreateTransactionError('payer not initialized');
-        if (payerAccount.isFrozen) throw new CreateTransactionError('payer frozen');
-
-        // Get the recipient's ATA and check that the account exists and can receive tokens
-        const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
-        const recipientAccount = await getAccount(connection, recipientATA);
-        if (!recipientAccount.isInitialized) throw new CreateTransactionError('recipient not initialized');
-        if (recipientAccount.isFrozen) throw new CreateTransactionError('recipient frozen');
-
-        // Check that the payer has enough tokens
-        const tokens = BigInt(String(amount));
-        if (tokens > payerAccount.amount) throw new CreateTransactionError('insufficient funds');
-
-        // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
-        instruction = createTransferCheckedInstruction(payerATA, splToken, recipientATA, payer, tokens, mint.decimals);
-    }
+    const instruction = splToken
+        ? await createSPLTokenInstruction(connection, payer, recipient, amount, splToken)
+        : await createSystemInstruction(connection, payer, recipient, amount);
 
     // If reference accounts are provided, add them to the transfer instruction
     if (reference) {
@@ -147,4 +88,79 @@ export async function createTransaction(
     transaction.add(instruction);
 
     return transaction;
+}
+
+async function createSystemInstruction(
+    connection: Connection,
+    payer: PublicKey,
+    recipient: PublicKey,
+    amount: BigNumber
+): Promise<TransactionInstruction> {
+    // Check that the payer and recipient accounts exist
+    const payerInfo = await connection.getAccountInfo(payer);
+    if (!payerInfo) throw new CreateTransactionError('payer not found');
+
+    const recipientInfo = await connection.getAccountInfo(recipient);
+    if (!recipientInfo) throw new CreateTransactionError('recipient not found');
+
+    // Check that the payer and recipient are valid native accounts
+    if (!payerInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('payer owner invalid');
+    if (payerInfo.executable) throw new CreateTransactionError('payer executable');
+    if (!recipientInfo.owner.equals(SystemProgram.programId))
+        throw new CreateTransactionError('recipient owner invalid');
+    if (recipientInfo.executable) throw new CreateTransactionError('recipient executable');
+
+    // Check that the amount provided doesn't have greater precision than SOL
+    if (amount.decimalPlaces() > SOL_DECIMALS) throw new CreateTransactionError('amount decimals invalid');
+
+    // Convert input decimal amount to integer lamports
+    amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
+
+    // Check that the payer has enough lamports
+    const lamports = amount.toNumber();
+    if (lamports > payerInfo.lamports) throw new CreateTransactionError('insufficient funds');
+
+    // Create an instruction to transfer native SOL
+    return SystemProgram.transfer({
+        fromPubkey: payer,
+        toPubkey: recipient,
+        lamports,
+    });
+}
+
+async function createSPLTokenInstruction(
+    connection: Connection,
+    payer: PublicKey,
+    recipient: PublicKey,
+    amount: BigNumber,
+    splToken: PublicKey
+): Promise<TransactionInstruction> {
+    // Check that the token provided is an initialized mint
+    const mint = await getMint(connection, splToken);
+    if (!mint.isInitialized) throw new CreateTransactionError('mint not initialized');
+
+    // Check that the amount provided doesn't have greater precision than the mint
+    if (amount.decimalPlaces() > mint.decimals) throw new CreateTransactionError('amount decimals invalid');
+
+    // Convert input decimal amount to integer tokens according to the mint decimals
+    amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
+
+    // Get the payer's ATA and check that the account exists and can send tokens
+    const payerATA = await getAssociatedTokenAddress(splToken, payer);
+    const payerAccount = await getAccount(connection, payerATA);
+    if (!payerAccount.isInitialized) throw new CreateTransactionError('payer not initialized');
+    if (payerAccount.isFrozen) throw new CreateTransactionError('payer frozen');
+
+    // Get the recipient's ATA and check that the account exists and can receive tokens
+    const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
+    const recipientAccount = await getAccount(connection, recipientATA);
+    if (!recipientAccount.isInitialized) throw new CreateTransactionError('recipient not initialized');
+    if (recipientAccount.isFrozen) throw new CreateTransactionError('recipient frozen');
+
+    // Check that the payer has enough tokens
+    const tokens = BigInt(String(amount));
+    if (tokens > payerAccount.amount) throw new CreateTransactionError('insufficient funds');
+
+    // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
+    return createTransferCheckedInstruction(payerATA, splToken, recipientATA, payer, tokens, mint.decimals);
 }
