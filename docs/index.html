@@ -1,0 +1,50 @@
+<!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@solana/pay</title><meta name="description" content="Documentation for @solana/pay"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@solana/pay</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1>@solana/pay</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
+<a href="#solana-pay" id="solana-pay" style="color: inherit; text-decoration: none;">
+  <h1>Solana Pay</h1>
+</a>
+<p><code>@solana/pay</code> is a JavaScript library for facilitating commerce on Solana by using a token transfer URL scheme. The URL scheme ensures that no matter the wallet or service used, the payment request must be created and interpreted in one standard way.</p>
+
+<a href="#why-use-solana-pay" id="why-use-solana-pay" style="color: inherit; text-decoration: none;">
+  <h2>Why use Solana Pay</h2>
+</a>
+<p>Businesses and developers can use Solana Pay to accept payments in SOL or any SPL token without intermediaries. It offers frictionless and portable integration options like payment links, pay now buttons or QR codes on your app, dApp, website, blog, and so much more.</p>
+
+<a href="#how-it-works" id="how-it-works" style="color: inherit; text-decoration: none;">
+  <h2>How it works</h2>
+</a>
+
+<a href="#web-app-to-mobile-wallet" id="web-app-to-mobile-wallet" style="color: inherit; text-decoration: none;">
+  <h3>Web app to mobile wallet</h3>
+</a>
+<p><img src="./qr-code-flow.png" alt="web app to mobile wallet diagram"></p>
+<p>Payment requests can be encoded as a URL according to the scheme, scanned using a QR code, sent and confirmed by the wallet, and discovered by the app.</p>
+
+<a href="#web-app-to-browser-wallet" id="web-app-to-browser-wallet" style="color: inherit; text-decoration: none;">
+  <h3>Web app to browser wallet</h3>
+</a>
+<p><img src="./dapp-web-wallet-flow.png" alt="web app to browser wallet diagram"></p>
+<p>With a Solana Pay button, you could integrate an embeddable payment button that can be added to your existing app.</p>
+
+<a href="#mobile-app-to-mobile-wallet" id="mobile-app-to-mobile-wallet" style="color: inherit; text-decoration: none;">
+  <h3>Mobile app to mobile wallet</h3>
+</a>
+<p><img src="./mobile-app-mobile-wallet-flow.png" alt="mobile app to mobile wallet diagram"></p>
+<p>Payment requests could be encoded as a deep link. The app prepares a payment request, and passes control to the wallet. The wallet signs, sends, and confirms it, or cancels the request and passes control back to the app.</p>
+
+<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+  <h2>Getting Started</h2>
+</a>
+<p>Learn how to integrate Solana Pay in your website, application or wallet.</p>
+<ul>
+<li><a href="https://docs.solanapay.com/core/merchant-integration">Merchant Integration</a></li>
+<li><a href="https://docs.solanapay.com/core/wallet-integration">Wallet Integration</a></li>
+<li><a href="https://docs.solanapay.com/api/core">API Reference</a></li>
+<li><a href="https://solanapay.com/branding">Brand Guidelines</a></li>
+<li><a href="https://www.figma.com/community/file/1070341985720702755">Solana Pay Buttons</a></li>
+</ul>
+
+<a href="#license" id="license" style="color: inherit; text-decoration: none;">
+  <h2>License</h2>
+</a>
+<p>The Solana Pay JavaScript SDK is open source and available under the Apache License, Version 2.0. See the <a href="./LICENSE">LICENSE</a> file for more info.</p>
+</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Exports</a></li></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul><li class="tsd-kind-class"><a href="classes/CreateTransactionError.html" class="tsd-kind-icon">Create<wbr/>Transaction<wbr/>Error</a></li><li class="tsd-kind-class"><a href="classes/FindTransactionSignatureError.html" class="tsd-kind-icon">Find<wbr/>Transaction<wbr/>Signature<wbr/>Error</a></li><li class="tsd-kind-class"><a href="classes/ParseURLError.html" class="tsd-kind-icon">ParseURLError</a></li><li class="tsd-kind-class"><a href="classes/ValidateTransactionSignatureError.html" class="tsd-kind-icon">Validate<wbr/>Transaction<wbr/>Signature<wbr/>Error</a></li><li class="tsd-kind-interface"><a href="interfaces/CreateTransactionParams.html" class="tsd-kind-icon">Create<wbr/>Transaction<wbr/>Params</a></li><li class="tsd-kind-interface"><a href="interfaces/EncodeURLComponents.html" class="tsd-kind-icon">EncodeURLComponents</a></li><li class="tsd-kind-interface"><a href="interfaces/EncodeURLParams.html" class="tsd-kind-icon">EncodeURLParams</a></li><li class="tsd-kind-interface"><a href="interfaces/ParsedURL.html" class="tsd-kind-icon">ParsedURL</a></li><li class="tsd-kind-function"><a href="modules.html#createQR" class="tsd-kind-icon">createQR</a></li><li class="tsd-kind-function"><a href="modules.html#createTransaction" class="tsd-kind-icon">create<wbr/>Transaction</a></li><li class="tsd-kind-function"><a href="modules.html#encodeURL" class="tsd-kind-icon">encodeURL</a></li><li class="tsd-kind-function"><a href="modules.html#findTransactionSignature" class="tsd-kind-icon">find<wbr/>Transaction<wbr/>Signature</a></li><li class="tsd-kind-function"><a href="modules.html#parseURL" class="tsd-kind-icon">parseURL</a></li><li class="tsd-kind-function"><a href="modules.html#validateTransactionSignature" class="tsd-kind-icon">validate<wbr/>Transaction<wbr/>Signature</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>

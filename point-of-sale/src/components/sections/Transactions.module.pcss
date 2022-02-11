@@ -1,0 +1,75 @@
+.root {
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 64px;
+}
+
+.transaction {
+    display: flex;
+    gap: 16px;
+    padding: 32px 0;
+}
+
+:global(html.light) .transaction:not(:last-of-type) {
+    box-shadow: var(--theme-light-separator);
+}
+
+:global(html.dark) .transaction:not(:last-of-type) {
+    box-shadow: var(--theme-dark-separator);
+}
+
+.icon {
+}
+
+
+.left {
+    flex: 1;
+}
+
+.amount {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 32px;
+}
+
+.signature {
+    line-height: 24px;
+}
+
+.right {
+    text-align: right;
+}
+
+.time {
+    font-weight: 500;
+    line-height: 32px;
+}
+
+.status {
+    line-height: 24px;
+}
+
+.status-finalized {
+    color: var(--theme-status-finalized);
+}
+
+@media (max-width: 767px) {
+    .root {
+        width: 100vw;
+        padding: 0 16px;
+    }
+
+    .title {
+        text-align: center;
+    }
+}
+
+@media (min-width: 768px) {
+    .root {
+        width: 600px;
+        padding: 16px 0;
+    }
+}
