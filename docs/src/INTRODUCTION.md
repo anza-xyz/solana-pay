@@ -16,14 +16,14 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 ## Supporting Wallets
 
 * Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
+* Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
 * FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
 
 ### Coming Soon
 
 * Slope
-* Solflare
-* Crypto Please
 * Glow
+* Solflare
 * Reactor Wallet
 
 ## How to use Solana Pay
