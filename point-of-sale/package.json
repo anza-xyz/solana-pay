@@ -16,7 +16,7 @@
         "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint:fix": "eslint --fix . && yarn fmt",
         "nuke": "shx rm -rf node_modules yarn.lock",
-        "deploy": "shx cp .nojekyll dist/ && gh-pages --dist dist --dest app --dotfiles"
+        "deploy": "PUBLIC_URL=/solana-pay/app/ yarn build --public-url /solana-pay/app/ && shx cp .nojekyll dist/ && gh-pages --dist dist --dest app --dotfiles"
     },
     "dependencies": {
         "@solana/pay": "^0.1.2",
