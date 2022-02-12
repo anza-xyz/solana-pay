@@ -70,7 +70,7 @@ export function encodeTransferRequestURL({
     }
 
     if (params.length) {
-        url += '?' + params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+        url += '?' + params.map(([key, value]) => key + '=' + encodeURIComponent(value)).join('&');
     }
 
     return url;
