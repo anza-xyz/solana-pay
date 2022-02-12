@@ -2,7 +2,7 @@
 
 This is an example of how you can use the `@solana/pay` JavaScript library to create a simple point of sale system.
 
-You can use the code as a reference or run it yourself to start accepting decentralized payments in-person.
+You can [check out the demo](https://solana-labs.github.io/solana-pay/app?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay) (using devnet), use the code as a reference, or run it yourself to start accepting decentralized payments in-person.
 
 ## Prerequisites
 
