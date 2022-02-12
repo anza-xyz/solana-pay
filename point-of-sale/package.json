@@ -1,13 +1,10 @@
 {
     "private": true,
     "name": "@solana/pay-point-of-sale",
-    "version": "0.1.0",
+    "version": "0.0.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
-    "publishConfig": {
-        "access": "public"
-    },
     "scripts": {
         "clean": "shx rm -rf dist .parcel-cache",
         "build": "yarn clean && parcel build src/index.html",
