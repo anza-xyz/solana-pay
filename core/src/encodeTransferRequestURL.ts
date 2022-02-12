@@ -1,25 +1,24 @@
-import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
 import { SOLANA_PROTOCOL } from './constants';
+import { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types';
 
 /**
- * Fields to encode in a Solana Pay transfer request URL.
+ * Fields of a Solana Pay transfer request URL.
  */
 export interface TransferRequestURLFields {
     /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
-    recipient: PublicKey;
+    recipient: Recipient;
     /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount). */
-    amount?: BigNumber;
-    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
-    splToken?: PublicKey;
+    amount?: Amount;
+    /** `spl-token` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
+    splToken?: SPLToken;
     /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
-    reference?: PublicKey | PublicKey[];
+    reference?: References;
     /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
-    label?: string;
+    label?: Label;
     /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message).  */
-    message?: string;
+    message?: Message;
     /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
-    memo?: string;
+    memo?: Memo;
 }
 
 /**

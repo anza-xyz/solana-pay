@@ -1,10 +1,11 @@
-import { ConfirmedSignatureInfo, Connection, Finality, PublicKey, SignaturesForAddressOptions } from '@solana/web3.js';
+import { ConfirmedSignatureInfo, Connection, Finality, SignaturesForAddressOptions } from '@solana/web3.js';
+import { Reference } from './types';
 
 /**
  * Thrown when no transaction signature can be found referencing a given public key.
  */
-export class FindTransactionSignatureError extends Error {
-    name = 'FindTransactionSignatureError';
+export class FindReferenceError extends Error {
+    name = 'FindReferenceError';
 }
 
 /**
@@ -15,27 +16,27 @@ export class FindTransactionSignatureError extends Error {
  * @param options - Options for `getSignaturesForAddress`.
  * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
  *
- * @throws {FindTransactionSignatureError}
+ * @throws {FindReferenceError}
  */
-export async function findTransactionSignature(
+export async function findReference(
     connection: Connection,
-    reference: PublicKey,
+    reference: Reference,
     options?: SignaturesForAddressOptions,
     finality?: Finality
 ): Promise<ConfirmedSignatureInfo> {
     const signatures = await connection.getSignaturesForAddress(reference, options, finality);
 
     const length = signatures.length;
-    if (!length) throw new FindTransactionSignatureError('not found');
+    if (!length) throw new FindReferenceError('not found');
 
     // If multiple transaction signatures are found within the limit, return the oldest one.
     if (length < (options?.limit || 1000)) return signatures[length - 1];
 
     try {
         // In the unlikely event that more signatures than the limit are found, recursively find the oldest one.
-        return await findTransactionSignature(connection, reference, options, finality);
+        return await findReference(connection, reference, options, finality);
     } catch (error: any) {
-        if (error instanceof FindTransactionSignatureError) return signatures[length - 1];
+        if (error instanceof FindReferenceError) return signatures[length - 1];
         throw error;
     }
 }

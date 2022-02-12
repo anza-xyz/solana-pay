@@ -1,15 +1,16 @@
 import { SOLANA_PROTOCOL } from './constants';
+import { Label, Message } from './types';
 
 /**
- * Fields to encode in a Solana Pay transaction request URL.
+ * Fields of a Solana Pay transaction request URL.
  */
 export interface TransactionRequestURLFields {
     /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
     link: URL;
     /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
-    label?: string;
+    label?: Label;
     /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message).  */
-    message?: string;
+    message?: Message;
 }
 
 /**

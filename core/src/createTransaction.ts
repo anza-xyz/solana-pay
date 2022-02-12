@@ -9,46 +9,47 @@ import {
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { MEMO_PROGRAM_ID, SOL_DECIMALS, TEN } from './constants';
+import { Amount, Memo, Recipient, References, SPLToken } from './types';
 
 /**
- * Thrown when a valid transaction can't be created from the inputs provided.
+ * Thrown when a transfer transaction can't be created from the inputs provided.
  */
 export class CreateTransactionError extends Error {
     name = 'CreateTransactionError';
 }
 
 /**
- * Optional parameters for creating a Solana Pay transaction.
+ * Optional parameters for creating a Solana Pay transfer transaction.
  */
-export interface CreateTransactionParams {
-    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
-    splToken?: PublicKey;
+export interface CreateTransactionFields {
+    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
+    recipient: Recipient;
+    /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount). */
+    amount: Amount;
+    /** `spl-token` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
+    splToken?: SPLToken;
     /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
-    reference?: PublicKey | PublicKey[];
+    reference?: References;
     /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
-    memo?: string;
+    memo?: Memo;
 }
 
 /**
- * Create a Solana Pay transaction.
+ * Create a Solana Pay transfer transaction.
  *
  * @param connection - A connection to the cluster.
- * @param payer - Signer account within a wallet.
- * @param recipient - `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient).
- * @param amount - `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount).
- * @param params - Optional parameters.
+ * @param account - Signer account within a wallet.
+ * @param fields - Fields from a transfer request URL.
  *
  * @throws {CreateTransactionError}
  */
 export async function createTransaction(
     connection: Connection,
-    payer: PublicKey,
-    recipient: PublicKey,
-    amount: BigNumber,
-    { splToken, reference, memo }: CreateTransactionParams = {}
+    account: PublicKey,
+    { recipient, amount, splToken, reference, memo }: CreateTransactionFields
 ): Promise<Transaction> {
     // Check that the payer and recipient accounts exist
-    const payerInfo = await connection.getAccountInfo(payer);
+    const payerInfo = await connection.getAccountInfo(account);
     if (!payerInfo) throw new CreateTransactionError('payer not found');
 
     const recipientInfo = await connection.getAccountInfo(recipient);
@@ -56,8 +57,8 @@ export async function createTransaction(
 
     // A native SOL or SPL token transfer instruction
     const instruction = splToken
-        ? await createSPLTokenInstruction(connection, payer, recipient, amount, splToken)
-        : await createSystemInstruction(connection, payer, recipient, amount);
+        ? await createSPLTokenInstruction(connection, account, recipient, amount, splToken)
+        : await createSystemInstruction(connection, account, recipient, amount);
 
     // If reference accounts are provided, add them to the transfer instruction
     if (reference) {

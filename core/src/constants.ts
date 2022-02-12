@@ -11,9 +11,6 @@ export const HTTPS_PROTOCOL = 'https:';
 export const MEMO_PROGRAM_ID = new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr');
 
 /** @internal */
-export const EMPTY_PUBKEY = new PublicKey(0);
-
-/** @internal */
 export const SOL_DECIMALS = 9;
 
 /** @internal */

@@ -1,0 +1,110 @@
+import { getAssociatedTokenAddress } from '@solana/spl-token';
+import {
+    ConfirmedTransactionMeta,
+    Connection,
+    Finality,
+    LAMPORTS_PER_SOL,
+    Message,
+    TransactionResponse,
+    TransactionSignature,
+} from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
+import { Amount, Recipient, References, SPLToken } from './types';
+
+/**
+ * Thrown when a transaction doesn't contain a valid Solana Pay transfer.
+ */
+export class ValidateTransferError extends Error {
+    name = 'ValidateTransferError';
+}
+
+/**
+ * Fields of a Solana Pay transfer request to validate.
+ */
+export interface ValidateTransferFields {
+    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
+    recipient: Recipient;
+    /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount). */
+    amount: Amount;
+    /** `spl-token` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
+    splToken?: SPLToken;
+    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
+    reference?: References;
+}
+
+/**
+ * Validate that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
+ *
+ * @param connection - A connection to the cluster.
+ * @param signature -  The signature of the transaction to validate.
+ * @param fields - Fields of a Solana Pay transfer request to validate.
+ * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
+ *
+ * @throws {ValidateTransferError}
+ */
+export async function validateTransfer(
+    connection: Connection,
+    signature: TransactionSignature,
+    { recipient, amount, splToken, reference }: ValidateTransferFields,
+    finality?: Finality
+): Promise<TransactionResponse> {
+    const response = await connection.getTransaction(signature, { commitment: finality });
+    if (!response) throw new ValidateTransferError('not found');
+
+    const message = response.transaction.message;
+    const meta = response.meta;
+    if (!meta) throw new ValidateTransferError('missing meta');
+    if (meta.err) throw meta.err;
+
+    const [preAmount, postAmount] = splToken
+        ? await validateSPLTokenTransfer(message, meta, recipient, splToken)
+        : await validateSystemTransfer(message, meta, recipient);
+
+    if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransferError('amount not transferred');
+
+    if (reference) {
+        if (!Array.isArray(reference)) {
+            reference = [reference];
+        }
+
+        for (const pubkey of reference) {
+            if (!message.accountKeys.some((accountKey) => accountKey.equals(pubkey)))
+                throw new ValidateTransferError('reference not found');
+        }
+    }
+
+    return response;
+}
+
+async function validateSystemTransfer(
+    message: Message,
+    meta: ConfirmedTransactionMeta,
+    recipient: Recipient
+): Promise<[BigNumber, BigNumber]> {
+    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
+    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
+
+    return [
+        new BigNumber(meta.preBalances[accountIndex] || 0).div(LAMPORTS_PER_SOL),
+        new BigNumber(meta.postBalances[accountIndex] || 0).div(LAMPORTS_PER_SOL),
+    ];
+}
+
+async function validateSPLTokenTransfer(
+    message: Message,
+    meta: ConfirmedTransactionMeta,
+    recipient: Recipient,
+    splToken: SPLToken
+): Promise<[BigNumber, BigNumber]> {
+    const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
+    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
+    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
+
+    const preBalance = meta.preTokenBalances?.find((x) => x.accountIndex === accountIndex);
+    const postBalance = meta.postTokenBalances?.find((x) => x.accountIndex === accountIndex);
+
+    return [
+        new BigNumber(preBalance?.uiTokenAmount.uiAmountString || 0),
+        new BigNumber(postBalance?.uiTokenAmount.uiAmountString || 0),
+    ];
+}

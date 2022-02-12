@@ -2,6 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { URLSearchParams } from 'url';
 import { HTTPS_PROTOCOL, SOLANA_PROTOCOL } from './constants';
+import { Amount, Label, Link, Memo, Message, Recipient, Reference, SPLToken } from './types';
 
 /**
  * Thrown when a URL can't be parsed as a Solana Pay URL.
@@ -11,35 +12,35 @@ export class ParseURLError extends Error {
 }
 
 /**
- * A Solana Pay transfer request URL.
- */
-export interface TransferRequestURL {
-    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
-    recipient: PublicKey;
-    /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount). */
-    amount: BigNumber | undefined;
-    /** `splToken` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
-    splToken: PublicKey | undefined;
-    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
-    reference: PublicKey[] | undefined;
-    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
-    label: string | undefined;
-    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message). */
-    message: string | undefined;
-    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
-    memo: string | undefined;
-}
-
-/**
  * A Solana Pay transaction request URL.
  */
 export interface TransactionRequestURL {
     /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
-    link: URL;
+    link: Link;
     /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
-    label: string | undefined;
+    label: Label | undefined;
     /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message). */
-    message: string | undefined;
+    message: Message | undefined;
+}
+
+/**
+ * A Solana Pay transfer request URL.
+ */
+export interface TransferRequestURL {
+    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
+    recipient: Recipient;
+    /** `amount` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#amount). */
+    amount: Amount | undefined;
+    /** `spl-token` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#spl-token). */
+    splToken: SPLToken | undefined;
+    /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
+    reference: Reference[] | undefined;
+    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
+    label: Label | undefined;
+    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message). */
+    message: Message | undefined;
+    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
+    memo: Memo | undefined;
 }
 
 /**
@@ -49,22 +50,34 @@ export interface TransactionRequestURL {
  *
  * @throws {ParseURLError}
  */
-export function parseURL(url: string | URL): TransferRequestURL | TransactionRequestURL {
+export function parseURL(url: string | URL): TransactionRequestURL | TransferRequestURL {
     if (typeof url === 'string') {
         if (url.length > 2048) throw new ParseURLError('length invalid');
         url = new URL(url);
     }
 
-    const { protocol, pathname, searchParams } = url;
+    const { protocol, pathname } = url;
     if (protocol !== SOLANA_PROTOCOL) throw new ParseURLError('protocol invalid');
-    if (!pathname) throw new ParseURLError('recipient missing');
+    if (!pathname) throw new ParseURLError('pathname missing');
 
-    return /^[A-Za-z0-9]$/.test(pathname)
-        ? parseTransferRequestURL(pathname, searchParams)
-        : parseTransactionRequestURL(pathname, searchParams);
+    return /[^A-Za-z0-9]/.test(pathname) ? parseTransactionRequestURL(url) : parseTransferRequestURL(url);
 }
 
-function parseTransferRequestURL(pathname: string, searchParams: URLSearchParams): TransferRequestURL {
+function parseTransactionRequestURL({ pathname, searchParams }: URL): TransactionRequestURL {
+    const link = new URL(decodeURIComponent(pathname));
+    if (link.protocol !== HTTPS_PROTOCOL) throw new ParseURLError('link invalid');
+
+    const label = searchParams.get('label') || undefined;
+    const message = searchParams.get('message') || undefined;
+
+    return {
+        link,
+        label,
+        message,
+    };
+}
+
+function parseTransferRequestURL({ pathname, searchParams }: URL): TransferRequestURL {
     let recipient: PublicKey;
     try {
         recipient = new PublicKey(pathname);
@@ -114,20 +127,5 @@ function parseTransferRequestURL(pathname: string, searchParams: URLSearchParams
         label,
         message,
         memo,
-    };
-}
-
-function parseTransactionRequestURL(pathname: string, searchParams: URLSearchParams): TransactionRequestURL {
-    const link = new URL(decodeURIComponent(pathname));
-
-    if (link.protocol !== HTTPS_PROTOCOL) throw new ParseURLError('protocol invalid');
-
-    const label = searchParams.get('label') || undefined;
-    const message = searchParams.get('message') || undefined;
-
-    return {
-        link,
-        label,
-        message,
     };
 }
