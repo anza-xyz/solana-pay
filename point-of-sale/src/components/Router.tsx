@@ -9,7 +9,7 @@ import { TransactionsRoute } from './routes/TransactionsRoute';
 
 export const Router: FC = () => {
     return (
-        <BrowserRouter>
+        <BrowserRouter basename={process.env.PUBLIC_URL}>
             <Routes>
                 <Route element={<RootRoute />}>
                     <Route index element={<IndexRedirect />} />
