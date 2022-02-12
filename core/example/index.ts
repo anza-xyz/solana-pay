@@ -1,11 +1,12 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import {
-    createTransaction, encodeTransferRequestURL,
-    findTransactionSignature,
+    createTransaction,
+    encodeTransferRequestURL,
+    findReference,
     parseURL,
     TransferRequestURL,
-    validateTransactionSignature,
+    validateTransfer,
 } from '../src';
 
 (async function () {
@@ -39,7 +40,9 @@ import {
     console.log(originalURL);
 
     // Wallet gets URL from deep link / QR code
-    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(originalURL) as TransferRequestURL;
+    const { recipient, amount, splToken, reference, label, message, memo } = parseURL(
+        originalURL
+    ) as TransferRequestURL;
 
     // Apps can encode the URL from the required and optional parameters
     const encodedURL = encodeTransferRequestURL({ recipient, amount, splToken, reference, label, message, memo });
@@ -79,7 +82,7 @@ import {
     console.log(result);
 
     // Merchant app locates the transaction signature from the unique reference address it provided in the transfer link
-    const found = await findTransactionSignature(connection, originalReference);
+    const found = await findReference(connection, originalReference);
 
     // Matches the signature of the transaction
     console.log(found.signature);
@@ -88,12 +91,5 @@ import {
     console.log(found.memo);
 
     // Merchant app should always validate that the transaction transferred the expected amount to the recipient
-    const response = await validateTransactionSignature(
-        connection,
-        found.signature,
-        recipient,
-        amount,
-        splToken,
-        reference
-    );
+    const response = await validateTransfer(connection, found.signature, recipient, amount, splToken, reference);
 })();

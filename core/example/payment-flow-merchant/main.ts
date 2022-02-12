@@ -1,11 +1,6 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import {
-    encodeURL,
-    findTransactionSignature,
-    FindTransactionSignatureError,
-    validateTransactionSignature,
-} from '../../src';
+import { encodeURL, findReference, FindReferenceError, validateTransfer } from '../../src';
 import { MERCHANT_WALLET } from './constants';
 import { establishConnection } from './establishConnection';
 import { simulateCheckout } from './simulateCheckout';
@@ -76,12 +71,12 @@ async function main() {
         const interval = setInterval(async () => {
             console.count('Checking for transaction...');
             try {
-                signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+                signatureInfo = await findReference(connection, reference, undefined, 'confirmed');
                 console.log('\n 🖌  Signature found: ', signatureInfo.signature);
                 clearInterval(interval);
                 resolve(signatureInfo);
             } catch (error: any) {
-                if (!(error instanceof FindTransactionSignatureError)) {
+                if (!(error instanceof FindReferenceError)) {
                     console.error(error);
                     clearInterval(interval);
                     reject(error);
@@ -107,14 +102,7 @@ async function main() {
     try {
         const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
-        await validateTransactionSignature(
-            connection,
-            signature,
-            MERCHANT_WALLET,
-            amountInLamports,
-            undefined,
-            reference
-        );
+        await validateTransfer(connection, signature, MERCHANT_WALLET, amountInLamports, undefined, reference);
 
         // Update payment status
         paymentStatus = 'validated';

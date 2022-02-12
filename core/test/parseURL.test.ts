@@ -9,7 +9,9 @@ describe('parseURL', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.000000001&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url) as TransferRequestURL;
+                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(
+                    url
+                ) as TransferRequestURL;
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount!.eq(new BigNumber('0.000000001'))).toBe(true);
@@ -25,7 +27,9 @@ describe('parseURL', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1.01&spl-token=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url) as TransferRequestURL;
+                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(
+                    url
+                ) as TransferRequestURL;
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount!.eq(new BigNumber('1.01'))).toBe(true);
@@ -40,7 +44,9 @@ describe('parseURL', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url) as TransferRequestURL;
+                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(
+                    url
+                ) as TransferRequestURL;
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount).toBeUndefined();
