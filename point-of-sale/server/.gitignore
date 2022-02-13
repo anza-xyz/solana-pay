@@ -1,0 +1,12 @@
+.idea
+.vscode
+
+.DS_Store
+
+.vercel
+
+dist
+
+node_modules
+
+!.env.example
