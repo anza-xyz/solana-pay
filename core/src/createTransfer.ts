@@ -19,7 +19,7 @@ export class CreateTransferError extends Error {
 }
 
 /**
- * Fields for creating a Solana Pay transfer transaction.
+ * Fields of a Solana Pay transfer request URL.
  */
 export interface CreateTransferFields {
     /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
@@ -39,7 +39,7 @@ export interface CreateTransferFields {
  *
  * @param connection - A connection to the cluster.
  * @param sender - Account that will send the transfer.
- * @param fields - Fields from a transfer request URL.
+ * @param fields - Fields of a Solana Pay transfer request URL.
  *
  * @throws {CreateTransferError}
  */
