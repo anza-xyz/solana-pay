@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "@solana/pay-point-of-sale",
+    "name": "@solana/pay-point-of-sale-client",
     "version": "0.0.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
@@ -13,10 +13,10 @@
         "lint": "eslint . && prettier --check '{*,**/*}.{js,ts,jsx,tsx,json}'",
         "lint:fix": "eslint --fix . && yarn fmt",
         "nuke": "shx rm -rf node_modules yarn.lock",
-        "deploy": "PUBLIC_URL=/solana-pay/app/ yarn build --public-url /solana-pay/app/ && shx cp .nojekyll dist/ && gh-pages --dist dist --dest app --dotfiles"
+        "deploy": "PUBLIC_URL=/solana-pay/app/ yarn build:client --public-url /solana-pay/app/ && shx cp .nojekyll dist/ && gh-pages --dist dist --dest app --dotfiles"
     },
     "dependencies": {
-        "@solana/pay": "^0.1.3",
+        "@solana/pay": "file:../../core",
         "@solana/qr-code-styling": "^1.6.0-beta.0",
         "@solana/spl-token": "^0.2.0-alpha.2",
         "@solana/wallet-adapter-base": "^0.9.3",
