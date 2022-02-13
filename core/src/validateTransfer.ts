@@ -9,7 +9,7 @@ import {
     TransactionSignature,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { Amount, Recipient, References, SPLToken } from './types';
+import { Amount, Memo, Recipient, References, SPLToken } from './types';
 
 /**
  * Thrown when a transaction doesn't contain a valid Solana Pay transfer.
@@ -30,22 +30,24 @@ export interface ValidateTransferFields {
     splToken?: SPLToken;
     /** `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference). */
     reference?: References;
+    /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
+    memo?: Memo;
 }
 
 /**
- * Validate that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
+ * Check that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
  *
- * @param signature -  The signature of the transaction to validate.
- * @param fields - Fields of a Solana Pay transfer request to validate.
  * @param connection - A connection to the cluster.
- * @param finality? - A subset of `Commitment` levels, which are at least optimistically confirmed.
+ * @param signature - The signature of the transaction to validate.
+ * @param fields - Fields of a Solana Pay transfer request to validate.
+ * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
  *
  * @throws {ValidateTransferError}
  */
 export async function validateTransfer(
-    signature: TransactionSignature,
-    { recipient, amount, splToken, reference }: ValidateTransferFields,
     connection: Connection,
+    signature: TransactionSignature,
+    { recipient, amount, splToken, reference, memo }: ValidateTransferFields,
     finality?: Finality
 ): Promise<TransactionResponse> {
     const response = await connection.getTransaction(signature, { commitment: finality });
@@ -72,6 +74,8 @@ export async function validateTransfer(
                 throw new ValidateTransferError('reference not found');
         }
     }
+
+    // FIXME: add memo check
 
     return response;
 }

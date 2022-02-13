@@ -1,7 +1,7 @@
 import { Connection, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { TransferRequestURL } from '../../lib/types';
-import { createTransaction, parseURL } from '../../src';
+import { createTransfer, parseURL } from '../../src';
 import { CUSTOMER_WALLET } from './constants';
 
 export async function simulateWalletInteraction(connection: Connection, url: URL) {
@@ -25,7 +25,7 @@ export async function simulateWalletInteraction(connection: Connection, url: URL
     /**
      * Create the transaction with the parameters decoded from the URL
      */
-    const tx = await createTransaction({ recipient, amount, reference, memo }, CUSTOMER_WALLET.publicKey, connection);
+    const tx = await createTransfer(connection, CUSTOMER_WALLET.publicKey, { recipient, amount, reference, memo });
 
     /**
      * Send the transaction to the network

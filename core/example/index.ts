@@ -1,6 +1,6 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
-import { createTransaction, encodeURL, findReference, parseURL, TransferRequestURL, validateTransfer } from '../src';
+import { createTransfer, encodeURL, findReference, parseURL, TransferRequestURL, validateTransfer } from '../src';
 
 (async function () {
     const cluster = 'devnet';
@@ -54,11 +54,13 @@ import { createTransaction, encodeURL, findReference, parseURL, TransferRequestU
     }
 
     // Create a transaction to transfer native SOL or SPL tokens
-    const transaction = await createTransaction(
-        { recipient, amount, splToken, reference, memo },
-        wallet.publicKey,
-        connection
-    );
+    const transaction = await createTransfer(connection, wallet.publicKey, {
+        recipient,
+        amount,
+        splToken,
+        reference,
+        memo,
+    });
 
     // Sign and send the transaction
     transaction.feePayer = wallet.publicKey;
@@ -75,7 +77,7 @@ import { createTransaction, encodeURL, findReference, parseURL, TransferRequestU
     console.log(result);
 
     // Merchant app locates the transaction signature from the unique reference address it provided in the transfer link
-    const found = await findReference(originalReference, connection);
+    const found = await findReference(connection, originalReference);
 
     // Matches the signature of the transaction
     console.log(found.signature);
@@ -84,5 +86,5 @@ import { createTransaction, encodeURL, findReference, parseURL, TransferRequestU
     console.log(found.memo);
 
     // Merchant app should always validate that the transaction transferred the expected amount to the recipient
-    const response = await validateTransfer(found.signature, { recipient, amount }, connection);
+    const response = await validateTransfer(connection, found.signature, { recipient, amount });
 })();

@@ -13,17 +13,17 @@ export class FetchTransactionError extends Error {
 /**
  * Fetch a transaction from a Solana Pay transaction request link.
  *
+ * @param connection - A connection to the cluster.
  * @param link - `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link).
  * @param account - Account that may sign the transaction.
- * @param connection - A connection to the cluster.
  * @param commitment - `Commitment` level for the recent blockhash.
  *
  * @throws {FetchTransactionError}
  */
 export async function fetchTransaction(
+    connection: Connection,
     link: string | URL,
     account: PublicKey,
-    connection: Connection,
     commitment?: Commitment
 ): Promise<Transaction> {
     const response = await fetch(String(link), {

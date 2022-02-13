@@ -71,7 +71,7 @@ async function main() {
         const interval = setInterval(async () => {
             console.count('Checking for transaction...');
             try {
-                signatureInfo = await findReference(reference, connection, undefined, 'confirmed');
+                signatureInfo = await findReference(connection, reference, undefined, 'confirmed');
                 console.log('\n 🖌  Signature found: ', signatureInfo.signature);
                 clearInterval(interval);
                 resolve(signatureInfo);
@@ -100,7 +100,7 @@ async function main() {
     console.log('\n6. 🔗 Validate transaction \n');
 
     try {
-        await validateTransfer(signature, { recipient: MERCHANT_WALLET, amount }, connection);
+        await validateTransfer(connection, signature, { recipient: MERCHANT_WALLET, amount });
 
         // Update payment status
         paymentStatus = 'validated';

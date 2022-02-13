@@ -1,6 +1,6 @@
 export * from './constants';
 export * from './createQR';
-export * from './createTransaction';
+export * from './createTransfer';
 export * from './encodeURL';
 export * from './fetchTransaction';
 export * from './findReference';
