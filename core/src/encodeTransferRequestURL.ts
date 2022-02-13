@@ -37,14 +37,14 @@ export function encodeTransferRequestURL({
 }: TransferRequestURLFields): string {
     let url = SOLANA_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
-    const params: [string, string][] = [];
+    const params = new URLSearchParams();
 
     if (amount) {
-        params.push(['amount', amount.toFixed(amount.decimalPlaces())]);
+        params.append('amount', amount.toFixed(amount.decimalPlaces()));
     }
 
     if (splToken) {
-        params.push(['spl-token', splToken.toBase58()]);
+        params.append('spl-token', splToken.toBase58());
     }
 
     if (reference) {
@@ -53,24 +53,25 @@ export function encodeTransferRequestURL({
         }
 
         for (const pubkey of reference) {
-            params.push(['reference', pubkey.toBase58()]);
+            params.append('reference', pubkey.toBase58());
         }
     }
 
     if (label) {
-        params.push(['label', label]);
+        params.append('label', label);
     }
 
     if (message) {
-        params.push(['message', message]);
+        params.append('message', message);
     }
 
     if (memo) {
-        params.push(['memo', memo]);
+        params.append('memo', memo);
     }
 
-    if (params.length) {
-        url += '?' + params.map(([key, value]) => key + '=' + encodeURIComponent(value)).join('&');
+    const search = params.toString();
+    if (search) {
+        url += '?' + search;
     }
 
     return url;

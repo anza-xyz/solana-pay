@@ -21,18 +21,19 @@ export interface TransactionRequestURLFields {
 export function encodeTransactionRequestURL({ link, label, message }: TransactionRequestURLFields): string {
     let url = SOLANA_PROTOCOL + link.search ? encodeURIComponent(String(link)) : String(link);
 
-    const params: [string, string][] = [];
+    const params = new URLSearchParams();
 
     if (label) {
-        params.push(['label', label]);
+        params.append('label', label);
     }
 
     if (message) {
-        params.push(['message', message]);
+        params.append('message', message);
     }
 
-    if (params.length) {
-        url += '?' + params.map(([key, value]) => key + '=' + encodeURIComponent(value)).join('&');
+    const search = params.toString();
+    if (search) {
+        url += '?' + search;
     }
 
     return url;
