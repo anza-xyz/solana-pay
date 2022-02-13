@@ -105,13 +105,11 @@ async function main() {
     console.log('\n6. 🔗 Validate transaction \n');
 
     try {
-        const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
-
         await validateTransactionSignature(
             connection,
             signature,
             MERCHANT_WALLET,
-            amountInLamports,
+            amount,
             undefined,
             reference
         );
