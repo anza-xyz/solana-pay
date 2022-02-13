@@ -1,6 +1,6 @@
 import { Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { encodeTransferRequestURL } from '../src';
+import { encodeURL } from '../src';
 
 describe('encodeURL', () => {
     it('encodes a URL', () => {
@@ -15,9 +15,9 @@ describe('encodeURL', () => {
         const message = 'message';
         const memo = 'memo';
 
-        const url = encodeTransferRequestURL({ recipient, amount, splToken, reference, label, message, memo });
+        const url = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
 
-        expect(url).toBe(
+        expect(String(url)).toBe(
             `solana:${recipient}?amount=0.000000001&spl-token=${splToken}&reference=${reference1}&reference=${reference2}&label=${label}&message=${message}&memo=${memo}`
         );
     });
@@ -25,18 +25,18 @@ describe('encodeURL', () => {
     it('encodes a url with recipient', () => {
         const recipient = Keypair.generate().publicKey;
 
-        const url = encodeTransferRequestURL({ recipient });
+        const url = encodeURL({ recipient });
 
-        expect(url).toBe(`solana:${recipient}`);
+        expect(String(url)).toBe(`solana:${recipient}`);
     });
 
     it('encodes a url with recipient and amount', () => {
         const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber('1');
 
-        const url = encodeTransferRequestURL({ recipient, amount });
+        const url = encodeURL({ recipient, amount });
 
-        expect(url).toBe(`solana:${recipient}?amount=1`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=1`);
     });
 
     it('encodes a url with recipient, amount and token', () => {
@@ -44,9 +44,9 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1.01');
         const splToken = Keypair.generate().publicKey;
 
-        const url = encodeTransferRequestURL({ recipient, amount, splToken });
+        const url = encodeURL({ recipient, amount, splToken });
 
-        expect(url).toBe(`solana:${recipient}?amount=1.01&spl-token=${splToken}`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=1.01&spl-token=${splToken}`);
     });
 
     it('encodes a url with recipient, amount and references', () => {
@@ -55,9 +55,9 @@ describe('encodeURL', () => {
         const reference1 = Keypair.generate().publicKey;
         const reference = [reference1];
 
-        const url = encodeTransferRequestURL({ recipient, amount, reference });
+        const url = encodeURL({ recipient, amount, reference });
 
-        expect(url).toBe(`solana:${recipient}?amount=100000.123456&reference=${reference1}`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=100000.123456&reference=${reference1}`);
     });
 
     it('encodes a url with recipient, amount and label', () => {
@@ -65,9 +65,9 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1.99');
         const label = 'label';
 
-        const url = encodeTransferRequestURL({ recipient, amount, label });
+        const url = encodeURL({ recipient, amount, label });
 
-        expect(url).toBe(`solana:${recipient}?amount=1.99&label=${label}`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=1.99&label=${label}`);
     });
 
     it('encodes a url with recipient, amount and message', () => {
@@ -75,9 +75,9 @@ describe('encodeURL', () => {
         const amount = new BigNumber('1');
         const message = 'message';
 
-        const url = encodeTransferRequestURL({ recipient, amount, message });
+        const url = encodeURL({ recipient, amount, message });
 
-        expect(url).toBe(`solana:${recipient}?amount=1&message=${message}`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=1&message=${message}`);
     });
 
     it('encodes a url with recipient, amount and memo', () => {
@@ -85,8 +85,8 @@ describe('encodeURL', () => {
         const amount = new BigNumber('100');
         const memo = 'memo';
 
-        const url = encodeTransferRequestURL({ recipient, amount, memo });
+        const url = encodeURL({ recipient, amount, memo });
 
-        expect(url).toBe(`solana:${recipient}?amount=100&memo=${memo}`);
+        expect(String(url)).toBe(`solana:${recipient}?amount=100&memo=${memo}`);
     });
 });
