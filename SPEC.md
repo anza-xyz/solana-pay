@@ -114,7 +114,7 @@ The wallet should prompt the user to make a request to the URL. The wallet must 
 {"account":"<account>"}
 ```
 
-The `account` value must be the base58-encoded public key of a signer account within the wallet.
+The `account` value must be the base58-encoded public key of an account that may sign the transaction.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
