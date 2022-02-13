@@ -66,6 +66,31 @@ yarn start
 open "http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name"
 ```
 
+## Accepting USDC on Mainnet
+Import the Mainnet endpoint, along with USDC's mint address and icon in the `RootRoute.tsx` file.
+```jsx
+import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
+import { USDCIcon } from '../images/USDCIcon';
+```
+
+In the same file, update the prop values in the `<ConnectionProvider>` and `<ConfigProvider>` accordingly.
+```jsx
+<ConnectionProvider endpoint={MAINNET_ENDPOINT}>
+    <WalletProvider wallets={wallets} autoConnect={connectWallet}>
+        <WalletModalProvider>
+            <ConfigProvider
+                recipient={recipient}
+                label={label}
+                splToken={MAINNET_USDC_MINT}
+                symbol="USDC"
+                icon={<USDCIcon />}
+                decimals={6}
+                minDecimals={2}
+                requiredConfirmations={9}
+                connectWallet={connectWallet}
+            >
+```
+
 ## Deploying to Vercel
 
 You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
