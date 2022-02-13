@@ -101,7 +101,7 @@ function parseTransferRequestURL({ pathname, searchParams }: URL): TransferReque
         try {
             splToken = new PublicKey(splTokenParam);
         } catch (error) {
-            throw new ParseURLError('token invalid');
+            throw new ParseURLError('spl-token invalid');
         }
     }
 
