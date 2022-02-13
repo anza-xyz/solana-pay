@@ -73,7 +73,20 @@ import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
 import { USDCIcon } from '../images/USDCIcon';
 ```
 
-In the same file, update the prop values in the `<ConnectionProvider>` and `<ConfigProvider>` accordingly.
+In the same file, set the `endpoint` value in the `<ConnectionProvider>` to `MAINNET_ENDPOINT` and set the following values in the `<ConfigProvider>`:
+
+```tsx
+splToken={MAINNET_USDC_MINT}
+symbol="USDC"
+icon={<USDCIcon />}
+decimals={6}
+minDecimals={2}
+```
+
+**Make sure to use 6 decimals for USDC!**
+
+When you're done, it should look like this:
+
 ```jsx
 <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
     <WalletProvider wallets={wallets} autoConnect={connectWallet}>
