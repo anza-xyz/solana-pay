@@ -159,18 +159,18 @@ For example, this might be the name of an item being purchased. Wallets should [
 
 ##### URL describing a transaction request.
 ```
-solana:https://mvines.sol/solana-pay?label=Michael&message=Thanks%20for%20all%20the%20fish
+solana:https://mvines.com/solana-pay?label=Michael&message=Thanks%20for%20all%20the%20fish
 ```
 
 ##### URL describing a transaction request with query parameters.
 ```
-solana:https%3A%2F%2Fmvines.sol%2Fsolana-pay%3Forder%3D12345?label=Michael&message=Thanks%20for%20all%20the%20fish
+solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345?label=Michael&message=Thanks%20for%20all%20the%20fish
 ```
 
 ##### Request
 ```
 POST /solana-pay?order=12345 HTTP/1.1
-Host: mvines.sol
+Host: mvines.com
 Connection: close
 Accept: application/json
 Accept-Encoding: br, gzip, deflate
