@@ -1,11 +1,12 @@
 import {
-    createTransaction,
+    createTransfer,
     encodeURL,
-    findTransactionSignature,
-    FindTransactionSignatureError,
+    findReference,
+    FindReferenceError,
     parseURL,
-    validateTransactionSignature,
-    ValidateTransactionSignatureError,
+    TransferRequestURL,
+    validateTransfer,
+    ValidateTransferError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
@@ -75,10 +76,12 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
-                    const { recipient, amount, splToken, reference, memo } = parseURL(url);
+                    const { recipient, amount, splToken, reference, memo } = parseURL(url) as TransferRequestURL;
                     if (!amount) return;
 
-                    const transaction = await createTransaction(connection, publicKey, recipient, amount, {
+                    const transaction = await createTransfer(connection, publicKey, {
+                        recipient,
+                        amount,
                         splToken,
                         reference,
                         memo,
@@ -110,7 +113,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         const interval = setInterval(async () => {
             let signature: ConfirmedSignatureInfo;
             try {
-                signature = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+                signature = await findReference(connection, reference, undefined, 'confirmed');
 
                 if (!changed) {
                     clearInterval(interval);
@@ -121,7 +124,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction signature yet, try again
-                if (!(error instanceof FindTransactionSignatureError)) {
+                if (!(error instanceof FindReferenceError)) {
                     console.error(error);
                 }
             }
@@ -140,15 +143,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
         const run = async () => {
             try {
-                await validateTransactionSignature(
-                    connection,
-                    signature,
-                    recipient,
-                    amount,
-                    splToken,
-                    reference,
-                    'confirmed'
-                );
+                await validateTransfer(connection, signature, { recipient, amount, splToken, reference }, 'confirmed');
 
                 if (!changed) {
                     setStatus(PaymentStatus.Valid);
@@ -157,7 +152,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction yet, try again
                 if (
-                    error instanceof ValidateTransactionSignatureError &&
+                    error instanceof ValidateTransferError &&
                     (error.message === 'not found' || error.message === 'missing meta')
                 ) {
                     console.warn(error);

@@ -2,7 +2,7 @@ import { getAssociatedTokenAddress } from '@solana/spl-token';
 import { useConnection } from '@solana/wallet-adapter-react';
 import {
     LAMPORTS_PER_SOL,
-    ParsedConfirmedTransaction,
+    ParsedTransactionWithMeta,
     PublicKey,
     RpcResponseAndContext,
     SignatureStatus,
@@ -93,13 +93,13 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
         let changed = false;
 
         const run = async () => {
-            let parsedConfirmedTransactions: (ParsedConfirmedTransaction | null)[],
+            let parsedTransactions: (ParsedTransactionWithMeta | null)[],
                 signatureStatuses: RpcResponseAndContext<(SignatureStatus | null)[]>;
             try {
                 setLoading(true);
 
-                [parsedConfirmedTransactions, signatureStatuses] = await Promise.all([
-                    connection.getParsedConfirmedTransactions(signatures),
+                [parsedTransactions, signatureStatuses] = await Promise.all([
+                    connection.getParsedTransactions(signatures),
                     connection.getSignatureStatuses(signatures, { searchTransactionHistory: true }),
                 ]);
             } catch (error) {
@@ -114,17 +114,17 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             setTransactions(
                 signatures
                     .map((signature, signatureIndex): Transaction | undefined => {
-                        const parsedConfirmedTransaction = parsedConfirmedTransactions[signatureIndex];
+                        const parsedTransaction = parsedTransactions[signatureIndex];
                         const signatureStatus = signatureStatuses.value[signatureIndex];
-                        if (!parsedConfirmedTransaction?.meta || !signatureStatus) return;
+                        if (!parsedTransaction?.meta || !signatureStatus) return;
 
-                        const timestamp = parsedConfirmedTransaction.blockTime;
-                        const error = parsedConfirmedTransaction.meta.err;
+                        const timestamp = parsedTransaction.blockTime;
+                        const error = parsedTransaction.meta.err;
                         const status = signatureStatus.confirmationStatus;
                         if (!timestamp || !status) return;
 
-                        if (parsedConfirmedTransaction.transaction.message.instructions.length !== 1) return;
-                        const instruction = parsedConfirmedTransaction.transaction.message.instructions[0];
+                        if (parsedTransaction.transaction.message.instructions.length !== 1) return;
+                        const instruction = parsedTransaction.transaction.message.instructions[0];
                         if (!('program' in instruction)) return;
                         const program = instruction.program;
                         const type = instruction.parsed?.type;
@@ -141,13 +141,13 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             // Exclude self-transfers
                             if (info.source === recipient.toBase58()) return;
 
-                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                            const accountIndex = parsedTransaction.transaction.message.accountKeys.findIndex(
                                 ({ pubkey }) => pubkey.equals(recipient)
                             );
                             if (accountIndex === -1) return;
 
-                            const preBalance = parsedConfirmedTransaction.meta.preBalances[accountIndex];
-                            const postBalance = parsedConfirmedTransaction.meta.postBalances[accountIndex];
+                            const preBalance = parsedTransaction.meta.preBalances[accountIndex];
+                            const postBalance = parsedTransaction.meta.postBalances[accountIndex];
 
                             preAmount = new BigNumber(preBalance).div(LAMPORTS_PER_SOL);
                             postAmount = new BigNumber(postBalance).div(LAMPORTS_PER_SOL);
@@ -162,17 +162,17 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                             // Exclude self-transfers
                             if (info.source === associatedToken.toBase58()) return;
 
-                            const accountIndex = parsedConfirmedTransaction.transaction.message.accountKeys.findIndex(
+                            const accountIndex = parsedTransaction.transaction.message.accountKeys.findIndex(
                                 ({ pubkey }) => pubkey.equals(associatedToken)
                             );
                             if (accountIndex === -1) return;
 
-                            const preBalance = parsedConfirmedTransaction.meta.preTokenBalances?.find(
+                            const preBalance = parsedTransaction.meta.preTokenBalances?.find(
                                 (x) => x.accountIndex === accountIndex
                             );
                             if (!preBalance?.uiTokenAmount.uiAmountString) return;
 
-                            const postBalance = parsedConfirmedTransaction.meta.postTokenBalances?.find(
+                            const postBalance = parsedTransaction.meta.postTokenBalances?.find(
                                 (x) => x.accountIndex === accountIndex
                             );
                             if (!postBalance?.uiTokenAmount.uiAmountString) return;

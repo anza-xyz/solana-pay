@@ -24,7 +24,7 @@ export interface PaymentContextState {
     status: PaymentStatus;
     confirmations: Confirmations;
     progress: number;
-    url: string;
+    url: URL;
     reset(): void;
     generate(): void;
 }
