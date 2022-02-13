@@ -106,10 +106,10 @@ function parseTransferRequestURL({ pathname, searchParams }: URL): TransferReque
     }
 
     let reference: PublicKey[] | undefined;
-    const referenceParam = searchParams.getAll('reference');
-    if (referenceParam.length) {
+    const referenceParams = searchParams.getAll('reference');
+    if (referenceParams.length) {
         try {
-            reference = referenceParam.map((reference) => new PublicKey(reference));
+            reference = referenceParams.map((reference) => new PublicKey(reference));
         } catch (error) {
             throw new ParseURLError('reference invalid');
         }
