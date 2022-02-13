@@ -1,11 +1,11 @@
 .idea
 .vscode
 
+.DS_Store
+
 .parcel-cache
 .vercel
 
 dist
-docs
 
 node_modules
-

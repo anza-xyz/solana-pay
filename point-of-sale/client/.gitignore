@@ -7,6 +7,5 @@
 .vercel
 
 dist
-docs
 
 node_modules
