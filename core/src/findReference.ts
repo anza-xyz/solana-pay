@@ -29,14 +29,16 @@ export async function findReference(
     const length = signatures.length;
     if (!length) throw new FindReferenceError('not found');
 
-    // If multiple transaction signatures are found within the limit, return the oldest one.
-    if (length < (options?.limit || 1000)) return signatures[length - 1];
+    // If one or more transaction signatures are found under the limit, return the oldest one.
+    const oldest = signatures[length - 1];
+    if (length < (options?.limit || 1000)) return oldest;
 
     try {
-        // In the unlikely event that more signatures than the limit are found, recursively find the oldest one.
-        return await findReference(connection, reference, options, finality);
+        // In the unlikely event that signatures up to the limit are found, recursively find the oldest one.
+        return await findReference(connection, reference, { ...options, before: oldest.signature }, finality);
     } catch (error: any) {
-        if (error instanceof FindReferenceError) return signatures[length - 1];
+        // If the signatures found were exactly at the limit, there won't be more to find, so return the oldest one.
+        if (error instanceof FindReferenceError) return oldest;
         throw error;
     }
 }
