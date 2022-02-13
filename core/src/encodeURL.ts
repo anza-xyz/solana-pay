@@ -2,6 +2,18 @@ import { SOLANA_PROTOCOL } from './constants';
 import { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types';
 
 /**
+ * Fields of a Solana Pay transaction request URL.
+ */
+export interface TransactionRequestURLFields {
+    /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
+    link: URL;
+    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label-1). */
+    label?: Label;
+    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message-1).  */
+    message?: Message;
+}
+
+/**
  * Fields of a Solana Pay transfer request URL.
  */
 export interface TransferRequestURLFields {
@@ -22,11 +34,29 @@ export interface TransferRequestURLFields {
 }
 
 /**
- * Encode a Solana Pay transfer request URL.
+ * Encode a Solana Pay URL.
  *
  * @param fields Fields to encode in the URL.
  */
-export function encodeTransferRequestURL({
+export function encodeURL(fields: TransactionRequestURLFields | TransferRequestURLFields): URL {
+    return 'link' in fields ? encodeTransactionRequestURL(fields) : encodeTransferRequestURL(fields);
+}
+
+function encodeTransactionRequestURL({ link, label, message }: TransactionRequestURLFields): URL {
+    const url = new URL(SOLANA_PROTOCOL + link.search ? encodeURIComponent(String(link)) : String(link));
+
+    if (label) {
+        url.searchParams.append('label', label);
+    }
+
+    if (message) {
+        url.searchParams.append('message', message);
+    }
+
+    return url;
+}
+
+function encodeTransferRequestURL({
     recipient,
     amount,
     splToken,
@@ -34,17 +64,15 @@ export function encodeTransferRequestURL({
     label,
     message,
     memo,
-}: TransferRequestURLFields): string {
-    let url = SOLANA_PROTOCOL + encodeURIComponent(recipient.toBase58());
-
-    const params = new URLSearchParams();
+}: TransferRequestURLFields): URL {
+    const url = new URL(SOLANA_PROTOCOL + encodeURIComponent(recipient.toBase58()));
 
     if (amount) {
-        params.append('amount', amount.toFixed(amount.decimalPlaces()));
+        url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
     }
 
     if (splToken) {
-        params.append('spl-token', splToken.toBase58());
+        url.searchParams.append('spl-token', splToken.toBase58());
     }
 
     if (reference) {
@@ -53,25 +81,20 @@ export function encodeTransferRequestURL({
         }
 
         for (const pubkey of reference) {
-            params.append('reference', pubkey.toBase58());
+            url.searchParams.append('reference', pubkey.toBase58());
         }
     }
 
     if (label) {
-        params.append('label', label);
+        url.searchParams.append('label', label);
     }
 
     if (message) {
-        params.append('message', message);
+        url.searchParams.append('message', message);
     }
 
     if (memo) {
-        params.append('memo', memo);
-    }
-
-    const search = params.toString();
-    if (search) {
-        url += '?' + search;
+        url.searchParams.append('memo', memo);
     }
 
     return url;

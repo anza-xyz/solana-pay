@@ -1,15 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { URLSearchParams } from 'url';
 import { HTTPS_PROTOCOL, SOLANA_PROTOCOL } from './constants';
 import { Amount, Label, Link, Memo, Message, Recipient, Reference, SPLToken } from './types';
-
-/**
- * Thrown when a URL can't be parsed as a Solana Pay URL.
- */
-export class ParseURLError extends Error {
-    name = 'ParseURLError';
-}
 
 /**
  * A Solana Pay transaction request URL.
@@ -17,9 +9,9 @@ export class ParseURLError extends Error {
 export interface TransactionRequestURL {
     /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
     link: Link;
-    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label). */
+    /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label-1). */
     label: Label | undefined;
-    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message). */
+    /** `message` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#message-1). */
     message: Message | undefined;
 }
 
@@ -44,6 +36,13 @@ export interface TransferRequestURL {
 }
 
 /**
+ * Thrown when a URL can't be parsed as a Solana Pay URL.
+ */
+export class ParseURLError extends Error {
+    name = 'ParseURLError';
+}
+
+/**
  * Parse a Solana Pay URL.
  *
  * @param url - URL to parse.
@@ -56,11 +55,10 @@ export function parseURL(url: string | URL): TransactionRequestURL | TransferReq
         url = new URL(url);
     }
 
-    const { protocol, pathname } = url;
-    if (protocol !== SOLANA_PROTOCOL) throw new ParseURLError('protocol invalid');
-    if (!pathname) throw new ParseURLError('pathname missing');
+    if (url.protocol !== SOLANA_PROTOCOL) throw new ParseURLError('protocol invalid');
+    if (!url.pathname) throw new ParseURLError('pathname missing');
 
-    return /[^A-Za-z0-9]/.test(pathname) ? parseTransactionRequestURL(url) : parseTransferRequestURL(url);
+    return /[:%]/.test(url.pathname) ? parseTransactionRequestURL(url) : parseTransferRequestURL(url);
 }
 
 function parseTransactionRequestURL({ pathname, searchParams }: URL): TransactionRequestURL {

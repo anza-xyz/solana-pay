@@ -14,7 +14,7 @@ export class FetchTransactionError extends Error {
  * Fetch a transaction from a Solana Pay transaction request link.
  *
  * @param link - `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link).
- * @param account - Public key of a signer account.
+ * @param account - Account that may sign the transaction.
  * @param connection - A connection to the cluster.
  * @param commitment - `Commitment` level for the recent blockhash.
  *
@@ -35,7 +35,7 @@ export async function fetchTransaction(
             Accept: 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ account: account.toBase58() }),
+        body: JSON.stringify({ account }),
     });
 
     const json = await response.json();
@@ -43,37 +43,23 @@ export async function fetchTransaction(
     if (typeof json.transaction !== 'string') throw new FetchTransactionError('invalid transaction');
 
     const transaction = Transaction.from(toUint8Array(json.transaction));
-    const signatures = transaction.signatures;
+    const { signatures, feePayer, recentBlockhash } = transaction;
 
     if (signatures.length) {
-        if (!transaction.feePayer) throw new FetchTransactionError('missing fee payer');
-        if (!transaction.recentBlockhash) throw new FetchTransactionError('missing recent blockhash');
+        if (!feePayer) throw new FetchTransactionError('missing fee payer');
+        if (!feePayer.equals(signatures[0].publicKey)) throw new FetchTransactionError('invalid fee payer');
+        if (!recentBlockhash) throw new FetchTransactionError('missing recent blockhash');
 
-        const signature = signatures[0];
-        if (!transaction.feePayer.equals(signature.publicKey)) throw new FetchTransactionError('invalid fee payer');
-
-        // Message to verify the signatures against
+        // A valid signature for everything except `account` must be provided.
         const message = transaction.serializeMessage();
-
-        // Check all the signatures for duplicate, invalid, and missing values
-        const publicKeys: Record<string, true> = {};
         for (const { signature, publicKey } of signatures) {
-            const base58 = publicKey.toBase58();
-            if (publicKeys[base58]) throw new FetchTransactionError('duplicate signature');
-            publicKeys[base58] = true;
-
-            if (publicKey.equals(account)) {
-                // A signature for `account` must not be provided
-                if (signature) throw new FetchTransactionError('invalid signature');
-            } else {
-                // A valid signature for everything except `account` must be provided
-                if (!signature) throw new FetchTransactionError('missing signature');
+            if (signature) {
                 if (!nacl.sign.detached.verify(message, signature, publicKey.toBuffer()))
                     throw new FetchTransactionError('invalid signature');
-            }
+            } else if (!publicKey.equals(account)) throw new FetchTransactionError('missing signature');
         }
     } else {
-        // Ignore the fee payer and recent blockhash in the transaction and initialize them
+        // Ignore the fee payer and recent blockhash in the transaction and initialize them.
         transaction.feePayer = account;
         transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
     }

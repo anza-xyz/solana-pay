@@ -19,7 +19,7 @@ export class CreateTransactionError extends Error {
 }
 
 /**
- * Optional parameters for creating a Solana Pay transfer transaction.
+ * Fields for creating a Solana Pay transfer transaction.
  */
 export interface CreateTransactionFields {
     /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
@@ -37,28 +37,28 @@ export interface CreateTransactionFields {
 /**
  * Create a Solana Pay transfer transaction.
  *
- * @param connection - A connection to the cluster.
- * @param account - Signer account within a wallet.
  * @param fields - Fields from a transfer request URL.
+ * @param sender - Account that send the transaction.
+ * @param connection - A connection to the cluster.
  *
  * @throws {CreateTransactionError}
  */
 export async function createTransaction(
-    connection: Connection,
-    account: PublicKey,
-    { recipient, amount, splToken, reference, memo }: CreateTransactionFields
+    { recipient, amount, splToken, reference, memo }: CreateTransactionFields,
+    sender: PublicKey,
+    connection: Connection
 ): Promise<Transaction> {
-    // Check that the payer and recipient accounts exist
-    const payerInfo = await connection.getAccountInfo(account);
-    if (!payerInfo) throw new CreateTransactionError('payer not found');
+    // Check that the sender and recipient accounts exist
+    const senderInfo = await connection.getAccountInfo(sender);
+    if (!senderInfo) throw new CreateTransactionError('sender not found');
 
     const recipientInfo = await connection.getAccountInfo(recipient);
     if (!recipientInfo) throw new CreateTransactionError('recipient not found');
 
     // A native SOL or SPL token transfer instruction
     const instruction = splToken
-        ? await createSPLTokenInstruction(connection, account, recipient, amount, splToken)
-        : await createSystemInstruction(connection, account, recipient, amount);
+        ? await createSPLTokenInstruction(recipient, amount, splToken, sender, connection)
+        : await createSystemInstruction(recipient, amount, sender, connection);
 
     // If reference accounts are provided, add them to the transfer instruction
     if (reference) {
@@ -92,21 +92,21 @@ export async function createTransaction(
 }
 
 async function createSystemInstruction(
-    connection: Connection,
-    payer: PublicKey,
     recipient: PublicKey,
-    amount: BigNumber
+    amount: BigNumber,
+    sender: PublicKey,
+    connection: Connection
 ): Promise<TransactionInstruction> {
-    // Check that the payer and recipient accounts exist
-    const payerInfo = await connection.getAccountInfo(payer);
-    if (!payerInfo) throw new CreateTransactionError('payer not found');
+    // Check that the sender and recipient accounts exist
+    const senderInfo = await connection.getAccountInfo(sender);
+    if (!senderInfo) throw new CreateTransactionError('sender not found');
 
     const recipientInfo = await connection.getAccountInfo(recipient);
     if (!recipientInfo) throw new CreateTransactionError('recipient not found');
 
-    // Check that the payer and recipient are valid native accounts
-    if (!payerInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('payer owner invalid');
-    if (payerInfo.executable) throw new CreateTransactionError('payer executable');
+    // Check that the sender and recipient are valid native accounts
+    if (!senderInfo.owner.equals(SystemProgram.programId)) throw new CreateTransactionError('sender owner invalid');
+    if (senderInfo.executable) throw new CreateTransactionError('sender executable');
     if (!recipientInfo.owner.equals(SystemProgram.programId))
         throw new CreateTransactionError('recipient owner invalid');
     if (recipientInfo.executable) throw new CreateTransactionError('recipient executable');
@@ -117,24 +117,24 @@ async function createSystemInstruction(
     // Convert input decimal amount to integer lamports
     amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
-    // Check that the payer has enough lamports
+    // Check that the sender has enough lamports
     const lamports = amount.toNumber();
-    if (lamports > payerInfo.lamports) throw new CreateTransactionError('insufficient funds');
+    if (lamports > senderInfo.lamports) throw new CreateTransactionError('insufficient funds');
 
     // Create an instruction to transfer native SOL
     return SystemProgram.transfer({
-        fromPubkey: payer,
+        fromPubkey: sender,
         toPubkey: recipient,
         lamports,
     });
 }
 
 async function createSPLTokenInstruction(
-    connection: Connection,
-    payer: PublicKey,
     recipient: PublicKey,
     amount: BigNumber,
-    splToken: PublicKey
+    splToken: PublicKey,
+    sender: PublicKey,
+    connection: Connection
 ): Promise<TransactionInstruction> {
     // Check that the token provided is an initialized mint
     const mint = await getMint(connection, splToken);
@@ -146,11 +146,11 @@ async function createSPLTokenInstruction(
     // Convert input decimal amount to integer tokens according to the mint decimals
     amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
 
-    // Get the payer's ATA and check that the account exists and can send tokens
-    const payerATA = await getAssociatedTokenAddress(splToken, payer);
-    const payerAccount = await getAccount(connection, payerATA);
-    if (!payerAccount.isInitialized) throw new CreateTransactionError('payer not initialized');
-    if (payerAccount.isFrozen) throw new CreateTransactionError('payer frozen');
+    // Get the sender's ATA and check that the account exists and can send tokens
+    const senderATA = await getAssociatedTokenAddress(splToken, sender);
+    const senderAccount = await getAccount(connection, senderATA);
+    if (!senderAccount.isInitialized) throw new CreateTransactionError('sender not initialized');
+    if (senderAccount.isFrozen) throw new CreateTransactionError('sender frozen');
 
     // Get the recipient's ATA and check that the account exists and can receive tokens
     const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
@@ -158,10 +158,10 @@ async function createSPLTokenInstruction(
     if (!recipientAccount.isInitialized) throw new CreateTransactionError('recipient not initialized');
     if (recipientAccount.isFrozen) throw new CreateTransactionError('recipient frozen');
 
-    // Check that the payer has enough tokens
+    // Check that the sender has enough tokens
     const tokens = BigInt(String(amount));
-    if (tokens > payerAccount.amount) throw new CreateTransactionError('insufficient funds');
+    if (tokens > senderAccount.amount) throw new CreateTransactionError('insufficient funds');
 
     // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
-    return createTransferCheckedInstruction(payerATA, splToken, recipientATA, payer, tokens, mint.decimals);
+    return createTransferCheckedInstruction(senderATA, splToken, recipientATA, sender, tokens, mint.decimals);
 }

@@ -35,17 +35,17 @@ export interface ValidateTransferFields {
 /**
  * Validate that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
  *
- * @param connection - A connection to the cluster.
  * @param signature -  The signature of the transaction to validate.
  * @param fields - Fields of a Solana Pay transfer request to validate.
- * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
+ * @param connection - A connection to the cluster.
+ * @param finality? - A subset of `Commitment` levels, which are at least optimistically confirmed.
  *
  * @throws {ValidateTransferError}
  */
 export async function validateTransfer(
-    connection: Connection,
     signature: TransactionSignature,
     { recipient, amount, splToken, reference }: ValidateTransferFields,
+    connection: Connection,
     finality?: Finality
 ): Promise<TransactionResponse> {
     const response = await connection.getTransaction(signature, { commitment: finality });
