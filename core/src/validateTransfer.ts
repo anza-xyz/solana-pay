@@ -35,7 +35,7 @@ export interface ValidateTransferFields {
 }
 
 /**
- * Check that a given transaction signature corresponds with a transaction containing a valid Solana Pay transfer.
+ * Check that a given transaction contains a valid Solana Pay transfer.
  *
  * @param connection - A connection to the cluster.
  * @param signature - The signature of the transaction to validate.
