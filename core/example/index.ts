@@ -1,5 +1,6 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import BigNumber from 'bignumber.js';
 import { createTransaction, encodeURL, findTransactionSignature, parseURL, validateTransactionSignature } from '../src';
 
 (async function () {
@@ -52,7 +53,7 @@ import { createTransaction, encodeURL, findTransactionSignature, parseURL, valid
     }
 
     // Create a transaction to transfer native SOL or SPL tokens
-    const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount, {
+    const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount as BigNumber, {
         splToken,
         reference,
         memo,
@@ -86,7 +87,7 @@ import { createTransaction, encodeURL, findTransactionSignature, parseURL, valid
         connection,
         found.signature,
         recipient,
-        amount,
+        amount as BigNumber,
         splToken,
         reference
     );
