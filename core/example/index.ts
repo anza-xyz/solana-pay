@@ -53,7 +53,7 @@ import { createTransaction, encodeURL, findTransactionSignature, parseURL, valid
     }
 
     // Create a transaction to transfer native SOL or SPL tokens
-    const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount as BigNumber, {
+    const transaction = await createTransaction(connection, wallet.publicKey, recipient, amount!, {
         splToken,
         reference,
         memo,
@@ -87,7 +87,7 @@ import { createTransaction, encodeURL, findTransactionSignature, parseURL, valid
         connection,
         found.signature,
         recipient,
-        amount as BigNumber,
+        amount!,
         splToken,
         reference
     );
