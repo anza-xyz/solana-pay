@@ -1,6 +1,7 @@
 import {
     createTransfer,
     encodeURL,
+    fetchTransaction,
     findReference,
     FindReferenceError,
     parseURL,
@@ -9,7 +10,7 @@ import {
     ValidateTransferError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
+import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -23,7 +24,7 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
+    const { link, recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
@@ -36,9 +37,31 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
-    const url = useMemo(
-        () =>
-            encodeURL({
+    const url = useMemo(() => {
+        if (link) {
+            const url = new URL(String(link));
+
+            url.searchParams.append('recipient', recipient.toBase58());
+
+            if (amount) {
+                url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
+            }
+
+            if (splToken) {
+                url.searchParams.append('spl-token', splToken.toBase58());
+            }
+
+            if (reference) {
+                url.searchParams.append('reference', reference.toBase58());
+            }
+
+            if (memo) {
+                url.searchParams.append('memo', memo);
+            }
+
+            return encodeURL({ link: url, label, message });
+        } else {
+            return encodeURL({
                 recipient,
                 amount,
                 splToken,
@@ -46,9 +69,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 label,
                 message,
                 memo,
-            }),
-        [recipient, amount, splToken, reference, label, message, memo]
-    );
+            });
+        }
+    }, [link, recipient, amount, splToken, reference, label, message, memo]);
 
     const reset = useCallback(() => {
         setAmount(undefined);
@@ -76,16 +99,24 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
             const run = async () => {
                 try {
-                    const { recipient, amount, splToken, reference, memo } = parseURL(url) as TransferRequestURL;
-                    if (!amount) return;
+                    const request = parseURL(url);
+                    let transaction: Transaction;
 
-                    const transaction = await createTransfer(connection, publicKey, {
-                        recipient,
-                        amount,
-                        splToken,
-                        reference,
-                        memo,
-                    });
+                    if ('link' in request) {
+                        const { link } = request;
+                        transaction = await fetchTransaction(connection, publicKey, link);
+                    } else {
+                        const { recipient, amount, splToken, reference, memo } = request;
+                        if (!amount) return;
+
+                        transaction = await createTransfer(connection, publicKey, {
+                            recipient,
+                            amount,
+                            splToken,
+                            reference,
+                            memo,
+                        });
+                    }
 
                     if (!changed) {
                         await sendTransaction(transaction, connection);
@@ -113,7 +144,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         const interval = setInterval(async () => {
             let signature: ConfirmedSignatureInfo;
             try {
-                signature = await findReference(connection, reference, undefined, 'confirmed');
+                signature = await findReference(connection, reference);
 
                 if (!changed) {
                     clearInterval(interval);
@@ -143,7 +174,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
         const run = async () => {
             try {
-                await validateTransfer(connection, signature, { recipient, amount, splToken, reference }, 'confirmed');
+                await validateTransfer(connection, signature, { recipient, amount, splToken, reference });
 
                 if (!changed) {
                     setStatus(PaymentStatus.Valid);

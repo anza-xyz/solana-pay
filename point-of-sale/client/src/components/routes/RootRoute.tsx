@@ -16,7 +16,7 @@ import { SOLIcon } from '../images/SOLIcon';
 import * as css from './RootRoute.module.pcss';
 
 export const RootRoute: FC = () => {
-    // If you're testing without a phone, set this to true to allow a browser-based wallet connection to be used
+    // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used
     const connectWallet = false;
     const wallets = useMemo(
         () => (connectWallet ? [new PhantomWalletAdapter(), new TorusWalletAdapter()] : []),
@@ -41,6 +41,8 @@ export const RootRoute: FC = () => {
         return { recipient, label };
     }, [params]);
 
+    const link = useMemo(() => new URL('https://localhost:3001'), []);
+
     return (
         <ThemeProvider>
             <FullscreenProvider>
@@ -49,6 +51,7 @@ export const RootRoute: FC = () => {
                         <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
+                                    link={link}
                                     recipient={recipient}
                                     label={label}
                                     symbol="SOL"

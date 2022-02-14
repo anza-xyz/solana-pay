@@ -3,6 +3,7 @@ import { createContext, ReactElement, useContext } from 'react';
 import { Digits } from '../types';
 
 export interface ConfigContextState {
+    link: URL | undefined;
     recipient: PublicKey;
     label: string;
     splToken: PublicKey | undefined;

@@ -6,6 +6,7 @@ import { MAX_CONFIRMATIONS } from '../../utils/constants';
 
 export interface ConfigProviderProps {
     children: ReactNode;
+    link?: URL;
     recipient: PublicKey;
     label: string;
     splToken?: PublicKey;
@@ -19,6 +20,7 @@ export interface ConfigProviderProps {
 
 export const ConfigProvider: FC<ConfigProviderProps> = ({
     children,
+    link,
     recipient,
     label,
     splToken,
@@ -32,6 +34,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     return (
         <ConfigContext.Provider
             value={{
+                link,
                 recipient,
                 label,
                 splToken,
