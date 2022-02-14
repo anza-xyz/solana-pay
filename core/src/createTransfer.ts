@@ -41,7 +41,7 @@ export interface CreateTransferFields {
  * @param connection - A connection to the cluster.
  * @param sender - Account that will send the transfer.
  * @param fields - Fields of a Solana Pay transfer request URL.
- * @param options - Options for `getLatestBlockhash`.
+ * @param options - Options for `getRecentBlockhash`.
  *
  * @throws {CreateTransferError}
  */
@@ -77,7 +77,7 @@ export async function createTransfer(
     // Create the transaction
     const transaction = new Transaction();
     transaction.feePayer = sender;
-    transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
+    transaction.recentBlockhash = (await connection.getRecentBlockhash(commitment)).blockhash;
 
     // If a memo is provided, add it to the transaction before adding the transfer instruction
     if (memo != null) {

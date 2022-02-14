@@ -16,7 +16,7 @@ export class FetchTransactionError extends Error {
  * @param connection - A connection to the cluster.
  * @param account - Account that may sign the transaction.
  * @param link - `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link).
- * @param options - Options for `getLatestBlockhash`.
+ * @param options - Options for `getRecentBlockhash`.
  *
  * @throws {FetchTransactionError}
  */
@@ -56,12 +56,19 @@ export async function fetchTransaction(
             if (signature) {
                 if (!nacl.sign.detached.verify(message, signature, publicKey.toBuffer()))
                     throw new FetchTransactionError('invalid signature');
-            } else if (!publicKey.equals(account)) throw new FetchTransactionError('missing signature');
+            } else if (publicKey.equals(account)) {
+                // If the only signature expected is for `account`, ignore the recent blockhash in the transaction.
+                if (signatures.length === 1) {
+                    transaction.recentBlockhash = (await connection.getRecentBlockhash(commitment)).blockhash;
+                }
+            } else {
+                throw new FetchTransactionError('missing signature');
+            }
         }
     } else {
         // Ignore the fee payer and recent blockhash in the transaction and initialize them.
         transaction.feePayer = account;
-        transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
+        transaction.recentBlockhash = (await connection.getRecentBlockhash(commitment)).blockhash;
     }
 
     return transaction;
