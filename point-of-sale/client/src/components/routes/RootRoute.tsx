@@ -41,7 +41,7 @@ export const RootRoute: FC = () => {
         return { recipient, label };
     }, [params]);
 
-    const link = useMemo(() => new URL('https://localhost:3001'), []);
+    const link = useMemo(() => new URL('https://localhost:3001/api'), []);
 
     return (
         <ThemeProvider>
