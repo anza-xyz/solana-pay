@@ -1,11 +1,11 @@
 import { createTransfer } from '@solana/pay';
 import { PublicKey } from '@solana/web3.js';
-import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { NextApiRequest, NextApiResponse } from 'next';
 import BigNumber from 'bignumber.js';
-import { connection } from '../core';
-import { cors, rateLimit } from '../middleware';
+import { connection } from '../../core';
+import { cors, rateLimit } from '../../middleware';
 
-export default async function (request: VercelRequest, response: VercelResponse) {
+export default async function (request: NextApiRequest, response: NextApiResponse<{ transaction: string }>) {
     await cors(request, response);
     await rateLimit(request, response);
 
@@ -52,10 +52,7 @@ export default async function (request: VercelRequest, response: VercelResponse)
         memo,
     });
 
-    // These must be set to serialize the transaction, but wallets will override them unless the transaction is signed.
-    transaction.feePayer = account;
-    transaction.recentBlockhash = '11111111111111111111111111111111';
-
+    // Serialize and return the unsigned transaction.
     const serialized = transaction.serialize({
         verifySignatures: false,
         requireAllSignatures: false,

@@ -1,9 +1,9 @@
-import type { VercelApiHandler, VercelRequest, VercelResponse } from '@vercel/node';
+import { NextApiHandler, NextApiRequest, NextApiResponse } from 'next';
 import { RequestHandler } from 'express';
 
-// Wrap an Express middleware function for compatibility with Vercel
-export const wrapExpressHandler = function (handler: RequestHandler): VercelApiHandler {
-    return function (request: VercelRequest, response: VercelResponse): Promise<void> {
+// Wrap an Express middleware function for compatibility with Next
+export const wrapExpressHandler = function (handler: RequestHandler): NextApiHandler {
+    return function (request: NextApiRequest, response: NextApiResponse): Promise<void> {
         return new Promise<void>(function (resolve, reject) {
             handler(request as any, response as any, function (error?: any) {
                 if (error) {

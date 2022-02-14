@@ -1,12 +1,7 @@
 {
-    "root": true,
-    "env": {
-        "node": true
-    },
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint", "prettier"]
+    "extends": ["next/core-web-vitals"],
+    "plugins": ["prettier"],
+    "rules": {
+        "import/no-anonymous-default-export": "off"
+    }
 }
