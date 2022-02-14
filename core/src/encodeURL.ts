@@ -43,7 +43,11 @@ export function encodeURL(fields: TransactionRequestURLFields | TransferRequestU
 }
 
 function encodeTransactionRequestURL({ link, label, message }: TransactionRequestURLFields): URL {
-    const url = new URL(SOLANA_PROTOCOL + link.search ? encodeURIComponent(String(link)) : String(link));
+    // Remove trailing slashes
+    const pathname = link.search
+        ? encodeURIComponent(String(link).replace(/\/\?/, '?'))
+        : String(link).replace(/\/$/, '');
+    const url = new URL(SOLANA_PROTOCOL + pathname);
 
     if (label) {
         url.searchParams.append('label', label);
@@ -65,7 +69,8 @@ function encodeTransferRequestURL({
     message,
     memo,
 }: TransferRequestURLFields): URL {
-    const url = new URL(SOLANA_PROTOCOL + encodeURIComponent(recipient.toBase58()));
+    const pathname = recipient.toBase58();
+    const url = new URL(SOLANA_PROTOCOL + pathname);
 
     if (amount) {
         url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
