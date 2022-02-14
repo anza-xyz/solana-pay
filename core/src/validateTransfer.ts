@@ -40,7 +40,7 @@ export interface ValidateTransferFields {
  * @param connection - A connection to the cluster.
  * @param signature - The signature of the transaction to validate.
  * @param fields - Fields of a Solana Pay transfer request to validate.
- * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
+ * @param options - Options for `getTransaction`.
  *
  * @throws {ValidateTransferError}
  */
@@ -48,9 +48,9 @@ export async function validateTransfer(
     connection: Connection,
     signature: TransactionSignature,
     { recipient, amount, splToken, reference, memo }: ValidateTransferFields,
-    finality?: Finality
+    options?: { commitment?: Finality }
 ): Promise<TransactionResponse> {
-    const response = await connection.getTransaction(signature, { commitment: finality });
+    const response = await connection.getTransaction(signature, options);
     if (!response) throw new ValidateTransferError('not found');
 
     const message = response.transaction.message;

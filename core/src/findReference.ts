@@ -14,15 +14,13 @@ export class FindReferenceError extends Error {
  * @param connection - A connection to the cluster.
  * @param reference - `reference` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#reference).
  * @param options - Options for `getSignaturesForAddress`.
- * @param finality - A subset of `Commitment` levels, which are at least optimistically confirmed.
  *
  * @throws {FindReferenceError}
  */
 export async function findReference(
     connection: Connection,
     reference: Reference,
-    options?: SignaturesForAddressOptions,
-    finality?: Finality
+    { finality, ...options }: SignaturesForAddressOptions & { finality?: Finality } = {}
 ): Promise<ConfirmedSignatureInfo> {
     const signatures = await connection.getSignaturesForAddress(reference, options, finality);
 
@@ -35,7 +33,7 @@ export async function findReference(
 
     try {
         // In the unlikely event that signatures up to the limit are found, recursively find the oldest one.
-        return await findReference(connection, reference, { ...options, before: oldest.signature }, finality);
+        return await findReference(connection, reference, { finality, ...options, before: oldest.signature });
     } catch (error: any) {
         // If the signatures found were exactly at the limit, there won't be more to find, so return the oldest one.
         if (error instanceof FindReferenceError) return oldest;

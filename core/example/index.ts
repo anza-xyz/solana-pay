@@ -1,5 +1,5 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
-import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL } from '@solana/web3.js';
+import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, sendAndConfirmRawTransaction } from '@solana/web3.js';
 import { createTransfer, encodeURL, findReference, parseURL, TransferRequestURL, validateTransfer } from '../src';
 
 (async function () {
@@ -62,19 +62,13 @@ import { createTransfer, encodeURL, findReference, parseURL, TransferRequestURL,
         memo,
     });
 
-    // Sign and send the transaction
-    transaction.feePayer = wallet.publicKey;
-    transaction.recentBlockhash = (await connection.getLatestBlockhash()).blockhash;
+    // Sign, send, and confirm the transaction
     transaction.sign(wallet);
 
     const rawTransaction = transaction.serialize();
+    const signature = await sendAndConfirmRawTransaction(connection, rawTransaction);
 
-    const signature = await connection.sendRawTransaction(rawTransaction);
-
-    // Confirm the transaction
-    const result = await connection.confirmTransaction(signature, 'confirmed');
-
-    console.log(result);
+    console.log(signature);
 
     // Merchant app locates the transaction signature from the unique reference address it provided in the transfer link
     const found = await findReference(connection, originalReference);
@@ -86,5 +80,11 @@ import { createTransfer, encodeURL, findReference, parseURL, TransferRequestURL,
     console.log(found.memo);
 
     // Merchant app should always validate that the transaction transferred the expected amount to the recipient
-    const response = await validateTransfer(connection, found.signature, { recipient, amount });
+    const response = await validateTransfer(connection, found.signature, {
+        recipient,
+        amount,
+        splToken,
+        reference,
+        memo,
+    });
 })();
