@@ -42,9 +42,9 @@ yarn add @solana/pay @solana/web3.js bignumber.js
 Import the modules used to work with Solana Pay.
 
 ```typescript
-import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
-import { encodeURL, createQR } from '@solana/pay';
-import BigNumber from 'bignumber.js';
+import { Cluster, clusterApiUrl, Connection, PublicKey } from "@solana/web3.js";
+import { encodeURL, createQR } from "@solana/pay";
+import BigNumber from "bignumber.js";
 ```
 
 ### 1.2 Establish a connection
@@ -60,12 +60,12 @@ When working on Solana, you will need to connect to the network. For our example
 
 ```typescript
 async function main() {
-    // Variable to keep state of the payment status
-    let paymentStatus: string;
+  // Variable to keep state of the payment status
+  let paymentStatus: string;
 
-    // Connecting to devnet for this example
-    console.log('1. ✅ Establish connection to the network');
-    const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+  // Connecting to devnet for this example
+  console.log("1. ✅ Establish connection to the network");
+  const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 }
 ```
 
@@ -94,21 +94,21 @@ Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SO
  * and will be used to find and validate the payment in the future.
  *
  */
-console.log('2. 🛍 Simulate a customer checkout \n');
-const recipient = new PublicKey('MERCHANT_WALLET');
+console.log("2. 🛍 Simulate a customer checkout \n");
+const recipient = new PublicKey("MERCHANT_WALLET");
 const amount = new BigNumber(20);
 const reference = new Keypair().publicKey;
-const label = 'Jungle Cats store';
-const message = 'Jungle Cats store - your order - #001234';
-const memo = 'JC#4098';
- 
+const label = "Jungle Cats store";
+const message = "Jungle Cats store - your order - #001234";
+const memo = "JC#4098";
+
 /**
  * Create a payment request link
  *
  * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
-console.log('3. 💰 Create a payment request link \n');
+console.log("3. 💰 Create a payment request link \n");
 const url = encodeURL({ recipient, amount, reference, label, message, memo });
 ```
 
@@ -124,20 +124,28 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     <summary>See code snippet</summary>
 
 ```typescript
-     /**
-     * Simulate a checkout experience with an SPL token
-     */
-    console.log('2. 🛍 Simulate a customer checkout \n');
-    const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+/**
+ * Simulate a checkout experience with an SPL token
+ */
+console.log("2. 🛍 Simulate a customer checkout \n");
+const splToken = new PublicKey("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v");
 
-    /**
-     * Create a payment request link
-     *
-     * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
-     * Several parameters are encoded within the link representing an intent to collect payment from a customer.
-     */
-    console.log('3. 💰 Create a payment request link \n');
-    const url = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
+/**
+ * Create a payment request link
+ *
+ * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+ * Several parameters are encoded within the link representing an intent to collect payment from a customer.
+ */
+console.log("3. 💰 Create a payment request link \n");
+const url = encodeURL({
+  recipient,
+  amount,
+  splToken,
+  reference,
+  label,
+  message,
+  memo,
+});
 ```
 
 </details>
@@ -160,7 +168,7 @@ Now that you've created a payment link, you need a way to show it to your custom
  * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
-console.log('3. 💰 Create a payment request link \n');
+console.log("3. 💰 Create a payment request link \n");
 const url = encodeURL({ recipient, amount, reference, label, message, memo });
 
 // encode URL in QR code
@@ -171,7 +179,7 @@ const qrCode = createQR(url);
 
 <br/>
 
-![qr code](/img/solana-pay.png)
+![qr code](../images/solana-pay.png)
 
 ### 3.1 Add the QR code to your payment page
 
@@ -185,14 +193,14 @@ The QR code needs to be visible on your payment page.
 ```typescript
 // -- snippet -- //
 
-console.log('3. 💰 Create a payment request link \n');
+console.log("3. 💰 Create a payment request link \n");
 const url = encodeURL({ recipient, amount, reference, label, message, memo });
 
 // encode URL in QR code
 const qrCode = createQR(url);
 
 // get a handle of the element
-const element = document.getElementById('qr-code');
+const element = document.getElementById("qr-code");
 
 // append QR code to the element
 qrCode.append(element);
@@ -223,11 +231,11 @@ When a customer approves the payment request in their wallet, this transaction e
  *
  * This is only for example purposes. This interaction will be handled by a wallet provider
  */
-console.log('4. 🔐 Simulate wallet interaction \n');
+console.log("4. 🔐 Simulate wallet interaction \n");
 simulateWalletInteraction(connection, url);
 
 // Update payment status
-paymentStatus = 'pending';
+paymentStatus = "pending";
 
 /**
  * Wait for payment to be confirmed
@@ -236,11 +244,16 @@ paymentStatus = 'pending';
  * You can use any references encoded into the payment link to find the exact transaction on-chain.
  * Important to note that we can only find the transaction when it's **confirmed**
  */
-console.log('\n5. Find the transaction');
-const signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+console.log("\n5. Find the transaction");
+const signatureInfo = await findTransactionSignature(
+  connection,
+  reference,
+  undefined,
+  "confirmed"
+);
 
 // Update payment status
-paymentStatus = 'confirmed';
+paymentStatus = "confirmed";
 ```
 
 **Note**: The `findTransactionSignature` function uses `confirmed` as the default finality value. This can, on rare occasions, result in a transaction that is not fully complete. For full finality, use `finalized`. This can result in slower transaction completion.
@@ -267,32 +280,37 @@ If a transaction with the given reference can't be found, the `findTransactionSi
 let signatureInfo: ConfirmedSignatureInfo;
 
 return new Promise((resolve, reject) => {
-    /**
-     * Retry until we find the transaction
-     *
-     * If a transaction with the given reference can't be found, the `findTransactionSignature`
-     * function will throw an error. There are a few reasons why this could be a false negative:
-     *
-     * - Transaction is not yet confirmed
-     * - Customer is yet to approve/complete the transaction
-     *
-     * You can implement a polling strategy to query for the transaction periodically.
-     */
-    const interval = setInterval(async () => {
-        console.log('Checking for transaction...', count);
-        try {
-            signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
-            console.log('\n 🖌  Signature found: ', signatureInfo.signature);
-            clearInterval(interval);
-            resolve(signatureInfo);
-        } catch (error: any) {
-            if (!(error instanceof FindTransactionSignatureError)) {
-                console.error(error);
-                clearInterval(interval);
-                reject(error);
-            }
-        }
-    }, 250);
+  /**
+   * Retry until we find the transaction
+   *
+   * If a transaction with the given reference can't be found, the `findTransactionSignature`
+   * function will throw an error. There are a few reasons why this could be a false negative:
+   *
+   * - Transaction is not yet confirmed
+   * - Customer is yet to approve/complete the transaction
+   *
+   * You can implement a polling strategy to query for the transaction periodically.
+   */
+  const interval = setInterval(async () => {
+    console.log("Checking for transaction...", count);
+    try {
+      signatureInfo = await findTransactionSignature(
+        connection,
+        reference,
+        undefined,
+        "confirmed"
+      );
+      console.log("\n 🖌  Signature found: ", signatureInfo.signature);
+      clearInterval(interval);
+      resolve(signatureInfo);
+    } catch (error: any) {
+      if (!(error instanceof FindTransactionSignatureError)) {
+        console.error(error);
+        clearInterval(interval);
+        reject(error);
+      }
+    }
+  }, 250);
 });
 ```
 
@@ -321,18 +339,27 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
  * `validateTransactionSignature` allows you to validate that the transaction signature
  * found matches the transaction that you expected.
  */
-console.log('\n6. 🔗 Validate transaction \n');
-const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
+console.log("\n6. 🔗 Validate transaction \n");
+const amountInLamports = amount
+  .times(LAMPORTS_PER_SOL)
+  .integerValue(BigNumber.ROUND_FLOOR);
 
 try {
-    await validateTransactionSignature(connection, signature, recipient, amountInLamports, undefined, reference);
+  await validateTransactionSignature(
+    connection,
+    signature,
+    recipient,
+    amountInLamports,
+    undefined,
+    reference
+  );
 
-    // Update payment status
-    paymentStatus = 'validated';
-    console.log('✅ Payment validated');
-    console.log('📦 Ship order to customer');
+  // Update payment status
+  paymentStatus = "validated";
+  console.log("✅ Payment validated");
+  console.log("📦 Ship order to customer");
 } catch (error) {
-    console.error('❌ Payment failed', error);
+  console.error("❌ Payment failed", error);
 }
 ```
 
@@ -344,7 +371,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](/img/security-best-practices.png)
+![best practices diagram](../images/security-best-practices.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
