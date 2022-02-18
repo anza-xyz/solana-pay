@@ -71,4 +71,4 @@ Do you have another idea? Feel free to open an issue to discuss it with the comm
 
 Solana Pay is open source and available under the Apache License, Version 2.0.
 
-![Solana Pay](/img/solana-pay.png)
+![Solana Pay](./images/solana-pay.png)
