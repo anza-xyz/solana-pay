@@ -55,7 +55,6 @@ export const RootRoute: FC = () => {
                                     icon={<SOLIcon />}
                                     decimals={9}
                                     minDecimals={1}
-                                    requiredConfirmations={9}
                                     connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
