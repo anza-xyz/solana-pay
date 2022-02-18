@@ -15,23 +15,25 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 
 ## Supporting Wallets
 
-* Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
-* Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
-* FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
+-   Phantom ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977))
+-   Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
+-   FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
 
 ### Coming Soon
 
-* Slope
-* Glow
-* Solflare
-* Reactor Wallet
+-   Slope
+-   Glow
+-   Solflare
+-   Reactor Wallet
 
 ## How to use Solana Pay
 
 ### Accept payments in your web app
+
 Use the [`@solana/pay` JavaScript SDK](https://github.com/solana-labs/solana-pay/tree/master/core) to start accepting payments in your app today.
 
 ### Accept payments in person
+
 Run the open-source [Solana Pay Point of Sale app](https://github.com/solana-labs/solana-pay/tree/master/point-of-sale) to start accepting payments in-person.
 
 ## Getting Involved
@@ -45,21 +47,23 @@ The [Solana Riptide Hackathon](https://solana.com/riptide) is happening right no
 Here are some [Solana Pay hackathon ideas](https://www.figma.com/community/file/1070574785723157359) to get started thinking about how you can build the future of payments.
 
 ### eCommerce Platform Integrations
+
 To get as many merchants accepting payments on Solana as possible we need to provide easy ways to set up Solana Pay on all eCommerce platforms.
 
 Solana Labs has started a reference implementation for Shopify which you can see here to get a sense of how this might work.
 
 Here are some of the top eCommerce platforms that we're looking to integrate to:
 
-* WooCommerce
-* Magento
-* BigCommerce
-* Wix
-* Squarespace
+-   WooCommerce
+-   Magento
+-   BigCommerce
+-   Wix
+-   Squarespace
 
 ### Other possible projects
-* Mobile SDKs
-* Checkout UX Components
+
+-   Mobile SDKs
+-   Checkout UX Components
 
 Do you have another idea? Feel free to open an issue to discuss it with the community.
 
