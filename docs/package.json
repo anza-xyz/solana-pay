@@ -1,46 +1,48 @@
 {
-  "private": true,
-  "name": "@solana/pay-docs",
-  "version": "0.0.0",
-  "author": "Solana Maintainers <maintainers@solana.foundation>",
-  "repository": "https://github.com/solana-labs/wallet-adapter",
-  "license": "Apache-2.0",
-  "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "postinstall": "cd ../core && yarn install"
-  },
-  "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.14",
-    "@docusaurus/preset-classic": "2.0.0-beta.14",
-    "@mdx-js/react": "^1.6.21",
-    "clsx": "^1.1.1",
-    "prism-react-renderer": "^1.2.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
-  },
-  "devDependencies": {
-    "docusaurus-plugin-typedoc-api": "^1.7.1",
-    "shx": "^0.3.4",
-    "typescript": "^4.5.5"
-  },
-  "browserslist": {
-    "production": [
-      "last 2 chrome versions",
-      "last 2 firefox versions",
-      "last 2 safari versions"
-    ],
-    "development": [
-      "last 2 chrome versions",
-      "last 2 firefox versions",
-      "last 2 safari versions"
-    ]
-  }
+    "private": true,
+    "name": "@solana/pay-docs",
+    "version": "0.0.0",
+    "author": "Solana Maintainers <maintainers@solana.foundation>",
+    "repository": "https://github.com/solana-labs/wallet-adapter",
+    "license": "Apache-2.0",
+    "scripts": {
+        "docusaurus": "docusaurus",
+        "start": "docusaurus start",
+        "build": "docusaurus build",
+        "swizzle": "docusaurus swizzle",
+        "deploy": "docusaurus deploy",
+        "clear": "docusaurus clear",
+        "serve": "docusaurus serve",
+        "write-translations": "docusaurus write-translations",
+        "write-heading-ids": "docusaurus write-heading-ids",
+        "postinstall": "cd ../core && yarn install",
+        "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json,md}'"
+    },
+    "dependencies": {
+        "@docusaurus/core": "2.0.0-beta.14",
+        "@docusaurus/preset-classic": "2.0.0-beta.14",
+        "@mdx-js/react": "^1.6.21",
+        "clsx": "^1.1.1",
+        "prism-react-renderer": "^1.2.1",
+        "react": "^17.0.1",
+        "react-dom": "^17.0.1"
+    },
+    "devDependencies": {
+        "docusaurus-plugin-typedoc-api": "^1.7.1",
+        "prettier": "^2.5.1",
+        "shx": "^0.3.4",
+        "typescript": "^4.5.5"
+    },
+    "browserslist": {
+        "production": [
+            "last 2 chrome versions",
+            "last 2 firefox versions",
+            "last 2 safari versions"
+        ],
+        "development": [
+            "last 2 chrome versions",
+            "last 2 firefox versions",
+            "last 2 safari versions"
+        ]
+    }
 }

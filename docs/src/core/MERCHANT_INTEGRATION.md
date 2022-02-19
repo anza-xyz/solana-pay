@@ -101,7 +101,7 @@ const reference = new Keypair().publicKey;
 const label = 'Jungle Cats store';
 const message = 'Jungle Cats store - your order - #001234';
 const memo = 'JC#4098';
- 
+
 /**
  * Create a payment request link
  *
@@ -124,20 +124,28 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     <summary>See code snippet</summary>
 
 ```typescript
-     /**
-     * Simulate a checkout experience with an SPL token
-     */
-    console.log('2. 🛍 Simulate a customer checkout \n');
-    const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
+/**
+ * Simulate a checkout experience with an SPL token
+ */
+console.log('2. 🛍 Simulate a customer checkout \n');
+const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
 
-    /**
-     * Create a payment request link
-     *
-     * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
-     * Several parameters are encoded within the link representing an intent to collect payment from a customer.
-     */
-    console.log('3. 💰 Create a payment request link \n');
-    const url = encodeURL({ recipient, amount, splToken, reference, label, message, memo });
+/**
+ * Create a payment request link
+ *
+ * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+ * Several parameters are encoded within the link representing an intent to collect payment from a customer.
+ */
+console.log('3. 💰 Create a payment request link \n');
+const url = encodeURL({
+    recipient,
+    amount,
+    splToken,
+    reference,
+    label,
+    message,
+    memo,
+});
 ```
 
 </details>
@@ -171,7 +179,7 @@ const qrCode = createQR(url);
 
 <br/>
 
-![qr code](/img/solana-pay.png)
+![qr code](../images/solana-pay.png)
 
 ### 3.1 Add the QR code to your payment page
 
@@ -253,8 +261,8 @@ See [full code snippet][7]
 
 If a transaction with the given reference can't be found, the `findTransactionSignature` function will throw an error. There are a few reasons why this could be:
 
-- Transaction is not yet confirmed
-- Customer is yet to approve/complete the transaction
+-   Transaction is not yet confirmed
+-   Customer is yet to approve/complete the transaction
 
 <details>
     <summary>
@@ -344,7 +352,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](/img/security-best-practices.png)
+![best practices diagram](../images/security-best-practices.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
@@ -355,8 +363,8 @@ We recommend handling a customer session in a secure environment. Building a sec
 
 The steps outlined above prevents:
 
-- A different transaction from being used to trick the merchant
-- The frontend from being manipulated to show a confirmed transaction
+-   A different transaction from being used to trick the merchant
+-   The frontend from being manipulated to show a confirmed transaction
 
 <!-- References -->
 

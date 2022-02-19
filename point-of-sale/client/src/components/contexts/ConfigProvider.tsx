@@ -1,8 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import React, { FC, ReactElement, ReactNode } from 'react';
 import { ConfigContext } from '../../hooks/useConfig';
-import { Digits } from '../../types';
-import { MAX_CONFIRMATIONS } from '../../utils/constants';
+import { Confirmations, Digits } from '../../types';
 
 export interface ConfigProviderProps {
     children: ReactNode;
@@ -14,7 +13,7 @@ export interface ConfigProviderProps {
     icon: ReactElement;
     decimals: Digits;
     minDecimals?: Digits;
-    requiredConfirmations?: number;
+    requiredConfirmations?: Confirmations;
     connectWallet?: boolean;
 }
 
@@ -28,7 +27,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     symbol,
     decimals,
     minDecimals = 0,
-    requiredConfirmations = MAX_CONFIRMATIONS,
+    requiredConfirmations = 1,
     connectWallet = false,
 }) => {
     return (
