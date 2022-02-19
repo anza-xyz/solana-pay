@@ -14,13 +14,8 @@ export const QRCode: FC = () => {
         return () => window.removeEventListener('resize', listener);
     }, [])
 
-    const { theme } = useTheme();
-    const [background, color] = useMemo(
-        () => (theme === 'light' ? ['#eff2f3', '#2a2a2a'] : ['#eef5f6', '#2a2a2a']),
-        [theme]
-    );
     const { url } = usePayment();
-    const options = useMemo(() => createQROptions(url, size, background, color), [url, size, background, color]);
+    const options = useMemo(() => createQROptions(url, size, 'transparent', '#2a2a2a'), [url, size]);
 
     const qr = useMemo(() => new QRCodeStyling(), []);
     useLayoutEffect(() => qr.update(options), [qr, options]);
