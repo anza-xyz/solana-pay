@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from "react-router-dom";
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
@@ -21,10 +22,12 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 };
 
 export const NumPad: FC = () => {
+    const [params] = useSearchParams()
+    const amount = params.get('amount')
     const { symbol, decimals } = useConfig();
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
-    const [value, setValue] = useState('0');
+    const [value, setValue] = useState(amount ? amount : '0');
     const onInput = useCallback(
         (key) =>
             setValue((value) => {
