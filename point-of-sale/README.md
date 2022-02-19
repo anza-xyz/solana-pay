@@ -2,7 +2,7 @@
 
 This is an example of how you can use the `@solana/pay` JavaScript library to create a simple point of sale system.
 
-You can use the code as a reference or run it yourself to start accepting decentralized payments in-person.
+You can [check out the demo](https://solana-labs.github.io/solana-pay/app?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay) (using devnet), use the code as a reference, or run it yourself to start accepting decentralized payments in-person.
 
 ## Prerequisites
 
@@ -63,7 +63,56 @@ yarn start
 
 ### Open the point of sale app
 ```shell
-open http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name
+open "http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name"
+```
+
+## Accepting USDC on Mainnet
+Import the Mainnet endpoint, along with USDC's mint address and icon in the `RootRoute.tsx` file.
+```jsx
+import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
+import { USDCIcon } from '../images/USDCIcon';
+```
+
+In the same file, set the `endpoint` value in the `<ConnectionProvider>` to `MAINNET_ENDPOINT` and set the following values in the `<ConfigProvider>`:
+
+```tsx
+splToken={MAINNET_USDC_MINT}
+symbol="USDC"
+icon={<USDCIcon />}
+decimals={6}
+minDecimals={2}
+```
+
+**Make sure to use 6 decimals for USDC!**
+
+When you're done, it should look like this:
+
+```jsx
+<ConnectionProvider endpoint={MAINNET_ENDPOINT}>
+    <WalletProvider wallets={wallets} autoConnect={connectWallet}>
+        <WalletModalProvider>
+            <ConfigProvider
+                recipient={recipient}
+                label={label}
+                splToken={MAINNET_USDC_MINT}
+                symbol="USDC"
+                icon={<USDCIcon />}
+                decimals={6}
+                minDecimals={2}
+                requiredConfirmations={9}
+                connectWallet={connectWallet}
+            >
+```
+
+## Deploying to Vercel
+
+You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
+
+![Solana Pay Point of Sale app Vercel configuration](solana-pay-point-of-sale-vercel.png)
+
+Once the deployment finishes, navigate to
+```
+https://<YOUR DEPLOYMENT URL>?recipient=<YOUR WALLET ADDRESS>&label=Your+Store+Name
 ```
 
 ## License

@@ -1,0 +1,10 @@
+.idea
+.vscode
+
+.docusaurus
+
+build
+static
+
+node_modules
+

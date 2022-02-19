@@ -34,7 +34,7 @@ async function main() {
     /**
      * Create a payment request link
      *
-     * Solana Pay uses a standard URI scheme across wallets for native SOL and SPL Token payments.
+     * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
      * Several parameters are encoded within the link representing an intent to collect payment from a customer.
      */
     console.log('3. 💰 Create a payment request link \n');
@@ -105,13 +105,11 @@ async function main() {
     console.log('\n6. 🔗 Validate transaction \n');
 
     try {
-        const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
-
         await validateTransactionSignature(
             connection,
             signature,
             MERCHANT_WALLET,
-            amountInLamports,
+            amount,
             undefined,
             reference
         );

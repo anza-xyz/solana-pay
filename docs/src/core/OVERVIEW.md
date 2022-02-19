@@ -15,19 +15,19 @@ Businesses and developers can use Solana Pay to accept payments in SOL or any SP
 
 ### Web app to mobile wallet
 
-![web app to mobile wallet diagram](/img/qr-code-flow.png)
+![web app to mobile wallet diagram](../images/qr-code-flow.png)
 
 Payment requests can be encoded as a URL according to the scheme, scanned using a QR code, sent and confirmed by the wallet, and discovered by the app.
 
 ### Web app to browser wallet
 
-![web app to browser wallet diagram](/img/dapp-web-wallet-flow.png)
+![web app to browser wallet diagram](../images/dapp-web-wallet-flow.png)
 
 With a Solana Pay button, you could integrate an embeddable payment button that can be added to your existing app.
 
 ### Mobile app to mobile wallet
 
-![mobile app to mobile wallet diagram](/img/mobile-app-mobile-wallet-flow.png)
+![mobile app to mobile wallet diagram](../images/mobile-app-mobile-wallet-flow.png)
 
 Payment requests could be encoded as a deep link. The app prepares a payment request, and passes control to the wallet. The wallet signs, sends, and confirms it, or cancels the request and passes control back to the app.
 
@@ -35,11 +35,11 @@ Payment requests could be encoded as a deep link. The app prepares a payment req
 
 Learn how to integrate Solana Pay in your website, application or wallet.
 
-- [Merchant Integration](./MERCHANT_INTEGRATION.md)
-- [Wallet Integration](./WALLET_INTEGRATION.md)
-- [API Reference](https://docs.solanapay.com/api/core)
-- [Brand Guidelines](https://solanapay.com/branding)
-- [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
+-   [Merchant Integration](./MERCHANT_INTEGRATION.md)
+-   [Wallet Integration](./WALLET_INTEGRATION.md)
+-   [API Reference](https://docs.solanapay.com/api/core)
+-   [Brand Guidelines](https://solanapay.com/branding)
+-   [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
 
 ## License
 

@@ -28,16 +28,26 @@ Install the packages and import them in your code.
 **npm**
 
 ```shell
-npm install @solana/pay @solana/web3.js --save
+npm install @solana/pay @solana/web3.js bignumber.js --save
 ```
 
 **yarn**
 
 ```shell
-yarn add @solana/pay @solana/web3.js
+yarn add @solana/pay @solana/web3.js bignumber.js
 ```
 
-### 1.1 Establish a connection
+### 1.1 Import necessary modules
+
+Import the modules used to work with Solana Pay.
+
+```typescript
+import { Cluster, clusterApiUrl, Connection, PublicKey } from '@solana/web3.js';
+import { encodeURL, createQR } from '@solana/pay';
+import BigNumber from 'bignumber.js';
+```
+
+### 1.2 Establish a connection
 
 When working on Solana, you will need to connect to the network. For our example, we will connect to `devnet`.
 
@@ -49,8 +59,6 @@ When working on Solana, you will need to connect to the network. For our example
 <br/>
 
 ```typescript
-import { Cluster, clusterApiUrl, Connection } from '@solana/web3.js';
-
 async function main() {
     // Variable to keep state of the payment status
     let paymentStatus: string;
@@ -87,6 +95,7 @@ Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SO
  *
  */
 console.log('2. 🛍 Simulate a customer checkout \n');
+const recipient = new PublicKey('MERCHANT_WALLET');
 const amount = new BigNumber(20);
 const reference = new Keypair().publicKey;
 const label = 'Jungle Cats store';
@@ -100,7 +109,7 @@ const memo = 'JC#4098';
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
 console.log('3. 💰 Create a payment request link \n');
-const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo });
+const url = encodeURL({ recipient, amount, reference, label, message, memo });
 ```
 
 See [full code snippet][6]
@@ -115,31 +124,28 @@ For SPL Token transfers, use the `spl-token` parameter. The `spl-token` is the m
     <summary>See code snippet</summary>
 
 ```typescript
-     /**
-     * Simulate a checkout experience
-     *
-     * Recommendation:
-     * `amount` and `reference` should be created in a trusted environment (server).
-     * The `reference` should be unique to a single customer session,
-     * and will be used to find and validate the payment in the future.
-     *
-     */
-    console.log('2. 🛍 Simulate a customer checkout \n');
-    const amount = new BigNumber(20);
-    const reference = new Keypair().publicKey;
-    const label = 'Jungle Cats store';
-    const message = 'Jungle Cats store - your order - #001234';
-    const memo = 'JC#4098';
-    const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v)';
+/**
+ * Simulate a checkout experience with an SPL token
+ */
+console.log('2. 🛍 Simulate a customer checkout \n');
+const splToken = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
 
-    /**
-     * Create a payment request link
-     *
-     * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
-     * Several parameters are encoded within the link representing an intent to collect payment from a customer.
-     */
-    console.log('3. 💰 Create a payment request link \n');
-    const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo, splToken });
+/**
+ * Create a payment request link
+ *
+ * Solana Pay uses a standard URL scheme across wallets for native SOL and SPL Token payments.
+ * Several parameters are encoded within the link representing an intent to collect payment from a customer.
+ */
+console.log('3. 💰 Create a payment request link \n');
+const url = encodeURL({
+    recipient,
+    amount,
+    splToken,
+    reference,
+    label,
+    message,
+    memo,
+});
 ```
 
 </details>
@@ -163,7 +169,7 @@ Now that you've created a payment link, you need a way to show it to your custom
  * Several parameters are encoded within the link representing an intent to collect payment from a customer.
  */
 console.log('3. 💰 Create a payment request link \n');
-const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo });
+const url = encodeURL({ recipient, amount, reference, label, message, memo });
 
 // encode URL in QR code
 const qrCode = createQR(url);
@@ -173,7 +179,7 @@ const qrCode = createQR(url);
 
 <br/>
 
-![qr code](/img/solana-pay.png)
+![qr code](../images/solana-pay.png)
 
 ### 3.1 Add the QR code to your payment page
 
@@ -188,7 +194,7 @@ The QR code needs to be visible on your payment page.
 // -- snippet -- //
 
 console.log('3. 💰 Create a payment request link \n');
-const url = encodeURL({ recipient: MERCHANT_WALLET, amount, reference, label, message, memo });
+const url = encodeURL({ recipient, amount, reference, label, message, memo });
 
 // encode URL in QR code
 const qrCode = createQR(url);
@@ -255,8 +261,8 @@ See [full code snippet][7]
 
 If a transaction with the given reference can't be found, the `findTransactionSignature` function will throw an error. There are a few reasons why this could be:
 
-- Transaction is not yet confirmed
-- Customer is yet to approve/complete the transaction
+-   Transaction is not yet confirmed
+-   Customer is yet to approve/complete the transaction
 
 <details>
     <summary>
@@ -327,7 +333,7 @@ console.log('\n6. 🔗 Validate transaction \n');
 const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
 try {
-    await validateTransactionSignature(connection, signature, MERCHANT_WALLET, amountInLamports, undefined, reference);
+    await validateTransactionSignature(connection, signature, recipient, amountInLamports, undefined, reference);
 
     // Update payment status
     paymentStatus = 'validated';
@@ -346,7 +352,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](/img/security-best-practices.png)
+![best practices diagram](../images/security-best-practices.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
@@ -357,8 +363,8 @@ We recommend handling a customer session in a secure environment. Building a sec
 
 The steps outlined above prevents:
 
-- A different transaction from being used to trick the merchant
-- The frontend from being manipulated to show a confirmed transaction
+-   A different transaction from being used to trick the merchant
+-   The frontend from being manipulated to show a confirmed transaction
 
 <!-- References -->
 

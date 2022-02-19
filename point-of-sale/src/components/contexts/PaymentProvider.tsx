@@ -190,9 +190,10 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 if (status.err) throw status.err;
 
                 if (!changed) {
-                    setConfirmations((status.confirmations || 0) as Confirmations);
+                    const confirmations = (status.confirmations || 0) as Confirmations;
+                    setConfirmations(confirmations);
 
-                    if (status.confirmationStatus === 'finalized') {
+                    if (confirmations >= requiredConfirmations || status.confirmationStatus === 'finalized') {
                         clearInterval(interval);
                         setStatus(PaymentStatus.Finalized);
                     }
@@ -207,7 +208,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, signature, connection]);
+    }, [status, signature, connection, requiredConfirmations]);
 
     return (
         <PaymentContext.Provider
