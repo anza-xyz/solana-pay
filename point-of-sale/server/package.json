@@ -16,7 +16,11 @@
     },
     "dependencies": {
         "@solana/pay": "file:../../core",
+        "@solana/spl-token": "^0.2.0",
+        "@solana/wallet-adapter-phantom": "^0.9.3",
+        "@solana/wallet-adapter-react": "^0.15.3",
         "@solana/wallet-adapter-react-ui": "^0.9.5",
+        "@solana/wallet-adapter-torus": "^0.11.11",
         "@solana/web3.js": "^1.32.0",
         "bignumber.js": "^9.0.2",
         "bs58": "^4.0.1",

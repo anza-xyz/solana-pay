@@ -31,11 +31,6 @@ html {
     }
 }
 
-/* html.dark {
-    background: var(--theme-dark-background);
-    color: var(--theme-dark-color);
-} */
-
 body {
     font-size: 16px;
     font-weight: 400;
