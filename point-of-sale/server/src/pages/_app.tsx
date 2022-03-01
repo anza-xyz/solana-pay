@@ -5,6 +5,7 @@ import { FullscreenProvider } from '../components/contexts/FullscreenProvider';
 import { ThemeProvider } from '../components/contexts/ThemeProvider';
 import SolanaPayLogo from '../images/SolanaPayLogo.svg';
 import css from './_app.module.css';
+import '../index.css';
 
 const App: FC<AppProps> = ({ Component, pageProps }) => {
     const { query } = useRouter();
