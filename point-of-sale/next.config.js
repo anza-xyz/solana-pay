@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
-const withSvgr = require("next-svgr");
 
-const nextConfig = withSvgr({
+const nextConfig = {
     reactStrictMode: true,
     async redirects() {
         return [
@@ -22,6 +21,6 @@ const nextConfig = withSvgr({
             }
         ]
     }
-});
+};
 
 module.exports = nextConfig;
