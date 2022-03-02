@@ -1235,7 +1235,7 @@
   dependencies:
     buffer "~6.0.3"
 
-"@solana/pay@file:../../core":
+"@solana/pay@file:../core":
   version "0.1.3"
   dependencies:
     "@solana/qr-code-styling" "^1.6.0-beta.0"
