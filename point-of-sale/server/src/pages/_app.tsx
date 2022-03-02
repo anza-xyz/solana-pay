@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps, query }: MyAppProps) {
         }
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://localhost:3001';
+    const baseUrl = process.env.BASE_URL || 'https://localhost:3001';
     const link = useMemo(() => new URL(`${baseUrl}/api/`), [baseUrl]);
 
     return (

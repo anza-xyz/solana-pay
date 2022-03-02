@@ -3,8 +3,8 @@ import { useRouter } from 'next/router';
 import { makeUrlWithQuery } from './useLinkWithQuery';
 import { useConfig } from './useConfig';
 
-export interface TransitionOptions {
-    shallow?: boolean;
+export interface NavigateOptions {
+    replace: boolean;
 }
 
 export function useNavigateWithQuery() {
@@ -13,9 +13,13 @@ export function useNavigateWithQuery() {
     const { baseUrl } = useConfig()
 
     return useCallback(
-        (pathname: string, options?: TransitionOptions) => {
+        (pathname: string, options: NavigateOptions) => {
             const url = makeUrlWithQuery(pathname, baseUrl, query)
-            router.push(url.toString(), undefined, options)
+            if (options.replace) {
+                router.replace(url.toString())
+            } else {
+                router.push(url.toString())
+            }
         },
         [baseUrl, query, router]
     )

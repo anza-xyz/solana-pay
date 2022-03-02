@@ -1,0 +1,28 @@
+.root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.header {
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+@media (min-width: 768px) {
+    .header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+    }
+
+    :global(html.fullscreen) .header {
+        top: 64px;
+    }
+}

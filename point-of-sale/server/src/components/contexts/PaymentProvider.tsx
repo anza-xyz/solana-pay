@@ -80,14 +80,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('/new', { shallow: false });
+        navigate('/new', { replace: true });
     }, [navigate]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
             setStatus(PaymentStatus.Pending);
-            navigate('/pending', { shallow: true });
+            navigate('/pending', { replace: false });
         }
     }, [status, reference, navigate]);
 
@@ -149,7 +149,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
-                    navigate('/confirmed', { shallow: false });
+                    navigate('/confirmed', { replace: true });
                 }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
