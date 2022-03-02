@@ -22,6 +22,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
 
     useEffect(() => {
         document.documentElement.classList.add(theme);
+        document.documentElement.style.visibility = 'visible';
         return () => document.documentElement.classList.remove(theme);
     }, [theme]);
 
