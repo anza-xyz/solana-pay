@@ -77,7 +77,6 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                     const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
                     return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
                 });
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 console.error(error);
             } finally {

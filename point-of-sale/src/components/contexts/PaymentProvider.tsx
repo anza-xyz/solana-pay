@@ -151,7 +151,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     setStatus(PaymentStatus.Confirmed);
                     navigate('/confirmed', { replace: true });
                 }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction signature yet, try again
                 if (!(error instanceof FindReferenceError)) {
@@ -178,7 +177,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 if (!changed) {
                     setStatus(PaymentStatus.Valid);
                 }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction yet, try again
                 if (
@@ -223,7 +221,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                         setStatus(PaymentStatus.Finalized);
                     }
                 }
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
             } catch (error: any) {
                 console.log(error);
             }
