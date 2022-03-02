@@ -1,0 +1,66 @@
+.root {
+}
+
+.text {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.value {
+    text-align: center;
+    margin-bottom: 64px;
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 64px;
+}
+
+.buttons {
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+}
+
+.button {
+    width: 80px;
+    height: 80px;
+    margin: 12px;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 100ms ease-in-out;
+}
+
+:global(html.light) .button {
+    background: var(--theme-light-numpad-button-background);
+    color: var(--theme-light-numpad-button-color);
+
+    &:hover {
+        background: var(--theme-light-numpad-button-hover);
+    }
+
+    &:active {
+        background: var(--theme-light-numpad-button-active);
+    }
+}
+
+
+:global(html.dark) .button {
+    background: var(--theme-dark-numpad-button-background);
+    color: var(--theme-dark-numpad-button-color);
+
+    &:hover {
+        background: var(--theme-dark-numpad-button-hover);
+    }
+
+    &:active {
+        background: var(--theme-dark-numpad-button-active);
+    }
+}

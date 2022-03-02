@@ -1,0 +1,26 @@
+.root {
+    margin: 32px auto;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: 8px;
+    display: block;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.root[disabled] {
+    cursor: default;
+    opacity: 0.5;
+}
+
+:global(html.light) .root {
+    background: var(--theme-light-button-background);
+    color: var(--theme-light-button-color);
+}
+
+:global(html.dark) .root {
+    background: var(--theme-dark-button-background);
+    color: var(--theme-dark-button-color);
+}

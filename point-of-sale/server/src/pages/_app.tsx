@@ -19,7 +19,7 @@ interface MyAppProps extends AppProps {
     query: {
         recipient?: string;
         label?: string;
-    }
+    };
 }
 
 function MyApp({ Component, pageProps, query }: MyAppProps) {
@@ -40,7 +40,8 @@ function MyApp({ Component, pageProps, query }: MyAppProps) {
         }
     }
 
-    const link = useMemo(() => new URL('https://localhost:3001/api'), []);
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://localhost:3001';
+    const link = useMemo(() => new URL(`${baseUrl}/api/`), [baseUrl]);
 
     return (
         <ThemeProvider>
@@ -50,6 +51,7 @@ function MyApp({ Component, pageProps, query }: MyAppProps) {
                         <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
+                                    baseUrl={baseUrl}
                                     link={link}
                                     recipient={recipient}
                                     label={label}
@@ -86,7 +88,7 @@ MyApp.getInitialProps = async (appContext: AppContext) => {
     const appProps = await App.getInitialProps(appContext);
     return {
         ...appProps,
-        query: { recipient, label }
+        query: { recipient, label },
     }
 }
 
