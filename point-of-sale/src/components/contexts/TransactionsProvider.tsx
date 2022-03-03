@@ -35,16 +35,13 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
         // Get the ATA for the recipient and token
         useEffect(() => {
-            console.log({ splToken })
             if (!splToken) {
-                console.log('no splToken')
                 return;
             }
 
             let changed = false;
 
             (async () => {
-                console.log('in the async...')
                 const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
                 //const associatedToken = null
                 if (changed) return;

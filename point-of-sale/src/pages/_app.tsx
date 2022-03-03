@@ -20,9 +20,10 @@ interface MyAppProps extends AppProps {
         recipient?: string;
         label?: string;
     };
+    host: string;
 }
 
-function MyApp({ Component, pageProps, query }: MyAppProps) {
+function MyApp({ Component, pageProps, query, host }: MyAppProps) {
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used
     const connectWallet = true;
     const wallets = useMemo(
@@ -40,7 +41,7 @@ function MyApp({ Component, pageProps, query }: MyAppProps) {
         }
     }
 
-    const baseUrl = process.env.BASE_URL || 'https://localhost:3001';
+    const baseUrl = `https://${host}`;
     const link = useMemo(() => new URL(`${baseUrl}/api/`), [baseUrl]);
 
     return (
@@ -81,14 +82,16 @@ function MyApp({ Component, pageProps, query }: MyAppProps) {
 };
 
 MyApp.getInitialProps = async (appContext: AppContext) => {
-    const { query } = appContext.ctx
+    const { query, req } = appContext.ctx
     const recipient = query.recipient as string;
     const label = query.label as string;
+    const hostHeader = req?.headers.host || 'localhost:3001';
 
     const appProps = await App.getInitialProps(appContext);
     return {
         ...appProps,
         query: { recipient, label },
+        host: hostHeader,
     }
 }
 
