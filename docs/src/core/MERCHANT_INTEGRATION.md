@@ -330,10 +330,9 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
  * found matches the transaction that you expected.
  */
 console.log('\n6. 🔗 Validate transaction \n');
-const amountInLamports = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
 
 try {
-    await validateTransactionSignature(connection, signature, recipient, amountInLamports, undefined, reference);
+    await validateTransactionSignature(connection, signature, recipient, amount, undefined, reference);
 
     // Update payment status
     paymentStatus = 'validated';
