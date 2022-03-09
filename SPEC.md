@@ -115,8 +115,6 @@ In either case, the wallet must [URL-decode](https://developer.mozilla.org/en-US
 
 The wallet should make an HTTP `HEAD` request to the URL. The request should not identify the wallet or the user.
 
-The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
-
 The wallet should display the domain of the URL as the request is being made.
 
 #### HEAD Response
@@ -202,7 +200,21 @@ solana:https://mvines.com/solana-pay?label=Michael&message=Thanks%20for%20all%20
 solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345?label=Michael&message=Thanks%20for%20all%20the%20fish
 ```
 
-##### Request
+##### HEAD Request
+```
+HEAD /solana-pay?order=12345 HTTP/1.1
+Host: mvines.com
+Connection: close
+```
+
+##### HEAD Response
+```
+HTTP/1.1 200 OK
+Connection: close
+Link: <https://mvines.com/icon.svg>; rel="icon"; type="image/svg+xml"; title="Michael Vines"
+```
+
+##### POST Request
 ```
 POST /solana-pay?order=12345 HTTP/1.1
 Host: mvines.com
@@ -215,7 +227,7 @@ Content-Length: 57
 {"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN"}
 ```
 
-##### Response
+##### POST Response
 ```
 HTTP/1.1 200 OK
 Connection: close
