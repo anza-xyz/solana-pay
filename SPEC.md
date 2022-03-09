@@ -50,29 +50,29 @@ A single `spl-token` field is allowed as an optional query parameter. The value 
 
 If the field is not provided, the URL describes a native SOL transfer. If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used.
 
-Wallets must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
+The wallet must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
 
 ### Reference
 Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
 
-If the values are provided, wallets must include them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
+If the values are provided, the wallet must include them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
 
 Because Solana validators index transactions by these account keys, `reference` values can be used as client IDs (IDs usable before knowing the eventual payment transaction). The [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) RPC method can be used locate transactions this way.
 
 ### Label
 A single `label` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) UTF-8 string that describes the source of the payment request.
 
-For example, this might be the name of a brand, a store, an application, or a user making the request. Wallets should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
+For example, this might be the name of a brand, store, application, or person making the request. The wallet should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
 
 ### Message
 A single `message` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) UTF-8 string that describes the nature of the payment request.
 
-For example, this might be the name of an item being purchased. Wallets should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
+For example, this might be the name of an item being purchased. The wallet should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
 
 ### Memo
 A single `memo` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) UTF-8 string that must be included in an [SPL Memo](https://spl.solana.com/memo) instruction in the payment transaction.
 
-Wallets must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and should display the decoded value to the user. The memo will be recorded by validators and should not include private or sensitive information.
+The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and should display the decoded value to the user. The memo will be recorded by validators and should not include private or sensitive information.
 
 A single SPL Memo instruction must be included immediately before the SOL or SPL Token transfer instruction to avoid ambiguity with other instructions in the transaction.
 
@@ -98,32 +98,68 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael
 A Solana Pay transaction request URL describes an interactive request for any Solana transaction.
 ```html
 solana:<link>
-      ?label=<label>
-      &message=<message>
 ```
 
 The request is interactive because the parameters in the URL are used by a wallet to make an HTTP request to compose a transaction.
 
 ### Link
-A single `link` field is required as the pathname. The value must be an optionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL. If the URL contains query parameters, it must be URL-encoded.
+A single `link` field is required as the pathname. The value must be an conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL.
 
-The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. This has no effect if the value isn't URL-encoded. If the decoded value is not an absolute HTTPS URL, the wallet must reject it as **malformed**.
+If the URL contains query parameters, it must be URL-encoded. Protocol query parameters may be added to this specification. URL-encoding the value prevents conflicting with protocol parameters.
 
-The wallet should prompt the user to make a request to the URL. The wallet must make an HTTP `POST` JSON request to the URL with a body of
+If the URL does not contain query parameters, it should not be URL-encoded. This produces a shorter URL and a less dense QR code.
+
+In either case, the wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. This has no effect if the value isn't URL-encoded. If the decoded value is not an absolute HTTPS URL, the wallet must reject it as **malformed**.
+
+#### HEAD Request
+
+The wallet should make an HTTP `HEAD` request to the URL. The request should not identify the wallet or the user.
+
+The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
+
+The wallet should display the domain of the URL as the request is being made.
+
+#### HEAD Response
+
+The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` response with a single [Link](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link) header
+
+```
+Link <<href>>; rel="icon"; type="<type>"; title="<title>"
+```
+
+The `<href>` value must be an absolute HTTP or HTTPS URL of an icon image file. The wallet should make an HTTP `GET` request for the file and display it to the user.
+
+The `<rel>` value must be `icon`.
+
+The `<type>` value must be the MIME type of the icon image file, which must be `image/svg+xml`, `image/png`, `image/webp`, `image/gif`, or `image/jpeg`.
+
+The `<title>` value must be a UTF-8 string that describes the source of the payment request. For example, this might be the name of a brand, store, application, or person making the request. The wallet should display the value to the user.
+
+The wallet should not cache the response or image except as instructed by [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching) headers.
+
+The wallet should display the icon and title from the response.
+
+#### POST Request
+
+The wallet must make an HTTP `POST` JSON request to the URL with a body of
 ```html
 {"account":"<account>"}
 ```
 
-The `account` value must be the base58-encoded public key of an account that may sign the transaction.
+The `<account>` value must be the base58-encoded public key of an account that may sign the transaction.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
+
+The wallet should display the domain of the URL as the request is being made. If a `HEAD` request was made, the wallet should also display the icon and title from the response.
+
+#### POST Response
 
 The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```html
 {"transaction":"<transaction>"}
 ```
 
-The `transaction` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize). The wallet must base64-decode the transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
+The `<transaction>` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize). The wallet must base64-decode the transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
 
 The application may respond with a partially or fully signed transaction. The wallet must validate the transaction as **untrusted**.
 
@@ -145,15 +181,14 @@ If any signature except a signature for the `account` in the request is expected
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
-### Label
-A single `label` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) UTF-8 string that describes the source of the payment request.
+The application may include an optional `message` field in the response body:
+```html
+{"transaction":"<transaction>","message":"<message>"}
+```
 
-For example, this might be the name of a brand, a store, an application, or a user making the request. Wallets should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
+The `<message>` value must be a UTF-8 string that describes an arbitrary message to the user.
 
-### Message
-A single `message` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) UTF-8 string that describes the nature of the payment request.
-
-For example, this might be the name of an item being purchased. Wallets should [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and display the decoded value to the user.
+For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
 ### Example
 
