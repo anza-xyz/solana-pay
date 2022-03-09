@@ -177,8 +177,6 @@ The wallet must only sign the transaction with the `account` in the request, and
 
 If any signature except a signature for the `account` in the request is expected, the wallet must reject the transaction as **malicious**.
 
-The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
-
 The application may also include an optional `message` field in the response body:
 ```html
 {"message":"<message>","transaction":"<transaction>"}
@@ -187,6 +185,8 @@ The application may also include an optional `message` field in the response bod
 The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
 
 For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
+
+The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
 ### Example
 
