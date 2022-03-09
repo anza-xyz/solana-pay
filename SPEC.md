@@ -181,7 +181,7 @@ The wallet and application should allow additional fields in the request body an
 
 The application may also include an optional `message` field in the response body:
 ```html
-{"transaction":"<transaction>","message":"<message>"}
+{"message":"<message>","transaction":"<transaction>"}
 ```
 
 The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
@@ -235,7 +235,7 @@ Content-Type: application/json
 Content-Length: 262
 Content-Encoding: gzip
 
-{"transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA","message":"Thanks for all the fish"}
+{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
 ```
 
 ## Extensions
