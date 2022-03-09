@@ -192,12 +192,12 @@ The wallet and application should allow additional fields in the request body an
 
 ##### URL describing a transaction request.
 ```
-solana:https://mvines.com/solana-pay?label=Michael&message=Thanks%20for%20all%20the%20fish
+solana:https://mvines.com/solana-pay
 ```
 
 ##### URL describing a transaction request with query parameters.
 ```
-solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345?label=Michael&message=Thanks%20for%20all%20the%20fish
+solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345
 ```
 
 ##### HEAD Request
