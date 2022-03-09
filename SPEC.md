@@ -129,7 +129,7 @@ Link <<href>>; rel="icon"; type="<type>"; title="<title>"
 
 The `<href>` value must be an absolute HTTP or HTTPS URL of an icon image file. The wallet should make an HTTP `GET` request for the file.
 
-The `<rel>` value must be `icon`.
+The `rel` field value must be `icon`.
 
 The `<type>` value must be the MIME type of the icon image file, which must be `image/svg+xml`, `image/png`, `image/webp`, `image/gif`, or `image/jpeg`.
 
