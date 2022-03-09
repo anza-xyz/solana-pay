@@ -111,36 +111,33 @@ If the URL does not contain query parameters, it should not be URL-encoded. This
 
 In either case, the wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. This has no effect if the value isn't URL-encoded. If the decoded value is not an absolute HTTPS URL, the wallet must reject it as **malformed**.
 
-#### HEAD Request
+#### GET Request
 
-The wallet should make an HTTP `HEAD` request to the URL. The request should not identify the wallet or the user.
+The wallet should make an HTTP `GET` JSON request to the URL. The request should not identify the wallet or the user.
+
+The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
 The wallet should display the domain of the URL as the request is being made.
 
-#### HEAD Response
+#### GET Response
 
-The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` response with a single [Link](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link) header
-
+The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+```json
+{"title":"<title>","icon":"<icon>"}
 ```
-Link <<href>>; rel="icon"; type="<type>"; title="<title>"
-```
 
-The `<href>` value must be an absolute HTTP or HTTPS URL of an icon image file. The wallet should make an HTTP `GET` request for the file.
+The `<title>` value must be a UTF-8 string that describes the source of the transaction request. For example, this might be the name of a brand, store, application, or person making the request.
 
-The `rel` field value must be `icon`.
+The `<icon>` value must be an absolute HTTP or HTTPS URL of an icon image, which must be an SVG, PNG, WEBP, GIF, or JPEG image.
 
-The `<type>` value must be the MIME type of the icon image file, which must be `image/svg+xml`, `image/png`, `image/webp`, `image/gif`, or `image/jpeg`.
+The wallet should not cache the response except as instructed by [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching) response headers.
 
-The `<title>` value must be an [RFC 5988](https://datatracker.ietf.org/doc/html/rfc5988) `title` string that describes the source of the transaction request. For example, this might be the name of a brand, store, application, or person making the request.
-
-The wallet should not cache the response or image except as instructed by [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching) headers.
-
-The wallet should display the icon image and title from the response to user.
+The wallet should display the title and render the icon image to user.
 
 #### POST Request
 
 The wallet must make an HTTP `POST` JSON request to the URL with a body of
-```html
+```json
 {"account":"<account>"}
 ```
 
@@ -148,12 +145,12 @@ The `<account>` value must be the base58-encoded public key of an account that m
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
-The wallet should display the domain of the URL as the request is being made. If a `HEAD` request was made, the wallet should also display the icon image and title from the response.
+The wallet should display the domain of the URL as the request is being made. If a `GET` request was made, the wallet should also display the title and render the icon image from the response.
 
 #### POST Response
 
 The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
-```html
+```json
 {"transaction":"<transaction>"}
 ```
 
@@ -178,7 +175,7 @@ The wallet must only sign the transaction with the `account` in the request, and
 If any signature except a signature for the `account` in the request is expected, the wallet must reject the transaction as **malicious**.
 
 The application may also include an optional `message` field in the response body:
-```html
+```json
 {"message":"<message>","transaction":"<transaction>"}
 ```
 
@@ -200,18 +197,24 @@ solana:https://mvines.com/solana-pay
 solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345
 ```
 
-##### HEAD Request
+##### GET Request
 ```
-HEAD /solana-pay?order=12345 HTTP/1.1
+GET /solana-pay?order=12345 HTTP/1.1
 Host: mvines.com
 Connection: close
+Accept: application/json
+Accept-Encoding: br, gzip, deflate
 ```
 
-##### HEAD Response
+##### GET Response
 ```
 HTTP/1.1 200 OK
 Connection: close
-Link: <https://mvines.com/icon.svg>; rel="icon"; type="image/svg+xml"; title="Michael Vines"
+Content-Type: application/json
+Content-Length: 62
+Content-Encoding: gzip
+
+{"title":"Michael Vines","icon":"https://mvines.com/icon.svg"}
 ```
 
 ##### POST Request
@@ -232,7 +235,7 @@ Content-Length: 57
 HTTP/1.1 200 OK
 Connection: close
 Content-Type: application/json
-Content-Length: 262
+Content-Length: 298
 Content-Encoding: gzip
 
 {"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
