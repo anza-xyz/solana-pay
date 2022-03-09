@@ -1,12 +1,13 @@
-import React, { FC } from 'react';
+import { NextPage } from 'next';
+import React from 'react';
 import { usePayment } from '../../hooks/usePayment';
-import { BackButton } from '../../components/buttons/BackButton';
-import { TransactionsLink } from '../../components/buttons/TransactionsLink';
-import { PoweredBy } from '../../components/sections/PoweredBy';
-import { Progress } from '../../components/sections/Progress';
-import css from './confirmed.module.css';
+import { BackButton } from '../buttons/BackButton';
+import { TransactionsLink } from '../buttons/TransactionsLink';
+import { PoweredBy } from '../sections/PoweredBy';
+import { Progress } from '../sections/Progress';
+import css from './ConfirmedPage.module.css';
 
-export default function ConfirmedRoute() {
+const ConfirmedPage: NextPage = () => {
     const { reset } = usePayment();
 
     return (
@@ -24,3 +25,5 @@ export default function ConfirmedRoute() {
         </div>
     );
 };
+
+export default ConfirmedPage;

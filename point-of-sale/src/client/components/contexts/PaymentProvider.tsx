@@ -80,14 +80,14 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         setStatus(PaymentStatus.New);
         setConfirmations(0);
-        navigate('/new', { replace: true });
+        navigate('/new', true);
     }, [navigate]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
             setStatus(PaymentStatus.Pending);
-            navigate('/pending', { replace: false });
+            navigate('/pending');
         }
     }, [status, reference, navigate]);
 
@@ -149,7 +149,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     clearInterval(interval);
                     setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
-                    navigate('/confirmed', { replace: true });
+                    navigate('/confirmed', true);
                 }
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction signature yet, try again

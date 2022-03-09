@@ -1,7 +1,7 @@
 @import './reset.css';
 @import './vars.css';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-@import '../node_modules/@solana/wallet-adapter-react-ui/styles.css';
+@import '@solana/wallet-adapter-react-ui/styles.css';
 
 * {
     font-family: Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif;

@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-
 const nextConfig = {
     reactStrictMode: true,
     async redirects() {
@@ -17,10 +16,10 @@ const nextConfig = {
                         type: 'query',
                         key: 'label',
                     },
-                ]
-            }
-        ]
-    }
+                ],
+            },
+        ];
+    },
 };
 
 module.exports = nextConfig;
