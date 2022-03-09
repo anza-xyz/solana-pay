@@ -123,16 +123,16 @@ The wallet should display the domain of the URL as the request is being made.
 
 The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
-{"title":"<title>","icon":"<icon>"}
+{"label":"<label>","icon":"<icon>"}
 ```
 
-The `<title>` value must be a UTF-8 string that describes the source of the transaction request. For example, this might be the name of a brand, store, application, or person making the request.
+The `<label>` value must be a UTF-8 string that describes the source of the transaction request. For example, this might be the name of a brand, store, application, or person making the request.
 
 The `<icon>` value must be an absolute HTTP or HTTPS URL of an icon image, which must be an SVG, PNG, WEBP, GIF, or JPEG image.
 
 The wallet should not cache the response except as instructed by [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching) response headers.
 
-The wallet should display the title and render the icon image to user.
+The wallet should display the label and render the icon image to user.
 
 #### POST Request
 
@@ -145,7 +145,7 @@ The `<account>` value must be the base58-encoded public key of an account that m
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
-The wallet should display the domain of the URL as the request is being made. If a `GET` request was made, the wallet should also display the title and render the icon image from the response.
+The wallet should display the domain of the URL as the request is being made. If a `GET` request was made, the wallet should also display the label and render the icon image from the response.
 
 #### POST Response
 
@@ -214,7 +214,7 @@ Content-Type: application/json
 Content-Length: 62
 Content-Encoding: gzip
 
-{"title":"Michael Vines","icon":"https://mvines.com/icon.svg"}
+{"label":"Michael Vines","icon":"https://mvines.com/icon.svg"}
 ```
 
 ##### POST Request
