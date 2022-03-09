@@ -103,7 +103,7 @@ solana:<link>
 The request is interactive because the parameters in the URL are used by a wallet to make an HTTP request to compose a transaction.
 
 ### Link
-A single `link` field is required as the pathname. The value must be an conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL.
+A single `link` field is required as the pathname. The value must be a conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL.
 
 If the URL contains query parameters, it must be URL-encoded. Protocol query parameters may be added to this specification. URL-encoding the value prevents conflicting with protocol parameters.
 
