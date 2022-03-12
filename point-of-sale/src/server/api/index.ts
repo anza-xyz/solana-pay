@@ -12,6 +12,7 @@ interface GetResponse {
 
 interface PostResponse {
     transaction: string,
+    message?: string,
 }
 
 const get: NextApiHandler<GetResponse> = async (request, response) => {
@@ -57,6 +58,10 @@ const post: NextApiHandler<PostResponse> = async (request, response) => {
     if (memoParam && typeof memoParam !== 'string') throw new Error('invalid memo');
     const memo = memoParam || undefined;
 
+    const messageParam = request.query.message;
+    if (messageParam && typeof messageParam !== 'string') throw new Error('invalid message');
+    const message = messageParam || undefined;
+
     // Account provided in the transaction request body by the wallet.
     const accountField = request.body?.account;
     if (!accountField) throw new Error('missing account');
@@ -79,20 +84,21 @@ const post: NextApiHandler<PostResponse> = async (request, response) => {
     });
     const base64 = serialized.toString('base64');
 
-    response.status(200).send({ transaction: base64 });
+    response.status(200).send({ transaction: base64, message });
 }
 
 const index: NextApiHandler<GetResponse | PostResponse> = async (request, response) => {
     await cors(request, response);
     await rateLimit(request, response);
 
-    console.log({ method: request.method })
     if (request.method === "GET") {
         await get(request, response);
+        return;
     }
 
     if (request.method === "POST") {
         await post(request, response);
+        return;
     }
 
     throw new Error(`Unexpected method ${request.method}`);

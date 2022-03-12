@@ -7,6 +7,7 @@ export interface ConfigContextState {
     link: URL | undefined;
     recipient: PublicKey;
     label: string;
+    message?: string;
     splToken: PublicKey | undefined;
     symbol: string;
     icon: ReactElement;

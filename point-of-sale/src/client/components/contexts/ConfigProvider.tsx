@@ -9,6 +9,7 @@ export interface ConfigProviderProps {
     link?: URL;
     recipient: PublicKey;
     label: string;
+    message?: string;
     splToken?: PublicKey;
     symbol: string;
     icon: ReactElement;
@@ -24,6 +25,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     link,
     recipient,
     label,
+    message,
     splToken,
     icon,
     symbol,
@@ -39,6 +41,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
                 link,
                 recipient,
                 label,
+                message,
                 splToken,
                 symbol,
                 icon,
