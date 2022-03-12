@@ -5,10 +5,30 @@ import { NextApiHandler } from 'next';
 import { connection } from '../core';
 import { cors, rateLimit } from '../middleware';
 
-const index: NextApiHandler<{ transaction: string }> = async (request, response) => {
-    await cors(request, response);
-    await rateLimit(request, response);
+interface GetResponse {
+    label: string,
+    icon: string,
+}
 
+interface PostResponse {
+    transaction: string,
+}
+
+const get: NextApiHandler<GetResponse> = async (request, response) => {
+    const labelField = request.query.label;
+    if (!labelField) throw new Error('missing label');
+    if (typeof labelField !== "string") throw new Error('invalid label')
+
+    const host = request.headers.host;
+    const icon = `https://${host}/SolanaPayLogo.svg`;
+
+    response.status(200).send({
+        label: labelField,
+        icon,
+    })
+}
+
+const post: NextApiHandler<PostResponse> = async (request, response) => {
     /*
     Transfer request params provided in the URL by the app client. In practice, these should be generated on the server,
     persisted along with an unpredictable opaque ID representing the payment, and the ID be passed to the app client,
@@ -60,6 +80,22 @@ const index: NextApiHandler<{ transaction: string }> = async (request, response)
     const base64 = serialized.toString('base64');
 
     response.status(200).send({ transaction: base64 });
+}
+
+const index: NextApiHandler<GetResponse | PostResponse> = async (request, response) => {
+    await cors(request, response);
+    await rateLimit(request, response);
+
+    console.log({ method: request.method })
+    if (request.method === "GET") {
+        await get(request, response);
+    }
+
+    if (request.method === "POST") {
+        await post(request, response);
+    }
+
+    throw new Error(`Unexpected method ${request.method}`);
 };
 
 export default index;

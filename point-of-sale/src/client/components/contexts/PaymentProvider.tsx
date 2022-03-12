@@ -58,7 +58,11 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 url.searchParams.append('memo', memo);
             }
 
-            return encodeURL({ link: url, label, message });
+            if (label) {
+                url.searchParams.append('label', label);
+            }
+
+            return encodeURL({ link: url });
         } else {
             return encodeURL({
                 recipient,
