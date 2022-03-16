@@ -20,6 +20,7 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 * Slope
 * Solflare
 * Reactor Wallet
+* [Kitepay](https://twitter.com/kytpay)
 
 ## How to use Solana Pay
 
