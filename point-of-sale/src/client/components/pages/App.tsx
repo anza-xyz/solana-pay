@@ -19,6 +19,7 @@ interface AppProps extends NextAppProps {
     query: {
         recipient?: string;
         label?: string;
+        message?: string;
     };
     host: string;
 }
@@ -34,7 +35,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const wallets = useMemo(() => (connectWallet ? [new PhantomWalletAdapter()] : []), [connectWallet]);
 
     let recipient: PublicKey | undefined = undefined;
-    const { recipient: recipientParam, label } = query;
+    const { recipient: recipientParam, label, message } = query;
     if (recipientParam && label) {
         try {
             recipient = new PublicKey(recipientParam);
@@ -58,6 +59,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     link={link}
                                     recipient={recipient}
                                     label={label}
+                                    message={message}
                                     symbol="SOL"
                                     icon={<SOLIcon />}
                                     decimals={9}
@@ -89,11 +91,12 @@ App.getInitialProps = async (appContext) => {
     const { query, req } = appContext.ctx;
     const recipient = query.recipient as string;
     const label = query.label as string;
+    const message = query.message || undefined
     const host = req?.headers.host || 'localhost:3001';
 
     return {
         ...props,
-        query: { recipient, label },
+        query: { recipient, label, message },
         host,
     };
 };

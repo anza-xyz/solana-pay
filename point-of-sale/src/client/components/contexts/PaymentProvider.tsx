@@ -23,11 +23,10 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { link, recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
+    const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();
-    const [message, setMessage] = useState<string>();
     const [memo, setMemo] = useState<string>();
     const [reference, setReference] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
@@ -58,7 +57,15 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 url.searchParams.append('memo', memo);
             }
 
-            return encodeURL({ link: url, label, message });
+            if (label) {
+                url.searchParams.append('label', label);
+            }
+
+            if (message) {
+                url.searchParams.append('message', message);
+            }
+
+            return encodeURL({ link: url });
         } else {
             return encodeURL({
                 recipient,
@@ -74,7 +81,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     const reset = useCallback(() => {
         setAmount(undefined);
-        setMessage(undefined);
         setMemo(undefined);
         setReference(undefined);
         setSignature(undefined);
@@ -237,8 +243,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             value={{
                 amount,
                 setAmount,
-                message,
-                setMessage,
                 memo,
                 setMemo,
                 reference,

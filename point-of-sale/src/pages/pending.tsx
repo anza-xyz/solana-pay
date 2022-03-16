@@ -1,1 +1,1 @@
-export { default } from '../client/components/pages/PendingPage';
+export { default, getServerSideProps } from '../client/components/pages/PendingPage';
