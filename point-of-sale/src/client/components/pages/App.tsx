@@ -1,7 +1,7 @@
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PublicKey } from '@solana/web3.js';
+import { Connection, PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
@@ -47,6 +47,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const baseURL = `https://${host}`;
     const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
+    const connections = useMemo(() => [new Connection(DEVNET_ENDPOINT)], []);
+
     return (
         <ThemeProvider>
             <FullscreenProvider>
@@ -67,7 +69,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
-                                        <PaymentProvider>
+                                        <PaymentProvider connections={connections}>
                                             <Component {...pageProps} />
                                         </PaymentProvider>
                                     </TransactionsProvider>

@@ -9,7 +9,14 @@ import {
     ValidateTransferError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
+import {
+    ConfirmedSignatureInfo,
+    Connection,
+    Keypair,
+    PublicKey,
+    Transaction,
+    TransactionSignature,
+} from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -19,9 +26,10 @@ import { Confirmations } from '../../types';
 
 export interface PaymentProviderProps {
     children: ReactNode;
+    connections: Connection[];
 }
 
-export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
+export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connections }) => {
     const { connection } = useConnection();
     const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
@@ -149,7 +157,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         const interval = setInterval(async () => {
             let signature: ConfirmedSignatureInfo;
             try {
-                signature = await findReference(connection, reference);
+                signature = await Promise.any(connections.map((connection) => findReference(connection, reference)));
 
                 if (!changed) {
                     clearInterval(interval);
