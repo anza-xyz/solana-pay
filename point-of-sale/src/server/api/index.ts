@@ -10,22 +10,22 @@ interface GetResponse {
     icon: string,
 }
 
-interface PostResponse {
-    transaction: string,
-    message?: string,
-}
-
 const get: NextApiHandler<GetResponse> = async (request, response) => {
-    const labelField = request.query.label;
-    if (!labelField) throw new Error('missing label');
-    if (typeof labelField !== "string") throw new Error('invalid label')
+    const label = request.query.label;
+    if (!label) throw new Error('missing label');
+    if (typeof label !== "string") throw new Error('invalid label')
 
     const icon = `https://${request.headers.host}/solana-pay-logo.svg`;
 
     response.status(200).send({
-        label: labelField,
+        label,
         icon,
     })
+}
+
+interface PostResponse {
+    transaction: string,
+    message?: string,
 }
 
 const post: NextApiHandler<PostResponse> = async (request, response) => {
@@ -90,15 +90,8 @@ const index: NextApiHandler<GetResponse | PostResponse> = async (request, respon
     await cors(request, response);
     await rateLimit(request, response);
 
-    if (request.method === "GET") {
-        await get(request, response);
-        return;
-    }
-
-    if (request.method === "POST") {
-        await post(request, response);
-        return;
-    }
+    if (request.method === "GET") return get(request, response);
+    if (request.method === "POST") return post(request, response);
 
     throw new Error(`Unexpected method ${request.method}`);
 };
