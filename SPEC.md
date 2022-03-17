@@ -167,6 +167,7 @@ If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/c
 If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#signatures) are nonempty:
   - The application must set the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) to the [public key of the first signature](https://solana-labs.github.io/solana-web3.js/modules.html#SignaturePubkeyPair).
   - The application must set the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash).
+  - The application must serialize and deserialize the transaction before signing it. This ensures consistent ordering of the account keys, as a workaround for [this issue](https://github.com/solana-labs/solana/issues/21722).
   - The wallet must not set the  [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) and [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash).
   - The wallet must verify the signatures, and if any are invalid, the wallet must reject the transaction as **malformed**.
 

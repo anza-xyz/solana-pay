@@ -1,5 +1,5 @@
 import { createTransfer } from '@solana/pay';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Transaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { NextApiHandler } from 'next';
 import { connection } from '../core';
@@ -68,13 +68,21 @@ const post: NextApiHandler<PostResponse> = async (request, response) => {
     const account = new PublicKey(accountField);
 
     // Compose a simple transfer transaction to return. In practice, this can be any transaction, and may be signed.
-    const transaction = await createTransfer(connection, account, {
+    let transaction = await createTransfer(connection, account, {
         recipient,
         amount,
         splToken,
         reference,
         memo,
     });
+
+    // Serialize and deserialize the transaction. This ensures consistent ordering of the account keys for signing.
+    transaction = Transaction.from(transaction.serialize({
+        verifySignatures: false,
+        requireAllSignatures: false,
+    }))
+
+    // TODO: partially sign the transaction
 
     // Serialize and return the unsigned transaction.
     const serialized = transaction.serialize({
