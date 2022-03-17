@@ -20,8 +20,7 @@ const get: NextApiHandler<GetResponse> = async (request, response) => {
     if (!labelField) throw new Error('missing label');
     if (typeof labelField !== "string") throw new Error('invalid label')
 
-    const host = request.headers.host;
-    const icon = `https://${host}/SolanaPayLogo.svg`;
+    const icon = `https://${request.headers.host}/solana-pay-logo.svg`;
 
     response.status(200).send({
         label: labelField,
