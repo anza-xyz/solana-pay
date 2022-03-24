@@ -77,12 +77,12 @@ const post: NextApiHandler<PostResponse> = async (request, response) => {
     });
 
     // Serialize and deserialize the transaction. This ensures consistent ordering of the account keys for signing.
-    transaction = Transaction.from(transaction.serialize({
-        verifySignatures: false,
-        requireAllSignatures: false,
-    }))
-
-    // TODO: partially sign the transaction
+    transaction = Transaction.from(
+        transaction.serialize({
+            verifySignatures: false,
+            requireAllSignatures: false,
+        })
+    );
 
     // Serialize and return the unsigned transaction.
     const serialized = transaction.serialize({
