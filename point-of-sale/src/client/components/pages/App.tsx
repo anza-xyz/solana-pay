@@ -1,4 +1,6 @@
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PublicKey } from '@solana/web3.js';
@@ -32,7 +34,11 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 }) => {
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used
     const connectWallet = true;
-    const wallets = useMemo(() => (connectWallet ? [new PhantomWalletAdapter()] : []), [connectWallet]);
+    const network = WalletAdapterNetwork.Devnet;
+    const wallets = useMemo(
+        () => (connectWallet ? [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })] : []),
+        [connectWallet, network]
+    );
 
     let recipient: PublicKey | undefined = undefined;
     const { recipient: recipientParam, label, message } = query;
