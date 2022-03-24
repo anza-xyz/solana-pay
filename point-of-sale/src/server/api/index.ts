@@ -6,26 +6,26 @@ import { connection } from '../core';
 import { cors, rateLimit } from '../middleware';
 
 interface GetResponse {
-    label: string,
-    icon: string,
+    label: string;
+    icon: string;
 }
 
 const get: NextApiHandler<GetResponse> = async (request, response) => {
     const label = request.query.label;
     if (!label) throw new Error('missing label');
-    if (typeof label !== "string") throw new Error('invalid label')
+    if (typeof label !== 'string') throw new Error('invalid label');
 
     const icon = `https://${request.headers.host}/solana-pay-logo.svg`;
 
     response.status(200).send({
         label,
         icon,
-    })
-}
+    });
+};
 
 interface PostResponse {
-    transaction: string,
-    message?: string,
+    transaction: string;
+    message?: string;
 }
 
 const post: NextApiHandler<PostResponse> = async (request, response) => {
@@ -92,14 +92,14 @@ const post: NextApiHandler<PostResponse> = async (request, response) => {
     const base64 = serialized.toString('base64');
 
     response.status(200).send({ transaction: base64, message });
-}
+};
 
 const index: NextApiHandler<GetResponse | PostResponse> = async (request, response) => {
     await cors(request, response);
     await rateLimit(request, response);
 
-    if (request.method === "GET") return get(request, response);
-    if (request.method === "POST") return post(request, response);
+    if (request.method === 'GET') return get(request, response);
+    if (request.method === 'POST') return post(request, response);
 
     throw new Error(`Unexpected method ${request.method}`);
 };

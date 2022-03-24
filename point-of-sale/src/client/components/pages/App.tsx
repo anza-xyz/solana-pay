@@ -97,7 +97,7 @@ App.getInitialProps = async (appContext) => {
     const { query, req } = appContext.ctx;
     const recipient = query.recipient as string;
     const label = query.label as string;
-    const message = query.message || undefined
+    const message = query.message || undefined;
     const host = req?.headers.host || 'localhost:3001';
 
     return {
