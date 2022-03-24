@@ -18,27 +18,33 @@ import { SOLIcon } from '../images/SOLIcon';
 import css from './App.module.css';
 
 interface AppProps extends NextAppProps {
+    host: string;
     query: {
         recipient?: string;
         label?: string;
         message?: string;
     };
-    host: string;
 }
 
 const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<AppInitialProps> } = ({
     Component,
-    pageProps,
-    query,
     host,
+    query,
+    pageProps,
 }) => {
-    // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used
+    const baseURL = `https://${host}`;
+
+    // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
     const connectWallet = true;
     const network = WalletAdapterNetwork.Devnet;
     const wallets = useMemo(
         () => (connectWallet ? [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })] : []),
         [connectWallet, network]
     );
+
+    // Toggle comments on these lines to use transaction requests instead of transfer requests.
+    const link = undefined;
+    // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
     let recipient: PublicKey | undefined = undefined;
     const { recipient: recipientParam, label, message } = query;
@@ -49,9 +55,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             console.error(error);
         }
     }
-
-    const baseURL = `https://${host}`;
-    const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
     return (
         <ThemeProvider>
