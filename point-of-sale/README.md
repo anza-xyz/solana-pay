@@ -1,34 +1,134 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Point of Sale
+
+This is an example of how you can use the `@solana/pay` JavaScript library to create a simple point of sale system.
+
+You can [check out the demo](https://solana-labs.github.io/solana-pay/app?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay) (using devnet), use the code as a reference, or run it yourself to start accepting decentralized payments in-person.
+
+## Prerequisites
+
+To build and run this app locally, you'll need:
+
+-   Node.js v14.17.0 or above
+-   Yarn
+-   <details>
+        <summary> Setup two wallets on <a href="https://phantom.app">Phantom</a> (Merchant and Customer) </summary>
+
+    #### 1. Create merchant wallet
+
+    Follow the [guide][1] on how to create a wallet. This wallet will provide the recipient address.
+
+    #### 2. Create customer wallet
+
+    Follow the [guide][1] on how to create another wallet. This wallet will be paying for the goods/services.
+
+    #### 3. Set Phantom to connect to devnet
+
+    1. Click the settings icon in the Phantom window
+    2. Select the "Change network" option and select "Devnet"
+
+    #### 4. Airdrop SOL to customer wallet
+
+    Use [solfaucet][3] to airdrop SOL to the customer wallet.
+
+    > You'll need SOL in the customer wallet to pay for the goods/services + transaction fees
+
+ </details>
 
 ## Getting Started
 
-First, run the development server:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-```bash
-npm run dev
-# or
+### Clone the repository
+
+#### With Git
+```shell
+git clone https://github.com/solana-labs/solana-pay.git
+```
+
+#### With Github CLI
+```shell
+gh repo clone solana-labs/solana-pay
+```
+
+### Install dependencies
+```shell
+cd solana-pay/point-of-sale
+yarn install
+```
+
+### Start the local dev server
+```shell
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### In a separate terminal, run a local SSL proxy
+```shell
+yarn proxy
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Open the point of sale app
+```shell
+open "https://localhost:3001?recipient=Your+Merchant+Address&label=Your+Store+Name"
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+You may need to accept a locally signed SSL certificate to open the page.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Accepting USDC on Mainnet
+Import the Mainnet endpoint, along with USDC's mint address and icon in the `App.tsx` file.
+```jsx
+import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
+import { USDCIcon } from '../images/USDCIcon';
+```
 
-## Learn More
+In the same file, set the `endpoint` value in the `<ConnectionProvider>` to `MAINNET_ENDPOINT` and set the following values in the `<ConfigProvider>`:
 
-To learn more about Next.js, take a look at the following resources:
+```tsx
+splToken={MAINNET_USDC_MINT}
+symbol="USDC"
+icon={<USDCIcon />}
+decimals={6}
+minDecimals={2}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Make sure to use 6 decimals for USDC!**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+When you're done, it should look like this:
 
-## Deploy on Vercel
+```jsx
+<ConnectionProvider endpoint={MAINNET_ENDPOINT}>
+    <WalletProvider wallets={wallets} autoConnect={connectWallet}>
+        <WalletModalProvider>
+            <ConfigProvider
+                baseURL={baseURL}
+                link={link}
+                recipient={recipient}
+                label={label}
+                message={message}
+                splToken={MAINNET_USDC_MINT}
+                symbol="USDC"
+                icon={<USDCIcon />}
+                decimals={6}
+                minDecimals={2}
+                connectWallet={connectWallet}
+            >
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deploying to Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
+
+![Solana Pay Point of Sale app Vercel configuration](solana-pay-point-of-sale-vercel.png)
+
+Once the deployment finishes, navigate to
+```
+https://<YOUR DEPLOYMENT URL>?recipient=<YOUR WALLET ADDRESS>&label=Your+Store+Name
+```
+
+## License
+
+The Solana Pay Point of Sale app is open source and available under the Apache License, Version 2.0. See the [LICENSE](./LICENSE) file for more info.
+
+<!-- Links -->
+
+[1]: https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet
+[3]: https://solfaucet.com/
