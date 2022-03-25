@@ -8,7 +8,7 @@ import {
     ValidateTransactionSignatureError,
 } from '@solana/pay';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { ConfirmedSignatureInfo, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
+import { ConfirmedSignatureInfo, Connection, Keypair, PublicKey, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -18,9 +18,10 @@ import { Confirmations } from '../../types';
 
 export interface PaymentProviderProps {
     children: ReactNode;
+    connections: Connection[];
 }
 
-export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
+export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connections }) => {
     const { connection } = useConnection();
     const { recipient, splToken, label, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
@@ -110,11 +111,28 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         const interval = setInterval(async () => {
             let signature: ConfirmedSignatureInfo;
             try {
-                signature = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+                // signature = await Promise.any(
+                //     connections.map((connection) =>
+                //         findTransactionSignature(connection, reference, undefined, 'confirmed')
+                //     )
+                // );
+
+                //My Test
+
+                const result = await Promise.any(
+                    connections.map(async (connection) => {
+                        return [
+                            connection,
+                            await findTransactionSignature(connection, reference, undefined, 'confirmed'),
+                        ];
+                    })
+                );
+
+                signature = result[1] as ConfirmedSignatureInfo;
 
                 if (!changed) {
                     clearInterval(interval);
-                    setSignature(signature.signature);
+                    // setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
                     navigate('/confirmed', { replace: true });
                 }
