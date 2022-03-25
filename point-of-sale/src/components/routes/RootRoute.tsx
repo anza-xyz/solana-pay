@@ -5,7 +5,7 @@ import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
 import { PublicKey, Connection } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
-import { DEVNET_ENDPOINT, MAINNET_ENDPOINT } from '../../utils/constants';
+import { DEVNET_ENDPOINT } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
@@ -41,21 +41,13 @@ export const RootRoute: FC = () => {
         return { recipient, label };
     }, [params]);
 
-    const connections = useMemo(
-        () => [
-            new Connection(MAINNET_ENDPOINT),
-            new Connection('https://api.mainnet-beta.solana.com'),
-            new Connection('http://solana-mainnet.phantom.tech'),
-            new Connection('https://solana-api.projectserum.com'),
-        ],
-        []
-    );
+    const connections = useMemo(() => [new Connection(DEVNET_ENDPOINT)], []);
 
     return (
         <ThemeProvider>
             <FullscreenProvider>
                 {recipient && label ? (
-                    <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
+                    <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
                         <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider

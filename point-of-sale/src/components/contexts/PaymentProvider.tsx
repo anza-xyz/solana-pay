@@ -111,14 +111,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connection
         const interval = setInterval(async () => {
             let signature: ConfirmedSignatureInfo;
             try {
-                // signature = await Promise.any(
-                //     connections.map((connection) =>
-                //         findTransactionSignature(connection, reference, undefined, 'confirmed')
-                //     )
-                // );
-
-                //My Test
-
                 const result = await Promise.any(
                     connections.map(async (connection) => {
                         return [
@@ -132,7 +124,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connection
 
                 if (!changed) {
                     clearInterval(interval);
-                    // setSignature(signature.signature);
+                    setSignature(signature.signature);
                     setStatus(PaymentStatus.Confirmed);
                     navigate('/confirmed', { replace: true });
                 }
