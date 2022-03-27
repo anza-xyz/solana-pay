@@ -74,7 +74,7 @@ open "https://localhost:3001?recipient=Your+Merchant+Address&label=Your+Store+Na
 You may need to accept a locally signed SSL certificate to open the page.
 
 ## Accepting USDC on Mainnet
-Import the Mainnet endpoint, along with USDC's mint address and icon in the `App.tsx` file.
+Import the Mainnet endpoint, along with USDC's mint address and icon in the `client/components/pages/App.tsx` file.
 ```jsx
 import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
 import { USDCIcon } from '../images/USDCIcon';
