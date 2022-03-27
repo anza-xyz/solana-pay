@@ -190,18 +190,18 @@ The wallet and application should allow additional fields in the request body an
 
 ##### URL describing a transaction request.
 ```
-solana:https://mvines.com/solana-pay
+solana:https://example.com/solana-pay
 ```
 
 ##### URL describing a transaction request with query parameters.
 ```
-solana:https%3A%2F%2Fmvines.com%2Fsolana-pay%3Forder%3D12345
+solana:https%3A%2F%2Fexample.com%2Fsolana-pay%3Forder%3D12345
 ```
 
 ##### GET Request
 ```
 GET /solana-pay?order=12345 HTTP/1.1
-Host: mvines.com
+Host: example.com
 Connection: close
 Accept: application/json
 Accept-Encoding: br, gzip, deflate
@@ -215,13 +215,13 @@ Content-Type: application/json
 Content-Length: 62
 Content-Encoding: gzip
 
-{"label":"Michael Vines","icon":"https://mvines.com/icon.svg"}
+{"label":"Michael Vines","icon":"https://example.com/icon.svg"}
 ```
 
 ##### POST Request
 ```
 POST /solana-pay?order=12345 HTTP/1.1
-Host: mvines.com
+Host: example.com
 Connection: close
 Accept: application/json
 Accept-Encoding: br, gzip, deflate

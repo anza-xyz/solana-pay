@@ -94,7 +94,7 @@ describe('encodeURL', () => {
 
     describe('TransactionRequestURL', () => {
         it('encodes a URL', () => {
-            const link = 'https://mvines.com';
+            const link = 'https://example.com';
             const label = 'label';
             const message = 'message';
 
@@ -104,7 +104,7 @@ describe('encodeURL', () => {
         });
 
         it('encodes a URL with query parameters', () => {
-            const link = 'https://mvines.com?query=param';
+            const link = 'https://example.com?query=param';
             const label = 'label';
             const message = 'message';
 
