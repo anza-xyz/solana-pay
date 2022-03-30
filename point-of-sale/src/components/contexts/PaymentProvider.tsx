@@ -33,6 +33,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connection
     const [signature, setSignature] = useState<TransactionSignature>();
     const [status, setStatus] = useState(PaymentStatus.New);
     const [confirmations, setConfirmations] = useState<Confirmations>(0);
+    const [goodconnection, setGoodConnection] = useState<Connection>();
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
@@ -121,7 +122,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connection
                 );
 
                 signature = result[1] as ConfirmedSignatureInfo;
-
+                const goodConnection = result[0] as Connection;
+                setGoodConnection(goodConnection);
                 if (!changed) {
                     clearInterval(interval);
                     setSignature(signature.signature);
@@ -150,8 +152,11 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children, connection
 
         const run = async () => {
             try {
+                if (!goodconnection) {
+                    return;
+                }
                 await validateTransactionSignature(
-                    connection,
+                    goodconnection,
                     signature,
                     recipient,
                     amount,
