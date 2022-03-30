@@ -2,7 +2,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { TorusWalletAdapter } from '@solana/wallet-adapter-torus';
-import { PublicKey } from '@solana/web3.js';
+import { PublicKey, Connection } from '@solana/web3.js';
 import React, { FC, useMemo } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { DEVNET_ENDPOINT } from '../../utils/constants';
@@ -41,6 +41,8 @@ export const RootRoute: FC = () => {
         return { recipient, label };
     }, [params]);
 
+    const connections = useMemo(() => [new Connection(DEVNET_ENDPOINT)], []);
+
     return (
         <ThemeProvider>
             <FullscreenProvider>
@@ -58,7 +60,7 @@ export const RootRoute: FC = () => {
                                     connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
-                                        <PaymentProvider>
+                                        <PaymentProvider connections={connections}>
                                             <Outlet />
                                         </PaymentProvider>
                                     </TransactionsProvider>
