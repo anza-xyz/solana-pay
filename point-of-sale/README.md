@@ -63,7 +63,7 @@ yarn start
 
 ### Open the point of sale app
 ```shell
-open "http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name"
+open "http://localhost:1234/new?recipient=Your+Merchant+Address&label=Your+Store+Name"
 ```
 
 ## Accepting USDC on Mainnet
