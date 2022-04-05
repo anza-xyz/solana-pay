@@ -4,4 +4,5 @@ export * from './createTransaction';
 export * from './encodeURL';
 export * from './findTransactionSignature';
 export * from './parseURL';
+export * from './supportedWallets';
 export * from './validateTransactionSignature';

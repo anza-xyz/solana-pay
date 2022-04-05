@@ -18,11 +18,15 @@ By standardizing a simple approach to solving those problems, we ensure compatib
 
 ## Specification
 ```
-solana:<recipient>?amount=<amount>&label=<label>&message=<message>&memo=<memo>&reference=<reference>
+https://some-solana-wallet.com/?recipient=<recipient>&amount=<amount>&label=<label>&message=<message>&memo=<memo>&reference=<reference>&request=<request>
+```
+or
+```
+solana:<recipient>?amount=<amount>&label=<label>&message=<message>&memo=<memo>&reference=<reference>&request=<request>
 ```
 
 ### Recipient
-A single `recipient` field is required as the pathname. The value must be the base58-encoded public key of a native SOL account. Associated token accounts must not be used.
+A single `recipient` field is required as a query param, or in cases where the `solana:` protocol is used, as a pathname. The value must be the base58-encoded public key of a native SOL account. Associated token accounts must not be used.
 
 Instead, to request an SPL token transfer, the `spl-token` field must be used to specify an SPL Token mint, from which the associated token address of the recipient address must be derived.
 
@@ -62,20 +66,30 @@ A single `memo` field is allowed as an optional query parameter. The value must 
 
 Wallets should display the memo to the user. The SPL Memo instruction must be included immediately before the SOL or SPL Token transfer instruction to avoid ambiguity with other instructions in the transaction.
 
+### Request
+A single `request` field is allowed as an optional query parameter. The value must be a URL-encoded string that describes the URL of the merchant's authentication server for the transaction.
+
+How wallets and merchants should handle authentication with `request` will be outlined in [Wallet Integration](./docs/src/core/WALLET_INTEGRATION.md) and [Merchant Integration](./docs/src/core/MERCHANT_INTEGRATION.md) respectively.
+
 ## Examples
 URL describing a transfer for 1 SOL:
+```
+https://some-solana-wallet.com/?recipient=mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId1234
+```
+
+URL describing a transfer for 1 SOL with no wallet disambiguation:
 ```
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId1234
 ```
 
 URL describing a transfer for 0.01 USDC
 ```
-solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678
+https://some-solana-wallet.com/?recipient=mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678
 ```
 
 URL describing a generic SOL transfer. The user must be prompted for the exact amount.
 ```
-solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael&memo=4321ABCD
+https://some-solana-wallet.com/?recipient=mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?label=Michael&memo=4321ABCD
 ```
 
 ## Extensions

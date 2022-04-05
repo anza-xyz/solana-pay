@@ -30,6 +30,15 @@ describe('encodeURL', () => {
         expect(url).toBe(`solana:${recipient}`);
     });
 
+    it('encodes a url with recipient and request', () => {
+        const recipient = Keypair.generate().publicKey;
+        const request = 'https://solana.com/transact/';
+
+        const url = encodeURL({ request, recipient });
+
+        expect(url).toBe(`solana:${recipient}?request=${encodeURIComponent(request)}`);
+    });
+
     it('encodes a url with recipient and amount', () => {
         const recipient = Keypair.generate().publicKey;
         const amount = new BigNumber('1');

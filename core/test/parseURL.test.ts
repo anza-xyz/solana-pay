@@ -9,7 +9,7 @@ describe('parseURL', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.000000001&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
+                const { recipient, amount, splToken, reference, label, message, memo, request } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount!.eq(new BigNumber('0.000000001'))).toBe(true);
@@ -19,13 +19,14 @@ describe('parseURL', () => {
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
                 expect(memo).toBe('OrderId5678');
+                expect(request).toBeUndefined();
             });
 
             it('should parse with spl-token', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1.01&spl-token=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
+                const { recipient, amount, splToken, reference, label, message, memo, request } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount!.eq(new BigNumber('1.01'))).toBe(true);
@@ -34,13 +35,46 @@ describe('parseURL', () => {
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
                 expect(memo).toBe('OrderId5678');
+                expect(request).toBeUndefined();
+            });
+
+            it('should parse with request', () => {
+                const url =
+                    'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1.01&request=https%3A%2F%2Fsolana.com%2F&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+
+                const { recipient, amount, splToken, reference, label, message, memo, request } = parseURL(url);
+
+                expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
+                expect(amount!.eq(new BigNumber('1.01'))).toBe(true);
+                expect(reference).toBeUndefined();
+                expect(label).toBe('Michael');
+                expect(message).toBe('Thanks for all the fish');
+                expect(memo).toBe('OrderId5678');
+                expect(request).toBe('https://solana.com/');
+            });
+
+            it('should parse with different protocol', () => {
+                const url =
+                    'https://solanawallet.app/code?recipient=mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&amount=0.000000001&reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
+
+                const { recipient, amount, splToken, reference, label, message, memo, request } = parseURL(url);
+
+                expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
+                expect(amount!.eq(new BigNumber('0.000000001'))).toBe(true);
+                expect(splToken).toBeUndefined();
+                expect(reference).toHaveLength(1);
+                expect(reference![0]!.equals(new PublicKey('82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny'))).toBe(true);
+                expect(label).toBe('Michael');
+                expect(message).toBe('Thanks for all the fish');
+                expect(memo).toBe('OrderId5678');
+                expect(request).toBeUndefined();
             });
 
             it('should parse without an amount', () => {
                 const url =
                     'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?reference=82ZJ7nbGpixjeDCmEhUcmwXYfvurzAgGdtSMuHnUgyny&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId5678';
 
-                const { recipient, amount, splToken, reference, label, message, memo } = parseURL(url);
+                const { recipient, amount, splToken, reference, label, message, memo, request } = parseURL(url);
 
                 expect(recipient.equals(new PublicKey('mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN'))).toBe(true);
                 expect(amount).toBeUndefined();
@@ -50,6 +84,7 @@ describe('parseURL', () => {
                 expect(label).toBe('Michael');
                 expect(message).toBe('Thanks for all the fish');
                 expect(memo).toBe('OrderId5678');
+                expect(request).toBeUndefined();
             });
         });
     });
@@ -86,6 +121,12 @@ describe('parseURL', () => {
             const url = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&reference=0xffff';
 
             expect(() => parseURL(url)).toThrow('reference invalid');
+        });
+
+        it('throws an error on invalid request', () => {
+            const url = 'solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&request=solana.com';
+
+            expect(() => parseURL(url)).toThrow('request invalid');
         });
     });
 });

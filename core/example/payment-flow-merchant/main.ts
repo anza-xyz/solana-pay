@@ -105,14 +105,7 @@ async function main() {
     console.log('\n6. 🔗 Validate transaction \n');
 
     try {
-        await validateTransactionSignature(
-            connection,
-            signature,
-            MERCHANT_WALLET,
-            amount,
-            undefined,
-            reference
-        );
+        await validateTransactionSignature(connection, signature, MERCHANT_WALLET, amount, undefined, reference);
 
         // Update payment status
         paymentStatus = 'validated';

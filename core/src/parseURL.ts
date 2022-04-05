@@ -1,6 +1,6 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { URL_PROTOCOL } from './constants';
+import { DEFAULT_URL_PROTOCOL, ACCEPTED_URL_PROTOCOLS } from './constants';
 
 /**
  * Thrown when a URL can't be parsed as a Solana Pay URL.
@@ -27,6 +27,8 @@ export interface ParsedURL {
     message: string | undefined;
     /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo) */
     memo: string | undefined;
+    /** `request` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#request) */
+    request: string | undefined;
 }
 
 /**
@@ -40,12 +42,14 @@ export function parseURL(url: string): ParsedURL {
     if (url.length > 2048) throw new ParseURLError('length invalid');
 
     const { protocol, pathname, searchParams } = new URL(url);
-    if (protocol !== URL_PROTOCOL) throw new ParseURLError('protocol invalid');
-    if (!pathname) throw new ParseURLError('recipient missing');
+    if (!ACCEPTED_URL_PROTOCOLS.includes(protocol)) throw new ParseURLError('protocol invalid');
+
+    const encodedRecipient = protocol === DEFAULT_URL_PROTOCOL ? pathname : searchParams.get('recipient');
+    if (!encodedRecipient) throw new ParseURLError('recipient missing');
 
     let recipient: PublicKey;
     try {
-        recipient = new PublicKey(pathname);
+        recipient = new PublicKey(encodedRecipient);
     } catch (error) {
         throw new ParseURLError('recipient invalid');
     }
@@ -84,6 +88,15 @@ export function parseURL(url: string): ParsedURL {
     const message = searchParams.get('message') || undefined;
     const memo = searchParams.get('memo') || undefined;
 
+    const request = searchParams.get('request') || undefined;
+    if (request != null) {
+        try {
+            new URL(request);
+        } catch (error) {
+            throw new ParseURLError('request invalid');
+        }
+    }
+
     return {
         recipient,
         amount,
@@ -92,5 +105,6 @@ export function parseURL(url: string): ParsedURL {
         label,
         message,
         memo,
+        request,
     };
 }

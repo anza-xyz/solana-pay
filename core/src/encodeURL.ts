@@ -1,6 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { URL_PROTOCOL } from './constants';
+import { DEFAULT_URL_PROTOCOL } from './constants';
+import SupportedWallet from './supportedWallets';
 
 /**
  * Optional query parameters to encode in a Solana Pay URL.
@@ -18,6 +19,10 @@ export interface EncodeURLParams {
     message?: string;
     /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo) */
     memo?: string;
+    /** `request` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#request) */
+    request?: string;
+    /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient) */
+    recipient?: PublicKey;
 }
 
 /**
@@ -26,6 +31,8 @@ export interface EncodeURLParams {
 export interface EncodeURLComponents extends EncodeURLParams {
     /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient) */
     recipient: PublicKey;
+    /** the wallet and associated address to make a request to */
+    wallet?: SupportedWallet;
 }
 
 /**
@@ -40,11 +47,13 @@ export interface EncodeURLComponents extends EncodeURLParams {
  * @param components.label
  * @param components.message
  * @param components.memo
+ * @param components.request
  */
-export function encodeURL({ recipient, ...params }: EncodeURLComponents): string {
-    let url = URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
+export function encodeURL({ recipient, wallet, ...params }: EncodeURLComponents): string {
+    let url = wallet ? wallet.toString() : DEFAULT_URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
-    const encodedParams = encodeURLParams(params);
+    // add the recipient as a url param if there is a wallet URL
+    const encodedParams = encodeURLParams({ ...params, recipient: wallet ? recipient : undefined });
     if (encodedParams) {
         url += '?' + encodedParams;
     }
@@ -52,7 +61,16 @@ export function encodeURL({ recipient, ...params }: EncodeURLComponents): string
     return url;
 }
 
-function encodeURLParams({ amount, splToken, reference, label, message, memo }: EncodeURLParams): string {
+function encodeURLParams({
+    amount,
+    splToken,
+    reference,
+    label,
+    message,
+    memo,
+    request,
+    recipient,
+}: EncodeURLParams): string {
     const params: [string, string][] = [];
 
     if (amount) {
@@ -83,6 +101,14 @@ function encodeURLParams({ amount, splToken, reference, label, message, memo }: 
 
     if (memo) {
         params.push(['memo', memo]);
+    }
+
+    if (request) {
+        params.push(['request', request]);
+    }
+
+    if (recipient) {
+        params.push(['recipient', recipient.toBase58()]);
     }
 
     return params.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
