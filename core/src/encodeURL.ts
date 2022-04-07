@@ -50,7 +50,7 @@ export interface EncodeURLComponents extends EncodeURLParams {
  * @param components.request
  */
 export function encodeURL({ recipient, wallet, ...params }: EncodeURLComponents): string {
-    let url = wallet ? wallet.toString() : DEFAULT_URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
+    let url = wallet ?? DEFAULT_URL_PROTOCOL + encodeURIComponent(recipient.toBase58());
 
     // add the recipient as a url param if there is a wallet URL
     const encodedParams = encodeURLParams({ ...params, recipient: wallet ? recipient : undefined });
