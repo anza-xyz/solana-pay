@@ -1,6 +1,6 @@
 ---
 title: Merchant Integration
-slug: /core/merchant-integration
+slug: /core/transfer-request/merchant-integration
 ---
 
 # Merchant Integration
@@ -73,7 +73,7 @@ async function main() {
 
 ## 2. Create a payment request link
 
-Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana Pay uses a [standard URL scheme](../../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -179,7 +179,7 @@ const qrCode = createQR(url);
 
 <br/>
 
-![qr code](../images/solana-pay.png)
+![qr code](../../images/solana-pay.png)
 
 ### 3.1 Add the QR code to your payment page
 
@@ -351,7 +351,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](../images/security-best-practices.png)
+![best practices diagram](../../images/security-best-practices.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend

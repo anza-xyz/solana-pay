@@ -1,6 +1,6 @@
 ---
 title: Wallet Integration
-slug: /core/wallet-integration
+slug: /core/transfer-request/wallet-integration
 ---
 
 # Wallet Integration
@@ -29,7 +29,7 @@ yarn add @solana/pay @solana/web3.js
 
 ## 2. Parse payment request link
 
-As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../SPEC.md).
+As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../../SPEC.md).
 
 <details>
     <summary>Parse the URL to retrieve all possible fields:</summary>
