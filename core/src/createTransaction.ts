@@ -99,13 +99,13 @@ export async function createTransaction(
         amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
 
         // Get the payer's ATA and check that the account exists and can send tokens
-        const payerATA = await getAssociatedTokenAddress(splToken, payer);
+        const payerATA = await getAssociatedTokenAddress(splToken, payer, true);
         const payerAccount = await getAccount(connection, payerATA);
         if (!payerAccount.isInitialized) throw new CreateTransactionError('payer not initialized');
         if (payerAccount.isFrozen) throw new CreateTransactionError('payer frozen');
 
         // Get the recipient's ATA and check that the account exists and can receive tokens
-        const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
+        const recipientATA = await getAssociatedTokenAddress(splToken, recipient, true);
         const recipientAccount = await getAccount(connection, recipientATA);
         if (!recipientAccount.isInitialized) throw new CreateTransactionError('recipient not initialized');
         if (recipientAccount.isFrozen) throw new CreateTransactionError('recipient frozen');
