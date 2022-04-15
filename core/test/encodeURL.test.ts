@@ -1,3 +1,4 @@
+import { isThawAccountInstruction } from '@solana/spl-token';
 import { Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { encodeURL } from '../src';
@@ -90,11 +91,83 @@ describe('encodeURL', () => {
 
             expect(String(url)).toBe(`solana:${recipient}?amount=100&memo=${memo}`);
         });
+
+        it('encodes a url with recipient, amount and reference', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1');
+            const reference1 = Keypair.generate().publicKey;
+            const reference = [reference1];
+
+            const url = encodeURL({ recipient, amount, reference });
+
+            expect(String(url)).toBe(`solana:${recipient}?amount=1&reference=${reference}`);
+        });
+
+        it('encodes a url with recipient, amount, label and message', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1.99');
+            const label = 'label';
+            const message = 'message';
+
+            const url = encodeURL({ recipient, amount, label, message });
+
+            expect(String(url)).toBe(`solana:${recipient}?amount=1.99&label=${label}&message=${message}`);
+        });
+
+        it('encodes a url with recipient, amount, label and memo', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1.99');
+            const label = 'label';
+            const memo = 'memo';
+
+            const url = encodeURL({ recipient, amount, label, memo });
+
+            expect(String(url)).toBe(`solana:${recipient}?amount=1.99&label=${label}&memo=${memo}`);
+        });
+
+        it('encodes a url with recipient, amount, label and reference', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1.99');
+            const label = 'label';
+            const reference1 = Keypair.generate().publicKey;
+            const reference = [reference1];
+
+            const url = encodeURL({ recipient, amount, label, reference });
+
+            expect(String(url)).toBe(`solana:${recipient}?amount=1.99&reference=${reference1}&label=${label}`);
+        });
+
+        it('encodes a url with recipient, amount, label, message and memo', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1.99');
+            const label = 'label';
+            const message = 'message';
+            const memo = 'memo';
+
+            const url = encodeURL({ recipient, amount, label, message, memo });
+
+            expect(String(url)).toBe(`solana:${recipient}?amount=1.99&label=${label}&message=${message}&memo=${memo}`);
+        });
+
+        it('encodes a url with recipient, amount, label, message and reference', () => {
+            const recipient = Keypair.generate().publicKey;
+            const amount = new BigNumber('1.99');
+            const label = 'label';
+            const message = 'message';
+            const reference1 = Keypair.generate().publicKey;
+            const reference = [reference1];
+
+            const url = encodeURL({ recipient, amount, label, message, reference });
+
+            expect(String(url)).toBe(
+                `solana:${recipient}?amount=1.99&reference=${reference1}&label=${label}&message=${message}`
+            );
+        });
     });
 
     describe('TransactionRequestURL', () => {
         it('encodes a URL', () => {
-            const link = 'https://mvines.com';
+            const link = 'https://example.com';
             const label = 'label';
             const message = 'message';
 
@@ -104,7 +177,7 @@ describe('encodeURL', () => {
         });
 
         it('encodes a URL with query parameters', () => {
-            const link = 'https://mvines.com?query=param';
+            const link = 'https://example.com?query=param';
             const label = 'label';
             const message = 'message';
 
