@@ -76,10 +76,7 @@ const { recipient, amount, splToken, reference, label, message, memo } = parseUR
  * Create the transaction with the parameters decoded from the URL
  */
 const payer = CUSTOMER_WALLET.publicKey;
-const tx = await createTransaction(connection, payer, recipient, amount as BigNumber, {
-    reference,
-    memo,
-});
+const tx = await createTransfer(connection, payer, { recipient, amount, reference, memo });
 ```
 
 See [full code snippet][10]
@@ -124,12 +121,9 @@ console.log('label: ', label);
 console.log('message: ', message);
 
 /**
- * Create the transaction with the parameters decoded from the URL
+ * Create the transfer with the parameters decoded from the URL
  */
-const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
-    reference,
-    memo,
-});
+const tx = await createTransfer(connection, payer, { recipient, amount, reference, memo });
 
 /**
  * Send the transaction to the network
