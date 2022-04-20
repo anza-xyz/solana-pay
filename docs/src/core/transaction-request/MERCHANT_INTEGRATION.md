@@ -5,17 +5,6 @@ slug: /core/transaction-request/merchant-integration
 
 # Merchant Integration
 
-<!-- ---
-
-## TODO:
-
-- [ ] Update overview with section on transfer and transaction request
-- [ ] Update transfer merchant and wallet integrations with the new APIs
-- [ ] Update SPEC
-- [ ] Update supporting wallets
-
---- -->
-
 This section describes how a merchant can integrate Solana Pay transaction requests into their payments flow.
 
 This guide walks through an example of how you can configure a server to respond to a Solana Pay transaction request to initiate a simple native SOL transfer.
@@ -120,7 +109,7 @@ const post = async (request, response) => {
 
     try {
 
-        // create spl transfer instrution
+        // create spl transfer instruction
         const splTransferIx = await createSplTransferIx(sender, connection);
 
         // create the transaction
@@ -230,6 +219,7 @@ async function createSplTransferIx(sender, connection) {
 
 For our example, we create a simple transfer for a SPL token, serialize the transaction, and base64 encode it.
 
+<!--
 ### Signed vs Unsigned Transactions
 
 The `POST` endpoint may respond with a partially or fully signed transaction. 
@@ -248,6 +238,7 @@ If the transaction signatures are empty:
 - The application should set the recentBlockhash to the latest blockhash, or the zero value (new PublicKey(0).toBase58() or "11111111111111111111111111111111").
 - The wallet must ignore the feePayer in the transaction and set the feePayer to the account in the request.
 - The wallet must ignore the recentBlockhash in the transaction and set the recentBlockhash to the latest blockhash.
+-->
 
 ## Best Practices
 

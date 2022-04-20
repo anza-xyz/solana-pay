@@ -5,7 +5,7 @@ slug: /core/transfer-request/merchant-integration
 
 # Merchant Integration
 
-This section describes how a merchant can integrate Solana Pay into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
+This section describes how a merchant can integrate Solana Pay transfer requests into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
 
 This guide walks through an example of a QR code-based Point of Sale system that accepts payments via Solana Pay.
 
