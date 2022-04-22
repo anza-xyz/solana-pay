@@ -199,27 +199,6 @@ async function createSplTransferIx(sender, connection) {
 
 For our example, we create a simple transfer for a SPL token, serialize the transaction, and base64 encode it.
 
-<!--
-### Signed vs Unsigned Transactions
-
-The `POST` endpoint may respond with a partially or fully signed transaction.
-
-If the transaction signatures are nonempty:
-
-- The application must set the feePayer to the public key of the first signature.
-- The application must set the recentBlockhash to the latest blockhash.
-- The application must serialize and deserialize the transaction before signing it. This ensures consistent ordering of the account keys, as a workaround for this issue.
-- The wallet must not set the feePayer and recentBlockhash.
-- The wallet must verify the signatures, and if any are invalid, the wallet must reject the transaction as malformed.
-
-If the transaction signatures are empty:
-
-- The application should set the feePayer to the account in the request, or the zero value (new PublicKey(0) or new PublicKey("11111111111111111111111111111111")).
-- The application should set the recentBlockhash to the latest blockhash, or the zero value (new PublicKey(0).toBase58() or "11111111111111111111111111111111").
-- The wallet must ignore the feePayer in the transaction and set the feePayer to the account in the request.
-- The wallet must ignore the recentBlockhash in the transaction and set the recentBlockhash to the latest blockhash.
--->
-
 ## Best Practices
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
