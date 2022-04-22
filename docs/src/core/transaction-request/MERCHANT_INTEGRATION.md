@@ -203,7 +203,7 @@ For our example, we create a simple transfer for a SPL token, serialize the tran
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![](https://i.imgur.com/eeAxKd2.png)
+![](../../images/transaction-request-flow.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
