@@ -1,11 +1,11 @@
 ---
 title: Merchant Integration
-slug: /core/merchant-integration
+slug: /core/transfer-request/merchant-integration
 ---
 
 # Merchant Integration
 
-This section describes how a merchant can integrate Solana Pay into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
+This section describes how a merchant can integrate Solana Pay transfer requests into their payments flow. It shows how to create a payment request link, encode it into a QR code, find the transaction, and validate it.
 
 This guide walks through an example of a QR code-based Point of Sale system that accepts payments via Solana Pay.
 
@@ -73,7 +73,7 @@ async function main() {
 
 ## 2. Create a payment request link
 
-Solana Pay uses a [standard URL scheme](../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
+Solana Pay uses a [standard URL scheme](../../SPEC.md) across wallets for native SOL and SPL Token payments. Several parameters are encoded within the link representing an intent to collect payment from a customer.
 
 <details>
     <summary>
@@ -179,7 +179,7 @@ const qrCode = createQR(url);
 
 <br/>
 
-![qr code](../images/solana-pay.png)
+![qr code](../../images/solana-pay.png)
 
 ### 3.1 Add the QR code to your payment page
 
@@ -218,7 +218,7 @@ When a customer approves the payment request in their wallet, this transaction e
 
 <details>
     <summary>
-        Use <code>findTransactionSignature</code> to find the on-chain transaction. Provide a <code>reference</code> to this function that identifies the transaction associated with the order.
+        Use <code>findReference</code> to find the on-chain transaction. Provide a <code>reference</code> to this function that identifies the transaction associated with the order.
     </summary>
 
 <br/>
@@ -245,13 +245,13 @@ paymentStatus = 'pending';
  * Important to note that we can only find the transaction when it's **confirmed**
  */
 console.log('\n5. Find the transaction');
-const signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' });
 
 // Update payment status
 paymentStatus = 'confirmed';
 ```
 
-**Note**: The `findTransactionSignature` function uses `confirmed` as the default finality value. This can, on rare occasions, result in a transaction that is not fully complete. For full finality, use `finalized`. This can result in slower transaction completion.
+**Note**: The `findReference` function uses `confirmed` as the default finality value. This can, on rare occasions, result in a transaction that is not fully complete. For full finality, use `finalized`. This can result in slower transaction completion.
 
 See [full code snippet][7]
 
@@ -259,7 +259,7 @@ See [full code snippet][7]
 
 ### 4.1 Retries
 
-If a transaction with the given reference can't be found, the `findTransactionSignature` function will throw an error. There are a few reasons why this could be:
+If a transaction with the given reference can't be found, the `findReference` function will throw an error. There are a few reasons why this could be:
 
 -   Transaction is not yet confirmed
 -   Customer is yet to approve/complete the transaction
@@ -278,7 +278,7 @@ return new Promise((resolve, reject) => {
     /**
      * Retry until we find the transaction
      *
-     * If a transaction with the given reference can't be found, the `findTransactionSignature`
+     * If a transaction with the given reference can't be found, the `findReference`
      * function will throw an error. There are a few reasons why this could be a false negative:
      *
      * - Transaction is not yet confirmed
@@ -289,12 +289,12 @@ return new Promise((resolve, reject) => {
     const interval = setInterval(async () => {
         console.log('Checking for transaction...', count);
         try {
-            signatureInfo = await findTransactionSignature(connection, reference, undefined, 'confirmed');
+            signatureInfo = await findReference(connection, reference, { finality: 'confirmed' });
             console.log('\n 🖌  Signature found: ', signatureInfo.signature);
             clearInterval(interval);
             resolve(signatureInfo);
         } catch (error: any) {
-            if (!(error instanceof FindTransactionSignatureError)) {
+            if (!(error instanceof FindReferenceError)) {
                 console.error(error);
                 clearInterval(interval);
                 reject(error);
@@ -310,11 +310,11 @@ See [full code snippet][7]
 
 ### 4.2 Validating the transaction
 
-Once the `findTransactionSignature` function returns a signature, it confirms that a transaction that references the order has been recorded on-chain. But it doesn't guarantee that a valid transfer with the expected amount and recipient happened.
+Once the `findReference` function returns a signature, it confirms that a transaction that references the order has been recorded on-chain. But it doesn't guarantee that a valid transfer with the expected amount and recipient happened.
 
 <details>
     <summary>
-        <code>validateTransactionSignature</code> allows you to validate that the transaction signature found matches the transaction that you expected.
+        <code>validateTransfer</code> allows you to validate that the transaction signature found matches the transaction that you expected.
     </summary>
 
 ```typescript
@@ -323,16 +323,16 @@ Once the `findTransactionSignature` function returns a signature, it confirms th
 /**
  * Validate transaction
  *
- * Once the `findTransactionSignature` function returns a signature,
+ * Once the `findReference` function returns a signature,
  * it confirms that a transaction with reference to this order has been recorded on-chain.
  *
- * `validateTransactionSignature` allows you to validate that the transaction signature
+ * `validateTransfer` allows you to validate that the transaction signature
  * found matches the transaction that you expected.
  */
 console.log('\n6. 🔗 Validate transaction \n');
 
 try {
-    await validateTransactionSignature(connection, signature, recipient, amount, undefined, reference);
+    await validateTransfer(connection, signature, { recipient: MERCHANT_WALLET, amount });
 
     // Update payment status
     paymentStatus = 'validated';
@@ -351,7 +351,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](../images/security-best-practices.png)
+![best practices diagram](../../images/security-best-practices.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend

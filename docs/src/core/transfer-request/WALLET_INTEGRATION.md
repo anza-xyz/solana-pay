@@ -1,6 +1,6 @@
 ---
 title: Wallet Integration
-slug: /core/wallet-integration
+slug: /core/transfer-request/wallet-integration
 ---
 
 # Wallet Integration
@@ -29,7 +29,7 @@ yarn add @solana/pay @solana/web3.js
 
 ## 2. Parse payment request link
 
-As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../SPEC.md).
+As a wallet provider, you will have to parse the received URL to extract the parameters. For more information on the URL format, please see the [specification](../../SPEC.md).
 
 <details>
     <summary>Parse the URL to retrieve all possible fields:</summary>
@@ -76,10 +76,7 @@ const { recipient, amount, splToken, reference, label, message, memo } = parseUR
  * Create the transaction with the parameters decoded from the URL
  */
 const payer = CUSTOMER_WALLET.publicKey;
-const tx = await createTransaction(connection, payer, recipient, amount as BigNumber, {
-    reference,
-    memo,
-});
+const tx = await createTransfer(connection, payer, { recipient, amount, reference, memo });
 ```
 
 See [full code snippet][10]
@@ -124,12 +121,9 @@ console.log('label: ', label);
 console.log('message: ', message);
 
 /**
- * Create the transaction with the parameters decoded from the URL
+ * Create the transfer with the parameters decoded from the URL
  */
-const tx = await createTransaction(connection, CUSTOMER_WALLET.publicKey, recipient, amount as BigNumber, {
-    reference,
-    memo,
-});
+const tx = await createTransfer(connection, payer, { recipient, amount, reference, memo });
 
 /**
  * Send the transaction to the network
