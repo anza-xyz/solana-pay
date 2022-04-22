@@ -39,20 +39,20 @@ Learn how to integrate Solana Pay in your website, application or wallet.
 
 A Solana Pay transfer request URL describes a non-interactive request for a SOL or SPL Token transfer. The parameters in the URL are used by a wallet to directly compose the transaction.
 
-- [Merchant Integration](./transfer-request/MERCHANT_INTEGRATION.md)
-- [Wallet Integration](./transfer-request/WALLET_INTEGRATION.md)
+-   [Merchant Integration](./transfer-request/MERCHANT_INTEGRATION.md)
+-   [Wallet Integration](./transfer-request/WALLET_INTEGRATION.md)
 
 ### Transaction Requests
 
 A Solana Pay transaction request URL describes an interactive request for any Solana transaction. The parameters in the URL are used by a wallet to make an HTTP request to compose any transaction.
 
-- [Merchant Integration](./transaction-request/MERCHANT_INTEGRATION.md)
+-   [Merchant Integration](./transaction-request/MERCHANT_INTEGRATION.md)
 
 ## Other resources
 
-- [API Reference](https://docs.solanapay.com/api/core)
-- [Brand Guidelines](https://solanapay.com/branding)
-- [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
+-   [API Reference](https://docs.solanapay.com/api/core)
+-   [Brand Guidelines](https://solanapay.com/branding)
+-   [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
 
 ## License
 

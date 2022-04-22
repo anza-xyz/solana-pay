@@ -39,18 +39,12 @@ The handler is the entry point of the API, and "handles" all incoming requests.
 
 ```javascript
 const index = async (request, response) => {
+    // We set up our handler to only respond to `GET` and `POST` requests.
     if (request.method === 'GET') return get(request, response);
     if (request.method === 'POST') return post(request, response);
 
     throw new Error(`Unexpected method ${request.method}`);
 };
-```
-
-We set up our handler to only respond to `GET` and `POST` requests.
-
-```javascript
-if (request.method === 'GET') return get(request, response);
-if (request.method === 'POST') return post(request, response);
 ```
 
 ## 2. The link
@@ -92,10 +86,10 @@ The `GET` endpoint should respond with two properties. `label` describes the sou
 The second part of the transaction request spec is the `POST` request.
 
 ```javascript
-import {clusterApiUrl, Connection, Keypair, PublicKey, Transaction} from '@solana/web3.js';
+import { clusterApiUrl, Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import {createTransferCheckedInstruction, getAccount, getAssociatedTokenAddress, getMint} from "@solana/spl-token";
-import {TEN} from "@solana/pay";
+import { createTransferCheckedInstruction, getAccount, getAssociatedTokenAddress, getMint } from '@solana/spl-token';
+import { TEN } from '@solana/pay';
 
 const splToken = new PublicKey(process.env.USDC_MINT);
 const MERCHANT_WALLET = new PublicKey(process.env.MERCHANT_WALLET);
@@ -104,47 +98,35 @@ const post = async (request, response) => {
     // Account provided in the transaction request body by the wallet.
     const accountField = request.body?.account;
     if (!accountField) throw new Error('missing account');
-    
+
     const sender = new PublicKey(accountField);
 
-    try {
+    // create spl transfer instruction
+    const splTransferIx = await createSplTransferIx(sender, connection);
 
-        // create spl transfer instruction
-        const splTransferIx = await createSplTransferIx(sender, connection);
+    // create the transaction
+    const transaction = new Transaction();
 
-        // create the transaction
-        const transaction = new Transaction();
+    // add the instruction to the transaction
+    transaction.add(splTransferIx);
 
-        // add the instruction to the transaction
-        transaction.add(splTransferIx);
+    // Serialize and return the unsigned transaction.
+    const serializedTransaction = transaction.serialize({
+        verifySignatures: false,
+        requireAllSignatures: false,
+    });
 
-        // Serialize and return the unsigned transaction.
-        const serializedTransaction = transaction.serialize({
-            verifySignatures: false,
-            requireAllSignatures: false,
-        });
+    const base64Transaction = serializedTransaction.toString('base64');
+    const message = 'Thank you for your purchase of ExiledApe #518';
 
-        const base64Transaction = serializedTransaction.toString('base64');
-        const message = 'Thank you for your purchase of ExiledApe #518';
-
-        response.status(200).send({transaction: base64Transaction, message});
-    } catch (e) {
-        response.send({error: JSON.stringify(e)});
-    }
+    response.status(200).send({ transaction: base64Transaction, message });
 };
 ```
 
-The wallet will make a `POST` request to the specified link with the user's wallet address as the `account` property of the payload.
+The wallet will make a `POST` request to the specified link with the user's wallet address as the `account` property of the request body.
 
-We check the incoming request's `body` for the `account`.
+The `POST` endpoint should respond with a base64-encoded `transaction`. You can return an optional `message` property to describe the transaction.
 
-```javascript
-const accountField = request.body?.account;
-if (!accountField) throw new Error('missing account');
-```
-
- The `POST` endpoint should respond with a base64-encoded `transaction`. You can return an optional `message` property to describe the transaction.
- 
 ### 4.1 The Transaction
 
 The `transaction` that's returned can be -- anything. It doesn't even need to be a payment. For example, it could be a transaction to receive a gift or an invitation from the merchant for scanning a wallet.
@@ -152,68 +134,66 @@ The `transaction` that's returned can be -- anything. It doesn't even need to be
 <details>
     <summary>Some ideas of what transactions you can do.</summary>
 
-    
-- Merchants get an atomic bidirectional communication channel with customers. They can mint an NFT or transfer loyalty reward tokens in the transaction.
-- Merchants could potentially see what tokens a user has, accepting and denominating payment in any of them.
-- Merchants can pay for transactions on their user's behalf so they don't need SOL in a wallet.
-- Merchants can return an error from the server to decline to respond with a transaction. This could be used to allow permissioned payments.
-- Payments can be directed to escrow-like programs, enabling things like refunds, chargebacks, and other return mechanisms.
-- DeFi transactions could be bridged to all kinds of web2 / IRL portals.
-- Wallets can retrieve other information, or merchants can pass it to them, like an icon to display, or other fields in the JSON response.
-- It doesn't even need to be a payment. Merchants could send tokens, invitations, gifts to customers that connect a wallet, perhaps one that meets some criteria, such as possessing an NFT.
-    
-    
+-   Merchants get an atomic bidirectional communication channel with customers. They can mint an NFT or transfer loyalty reward tokens in the transaction.
+-   Merchants could potentially see what tokens a user has, accepting and denominating payment in any of them.
+-   Merchants can pay for transactions on their user's behalf so they don't need SOL in a wallet.
+-   Merchants can return an error from the server to decline to respond with a transaction. This could be used to allow permissioned payments.
+-   Payments can be directed to escrow-like programs, enabling things like refunds, chargebacks, and other return mechanisms.
+-   DeFi transactions could be bridged to all kinds of web2 / IRL portals.
+-   Wallets can retrieve other information, or merchants can pass it to them, like an icon to display, or other fields in the JSON response.
+-   It doesn't even need to be a payment. Merchants could send tokens, invitations, gifts to customers that connect a wallet, perhaps one that meets some criteria, such as possessing an NFT.
+
 </details>
 
 ```javascript
 async function createSplTransferIx(sender, connection) {
-  const senderInfo = await connection.getAccountInfo(sender);
-  if (!senderInfo)
-    throw new Error('sender not found');
+    const senderInfo = await connection.getAccountInfo(sender);
+    if (!senderInfo) throw new Error('sender not found');
 
-  // Get the sender's ATA and check that the account exists and can send tokens
-  const senderATA = await getAssociatedTokenAddress(splToken, sender);
-  const senderAccount = await getAccount(connection, senderATA);
-  if (!senderAccount.isInitialized)
-    throw new Error('sender not initialized');
-  if (senderAccount.isFrozen)
-    throw new Error('sender frozen');
+    // Get the sender's ATA and check that the account exists and can send tokens
+    const senderATA = await getAssociatedTokenAddress(splToken, sender);
+    const senderAccount = await getAccount(connection, senderATA);
+    if (!senderAccount.isInitialized) throw new Error('sender not initialized');
+    if (senderAccount.isFrozen) throw new Error('sender frozen');
 
-  // Get the merchant's ATA and check that the account exists and can receive tokens
-  const merchantATA = await getAssociatedTokenAddress(splToken, MERCHANT_WALLET);
-  const merchantAccount = await getAccount(connection, merchantATA);
-  if (!merchantAccount.isInitialized)
-    throw new Error('merchant not initialized');
-  if (merchantAccount.isFrozen)
-    throw new Error('merchant frozen');
+    // Get the merchant's ATA and check that the account exists and can receive tokens
+    const merchantATA = await getAssociatedTokenAddress(splToken, MERCHANT_WALLET);
+    const merchantAccount = await getAccount(connection, merchantATA);
+    if (!merchantAccount.isInitialized) throw new Error('merchant not initialized');
+    if (merchantAccount.isFrozen) throw new Error('merchant frozen');
 
-  // Check that the token provided is an initialized mint
-  const mint = await getMint(connection, splToken);
-  if (!mint.isInitialized)
-    throw new Error('mint not initialized');
+    // Check that the token provided is an initialized mint
+    const mint = await getMint(connection, splToken);
+    if (!mint.isInitialized) throw new Error('mint not initialized');
 
-  // You should always calculate the order total on the server to prevent
-  // people from directly manipulating the amount on the client
-  let amount = calculateCheckoutAmount();
-  amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
+    // You should always calculate the order total on the server to prevent
+    // people from directly manipulating the amount on the client
+    let amount = calculateCheckoutAmount();
+    amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
 
-  // Check that the sender has enough tokens
-  const tokens = BigInt(String(amount));
-  if (tokens > senderAccount.amount)
-    throw new Error('insufficient funds');
+    // Check that the sender has enough tokens
+    const tokens = BigInt(String(amount));
+    if (tokens > senderAccount.amount) throw new Error('insufficient funds');
 
-  // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
-  const splTransferIx = createTransferCheckedInstruction(senderATA, splToken, merchantATA, sender, tokens, mint.decimals);
+    // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
+    const splTransferIx = createTransferCheckedInstruction(
+        senderATA,
+        splToken,
+        merchantATA,
+        sender,
+        tokens,
+        mint.decimals
+    );
 
-  // Create a reference that is unique to each checkout session
-  const references = [new Keypair().publicKey];
+    // Create a reference that is unique to each checkout session
+    const references = [new Keypair().publicKey];
 
-  // add references to the instruction
-  for (const pubkey of references) {
-    splTransferIx.keys.push({ pubkey, isWritable: false, isSigner: false });
-  }
-    
-  return splTransferIx;
+    // add references to the instruction
+    for (const pubkey of references) {
+        splTransferIx.keys.push({ pubkey, isWritable: false, isSigner: false });
+    }
+
+    return splTransferIx;
 }
 ```
 
@@ -222,7 +202,7 @@ For our example, we create a simple transfer for a SPL token, serialize the tran
 <!--
 ### Signed vs Unsigned Transactions
 
-The `POST` endpoint may respond with a partially or fully signed transaction. 
+The `POST` endpoint may respond with a partially or fully signed transaction.
 
 If the transaction signatures are nonempty:
 
@@ -246,7 +226,6 @@ We recommend handling a customer session in a secure environment. Building a sec
 
 ![](https://i.imgur.com/eeAxKd2.png)
 
-
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
 3. Merchant backend (server) generates a reference public key and stores it in a database with the expected amount for the shopping cart / pending purchase (unique to each customer's checkout session).
@@ -255,6 +234,7 @@ We recommend handling a customer session in a secure environment. Building a sec
 6. Merchant backend checks that the transaction is valid for the checkout session by validating the transaction with the reference and amount stored in step 3.
 
 <!-- References -->
+
 [1]: https://nextjs.org/docs/api-routes/introduction
 [2]: https://github.com/solana-labs/solana-pay/tree/link-request/point-of-sale
 [3]: https://github.com/solana-labs/solana-pay/blob/link-request/SPEC.md#link

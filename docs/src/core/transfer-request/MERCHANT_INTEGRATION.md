@@ -247,7 +247,6 @@ paymentStatus = 'pending';
 console.log('\n5. Find the transaction');
 const signatureInfo = await findReference(connection, reference, { finality: 'confirmed' });
 
-
 // Update payment status
 paymentStatus = 'confirmed';
 ```
