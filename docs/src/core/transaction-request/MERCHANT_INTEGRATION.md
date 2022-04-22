@@ -33,7 +33,7 @@ npm install @solana/pay @solana/web3.js bignumber.js @solana/spl-token --save
 yarn add @solana/pay @solana/web3.js bignumber.js @solana/spl-token
 ```
 
-### 1.1 Create the handler
+### 1. Create the handler
 
 The handler is the entry point of the API, and "handles" all incoming requests.
 
@@ -127,7 +127,7 @@ The wallet will make a `POST` request to the specified link with the user's wall
 
 The `POST` endpoint should respond with a base64-encoded `transaction`. You can return an optional `message` property to describe the transaction.
 
-### 4.1 The Transaction
+### 4.1 The transaction response
 
 The `transaction` that's returned can be -- anything. It doesn't even need to be a payment. For example, it could be a transaction to receive a gift or an invitation from the merchant for scanning a wallet.
 
