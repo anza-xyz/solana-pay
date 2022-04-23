@@ -121,11 +121,50 @@ When you're done, it should look like this:
 
 ## Deploying to Vercel
 
-You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
+You can deploy this point of sale app to Vercel with a few clicks.
 
-**More details coming soon!** <!-- TODO -->
+### 1. Fork the project
+
+Fork the Solana Pay repository
+
+### 2. Login to Vercel
+
+Login to Vercel and create a new project
+
+![](./setup/1.New.png)
+
+Import the forked repository from GitHub.
+
+![](./setup/2.Import.png)
+
+> If you're forked repository is not listed, you'll need to adjust your GitHub app permissions. Search for the and select the `Missing Git repository? Adjust GitHub App Permissions` option.
+
+### 3. Configure project
+
+Configure the project as follows:
+
+![](./setup/4.Configuration.png)
+
+Choose `point-of-sale` as the root directory:
+
+![](./setup/3.Root_directory.png)
+
+Configure the environment variables:
+
+![](./setup/5.Environment_variables.png)
+
+> Make sure you select the cluster endpoint you want to connect to.
+
+```
+CLUSTER_ENDPOINT=https://api.devnet.solana.com
+RATE_LIMIT=10
+RATE_LIMIT_INTERVAL=60
+```
+
+### Deploy project
 
 Once the deployment finishes, navigate to
+
 ```
 https://<YOUR DEPLOYMENT URL>?recipient=<YOUR WALLET ADDRESS>&label=Your+Store+Name
 ```
