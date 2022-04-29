@@ -16,7 +16,7 @@
         "proxy": "local-ssl-proxy --source 3001 --target 3000"
     },
     "dependencies": {
-        "@solana/pay": "file:../core",
+        "@solana/pay": "^0.2.0",
         "@solana/spl-token": "^0.2.0",
         "@solana/wallet-adapter-phantom": "^0.9.3",
         "@solana/wallet-adapter-react": "^0.15.4",
