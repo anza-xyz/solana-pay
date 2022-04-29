@@ -1,6 +1,6 @@
 {
     "private": true,
-    "name": "@solana/pay-point-of-sale-server",
+    "name": "@solana/pay-point-of-sale",
     "version": "0.0.0",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
