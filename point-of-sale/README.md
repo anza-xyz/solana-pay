@@ -141,29 +141,13 @@ Import the forked repository from GitHub.
 
 ### 3. Configure project
 
-Configure the project as follows:
-
-![](./setup/4.Configuration.png)
-
 Choose `point-of-sale` as the root directory:
 
 ![](./setup/3.Root_directory.png)
 
-<details>
-    <summary>Environment variables:</summary>
+Configure the project as follows:
 
-You can configure the environment variables to customize your app.
-
-```
-# Default values
-CLUSTER_ENDPOINT=https://api.devnet.solana.com
-RATE_LIMIT=10
-RATE_LIMIT_INTERVAL=60
-```
-
-![](./setup/5.Environment_variables.png)
-
-</details>
+![](./setup/4.Configuration.png)
 
 ### Deploy project
 
