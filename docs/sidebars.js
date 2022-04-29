@@ -32,8 +32,23 @@ const sidebars = {
         {
             type: 'category',
             label: 'Getting Started',
-            items: ['core/OVERVIEW', 'core/MERCHANT_INTEGRATION', 'core/WALLET_INTEGRATION'],
+            items: [
+                'core/OVERVIEW',
+                {
+                    type: 'category',
+                    label: 'Transfer Request',
+                    items: ['core/transfer-request/MERCHANT_INTEGRATION', 'core/transfer-request/WALLET_INTEGRATION'],
+                    collapsed: true,
+                },
+                {
+                    type: 'category',
+                    label: 'Transaction Request',
+                    items: ['core/transaction-request/MERCHANT_INTEGRATION'],
+                    collapsed: true,
+                },
+            ],
         },
+
         {
             type: 'link',
             label: 'API Reference',
