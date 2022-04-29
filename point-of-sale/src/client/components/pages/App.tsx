@@ -35,7 +35,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const baseURL = `https://${host}`;
 
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
-    const connectWallet = true;
+    const connectWallet = false;
     const network = WalletAdapterNetwork.Devnet;
     const wallets = useMemo(
         () => (connectWallet ? [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })] : []),
