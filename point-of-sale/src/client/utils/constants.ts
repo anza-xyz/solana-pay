@@ -7,7 +7,8 @@ export const NON_BREAKING_SPACE = '\u00a0';
 // GenesysGo's devnet endpoint doesn't retain historical transactions
 export const DEVNET_ENDPOINT = clusterApiUrl('devnet');
 
-export const MAINNET_ENDPOINT = clusterApiUrl('mainnet-beta');
+// Use Phantom's mainnet endpoint instead of GenesysGo (auth issue) or default (ratelimits)
+export const MAINNET_ENDPOINT = 'https://solana-mainnet.phantom.tech';
 
 // Mint DUMMY tokens on devnet @ https://spl-token-faucet.com
 export const DEVNET_DUMMY_MINT = new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr');
