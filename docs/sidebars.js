@@ -21,13 +21,8 @@ const sidebars = {
     tutorialSidebar: [
         {
             type: 'doc',
-            id: 'INTRODUCTION', // document id
-            label: 'Solana Pay', // sidebar label
-        },
-        {
-            type: 'doc',
-            id: 'SPEC', // document id
-            label: 'Specification', // sidebar label
+            id: 'INTRODUCTION',
+            label: 'Solana Pay',
         },
         {
             type: 'category',
@@ -35,20 +30,25 @@ const sidebars = {
             items: [
                 'core/OVERVIEW',
                 {
-                    type: 'category',
-                    label: 'Transfer Request',
-                    items: ['core/transfer-request/MERCHANT_INTEGRATION', 'core/transfer-request/WALLET_INTEGRATION'],
-                    collapsed: true,
-                },
-                {
-                    type: 'category',
-                    label: 'Transaction Request',
-                    items: ['core/transaction-request/MERCHANT_INTEGRATION'],
-                    collapsed: true,
+                    type: 'doc',
+                    id: 'SPEC',
+                    label: 'Specification',
                 },
             ],
+            collapsed: false,
         },
-
+        {
+            type: 'category',
+            label: 'Transaction Request',
+            items: ['core/transaction-request/MERCHANT_INTEGRATION'],
+            collapsed: true,
+        },
+        {
+            type: 'category',
+            label: 'Transfer Request',
+            items: ['core/transfer-request/MERCHANT_INTEGRATION', 'core/transfer-request/WALLET_INTEGRATION'],
+            collapsed: true,
+        },
         {
             type: 'link',
             label: 'API Reference',
