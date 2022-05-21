@@ -22,7 +22,7 @@ const sidebars = {
         {
             type: 'doc',
             id: 'INTRODUCTION',
-            label: 'Solana Pay',
+            label: 'Introduction',
         },
         {
             type: 'category',
@@ -40,7 +40,7 @@ const sidebars = {
         {
             type: 'category',
             label: 'Transaction Request',
-            items: ['core/transaction-request/MERCHANT_INTEGRATION'],
+            items: ['core/transaction-request/OVERVIEW', 'core/transaction-request/MERCHANT_INTEGRATION'],
             collapsed: true,
         },
         {
