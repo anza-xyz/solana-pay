@@ -54,6 +54,7 @@ const sidebars = {
             type: 'category',
             label: 'Transfer Request',
             items: [
+                'core/transfer-request/OVERVIEW',
                 {
                     type: 'doc',
                     id: 'core/transfer-request/MERCHANT_INTEGRATION',
