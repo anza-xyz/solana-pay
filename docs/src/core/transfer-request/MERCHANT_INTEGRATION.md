@@ -349,7 +349,7 @@ See [full code snippet][8]
 
 We recommend handling a customer session in a secure environment. Building a secure integration with Solana Pay requires a payment flow as follows:
 
-![best practices diagram](../../images/security-best-practices.png)
+![best practices diagram](../../images/transfer-request-best-practice-dark.png)
 
 1. Customer goes to the payment page
 2. Merchant frontend (client) sends order information to the backend
