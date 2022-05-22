@@ -40,7 +40,14 @@ const sidebars = {
         {
             type: 'category',
             label: 'Transaction Request',
-            items: ['core/transaction-request/OVERVIEW', 'core/transaction-request/MERCHANT_INTEGRATION'],
+            items: [
+                'core/transaction-request/OVERVIEW',
+                {
+                    type: 'doc',
+                    id: 'core/transaction-request/MERCHANT_INTEGRATION',
+                    label: 'Create a transaction request',
+                },
+            ],
             collapsed: true,
         },
         {

@@ -1,9 +1,7 @@
 ---
-title: Merchant Integration
+title: Create a transaction request
 slug: /core/transaction-request/merchant-integration
 ---
-
-# Merchant Integration
 
 This section describes how a merchant can integrate Solana Pay transaction requests into their payments flow.
 
