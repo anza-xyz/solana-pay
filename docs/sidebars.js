@@ -53,7 +53,14 @@ const sidebars = {
         {
             type: 'category',
             label: 'Transfer Request',
-            items: ['core/transfer-request/MERCHANT_INTEGRATION', 'core/transfer-request/WALLET_INTEGRATION'],
+            items: [
+                {
+                    type: 'doc',
+                    id: 'core/transfer-request/MERCHANT_INTEGRATION',
+                    label: 'Create a transfer request',
+                },
+                'core/transfer-request/WALLET_INTEGRATION',
+            ],
             collapsed: true,
         },
         {
