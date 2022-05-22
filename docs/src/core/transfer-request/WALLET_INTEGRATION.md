@@ -1,9 +1,7 @@
 ---
-title: Wallet Integration
+title: Handle a transfer request
 slug: /core/transfer-request/wallet-integration
 ---
-
-# Wallet Integration
 
 This section describes how a wallet provider can support payment links in their wallet. It shows how to parse the payment URL and create a transaction from it.
 

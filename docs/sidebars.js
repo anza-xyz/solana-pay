@@ -59,7 +59,11 @@ const sidebars = {
                     id: 'core/transfer-request/MERCHANT_INTEGRATION',
                     label: 'Create a transfer request',
                 },
-                'core/transfer-request/WALLET_INTEGRATION',
+                {
+                    type: 'doc',
+                    id: 'core/transfer-request/WALLET_INTEGRATION',
+                    label: 'Handle a transfer request',
+                },
             ],
             collapsed: true,
         },
