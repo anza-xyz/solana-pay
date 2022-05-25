@@ -21,6 +21,7 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 - Slope ([iOS](https://apps.apple.com/us/app/slope-wallet/id1574624530), [Android](https://play.google.com/store/apps/details?id=com.wd.wallet&hl=en_US&gl=US))
 - Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
 - FTX ([iOS](https://apps.apple.com/us/app/ftx-trade-btc-eth-shib/id1095564685), [Android](https://play.google.com/store/apps/details?id=com.blockfolio.blockfolio))
+- Avacus ([iOS](https://apps.apple.com/us/app/avacus/id1339638445), [Android](https://play.google.com/store/apps/details?id=com.floortracks.avacus))
 
 
 **†** Includes support for [Transaction Requests](SPEC.md#specification-transaction-request)
