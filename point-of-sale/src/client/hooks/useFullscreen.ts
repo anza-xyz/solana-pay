@@ -1,11 +1,5 @@
-import { createContext, useContext } from 'react';
-
-export interface FullscreenContextState {
-    fullscreen: boolean;
-    toggleFullscreen(): void;
-}
-
-export const FullscreenContext = createContext<FullscreenContextState>({} as FullscreenContextState);
+import { useContext } from 'react';
+import { FullscreenContext, FullscreenContextState } from '../components/contexts/FullscreenProvider';
 
 export function useFullscreen(): FullscreenContextState {
     return useContext(FullscreenContext);

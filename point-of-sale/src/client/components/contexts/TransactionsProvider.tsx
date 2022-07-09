@@ -7,23 +7,38 @@ import {
     RpcResponseAndContext,
     SignatureStatus,
     TransactionSignature,
+    TransactionConfirmationStatus,
+    TransactionError,
 } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import React, { FC, ReactNode, useEffect, useState } from 'react';
+import React, { FC, ReactNode, useEffect, useState, createContext } from 'react';
 import { useConfig } from '../../hooks/useConfig';
-import { Transaction, TransactionsContext } from '../../hooks/useTransactions';
 import { Confirmations } from '../../types';
 import { arraysEqual } from '../../utils/arraysEqual';
 import { MAX_CONFIRMATIONS } from '../../utils/constants';
+
+export interface Transaction {
+    signature: TransactionSignature;
+    amount: string;
+    timestamp: number;
+    error: TransactionError | null;
+    status: TransactionConfirmationStatus;
+    confirmations: Confirmations;
+}
+
+export interface TransactionsContextState {
+    transactions: Transaction[];
+    loading: boolean;
+}
 
 export interface TransactionsProviderProps {
     children: ReactNode;
     pollInterval?: number;
 }
 
-export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval }) => {
-    pollInterval ||= 10000;
+export const TransactionsContext = createContext<TransactionsContextState>({} as TransactionsContextState);
 
+export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval = 10000 }) => {
     const { connection } = useConnection();
     const { recipient, splToken } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();

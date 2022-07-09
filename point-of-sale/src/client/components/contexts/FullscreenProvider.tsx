@@ -1,12 +1,16 @@
-import React, { FC, ReactNode, useEffect, useState } from 'react';
-import { FullscreenContext } from '../../hooks/useFullscreen';
+import React, { FC, ReactNode, useEffect, useState, createContext } from 'react';
 import { isFullscreen, toggleFullscreen } from '../../utils/fullscreen';
 
-export interface FullscreenProviderProps {
-    children: ReactNode;
+export interface FullscreenContextState {
+    fullscreen: boolean;
+    toggleFullscreen(): void;
 }
 
-export const FullscreenProvider: FC<FullscreenProviderProps> = ({ children }) => {
+export const FullscreenContext = createContext<FullscreenContextState>({} as FullscreenContextState);
+
+export const FullscreenProvider: FC<{
+    children: ReactNode;
+}> = ({ children }) => {
     const [fullscreen, setFullscreen] = useState(isFullscreen());
 
     useEffect(() => setFullscreen(isFullscreen()), []);

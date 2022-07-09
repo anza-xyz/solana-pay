@@ -11,19 +11,41 @@ import {
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState, createContext } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
-import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
 
-export interface PaymentProviderProps {
-    children: ReactNode;
+export enum PaymentStatus {
+    New = 'New',
+    Pending = 'Pending',
+    Confirmed = 'Confirmed',
+    Valid = 'Valid',
+    Invalid = 'Invalid',
+    Finalized = 'Finalized',
+}
+export interface PaymentContextState {
+    amount: BigNumber | undefined;
+    setAmount(amount: BigNumber | undefined): void;
+    memo: string | undefined;
+    setMemo(memo: string | undefined): void;
+    reference: PublicKey | undefined;
+    signature: TransactionSignature | undefined;
+    status: PaymentStatus;
+    confirmations: Confirmations;
+    progress: number;
+    url: URL;
+    reset(): void;
+    generate(): void;
 }
 
-export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
+export const PaymentContext = createContext<PaymentContextState>({} as PaymentContextState);
+
+export const PaymentProvider: FC<{
+    children: ReactNode;
+}> = ({ children }) => {
     const { connection } = useConnection();
-    const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
+    const { link, recipient, splToken, label, message, requiredConfirmations = 1, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
     const [amount, setAmount] = useState<BigNumber>();

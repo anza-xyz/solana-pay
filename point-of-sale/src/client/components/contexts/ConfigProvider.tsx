@@ -1,10 +1,8 @@
 import { PublicKey } from '@solana/web3.js';
-import React, { FC, ReactElement, ReactNode } from 'react';
-import { ConfigContext } from '../../hooks/useConfig';
+import React, { FC, ReactElement, ReactNode, createContext } from 'react';
 import { Confirmations, Digits } from '../../types';
 
-export interface ConfigProviderProps {
-    children: ReactNode;
+export interface ConfigContextState {
     baseURL: string;
     link?: URL;
     recipient: PublicKey;
@@ -19,7 +17,9 @@ export interface ConfigProviderProps {
     connectWallet?: boolean;
 }
 
-export const ConfigProvider: FC<ConfigProviderProps> = ({
+export const ConfigContext = createContext<ConfigContextState>({} as ConfigContextState);
+
+export const ConfigProvider: FC<ConfigContextState & { children: ReactNode }> = ({
     children,
     baseURL,
     link,
