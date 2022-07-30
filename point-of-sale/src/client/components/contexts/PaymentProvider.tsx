@@ -13,6 +13,7 @@ import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSig
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
+import { useIsOnline } from '../../hooks/useIsOnline';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
@@ -25,6 +26,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
     const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
+    const isOnline = useIsOnline();
 
     const [amount, setAmount] = useState<BigNumber>();
     const [memo, setMemo] = useState<string>();
@@ -144,6 +146,10 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {
         if (!(status === PaymentStatus.Pending && reference && !signature)) return;
+        if (!isOnline) {
+            console.error('No Internet Connection');
+            return;
+        }
         let changed = false;
 
         const interval = setInterval(async () => {
@@ -169,7 +175,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, reference, signature, connection, navigate]);
+    }, [status, reference, signature, connection, navigate, isOnline]);
 
     // When the status is confirmed, validate the transaction against the provided params
     useEffect(() => {
