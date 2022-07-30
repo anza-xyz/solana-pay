@@ -14,6 +14,7 @@ export interface ConfigContextState {
     decimals: Digits;
     minDecimals: Digits;
     requiredConfirmations: Confirmations;
+    curName: string;
     connectWallet: boolean;
 }
 

@@ -5,6 +5,7 @@ import css from './GenerateButton.module.css';
 export const GenerateButton: FC = () => {
     const { amount, generate } = usePayment();
 
+    //TODO : Add translastion
     return (
         <button
             className={css.root}
@@ -12,7 +13,7 @@ export const GenerateButton: FC = () => {
             onClick={generate}
             disabled={!amount || amount.isLessThanOrEqualTo(0)}
         >
-            Generate Payment Code
+            Payer
         </button>
     );
 };

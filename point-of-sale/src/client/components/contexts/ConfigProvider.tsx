@@ -16,6 +16,7 @@ export interface ConfigProviderProps {
     decimals: Digits;
     minDecimals?: Digits;
     requiredConfirmations?: Confirmations;
+    curName: string;
     connectWallet?: boolean;
 }
 
@@ -32,6 +33,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     decimals,
     minDecimals = 0,
     requiredConfirmations = 1,
+    curName,
     connectWallet = false,
 }) => {
     return (
@@ -48,6 +50,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
                 decimals,
                 minDecimals,
                 requiredConfirmations,
+                curName,
                 connectWallet,
             }}
         >
