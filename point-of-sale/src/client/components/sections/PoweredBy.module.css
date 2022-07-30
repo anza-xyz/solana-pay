@@ -1,10 +1,10 @@
 .root {
     display: flex;
-    margin: 16px;
+    margin: 0px;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    line-height: 48px;
+    line-height: 0px;
     font-weight: 500;
 }
 

@@ -1,20 +1,15 @@
-.root {
-}
-
 .text {
     text-align: center;
+    margin-top: 16px;
     margin-bottom: 16px;
 }
 
 .value {
     text-align: center;
-    margin-bottom: 64px;
+    margin-bottom: 32px;
     font-size: 48px;
     font-weight: 700;
-    line-height: 64px;
-}
-
-.buttons {
+    line-height: 32px;
 }
 
 .row {
@@ -50,7 +45,6 @@
         background: var(--theme-light-numpad-button-active);
     }
 }
-
 
 :global(html.dark) .button {
     background: var(--theme-dark-numpad-button-background);
