@@ -21,7 +21,7 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 };
 
 export const NumPad: FC = () => {
-    const { symbol, decimals } = useConfig();
+    const { symbol, curName, decimals } = useConfig();
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
     const [value, setValue] = useState('0');
@@ -42,9 +42,13 @@ export const NumPad: FC = () => {
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
+    const showSymbol = Boolean(process.env.NEXT_PUBLIC_SHOW_SYMBOL) || false;
+    const currency = showSymbol ? symbol : curName;
+
+    //TODO : Add translastion
     return (
         <div className={css.root}>
-            <div className={css.text}>Enter amount in {symbol}</div>
+            <div className={css.text}>Montant en {currency}</div>
             <div className={css.value}>{value}</div>
             <div className={css.buttons}>
                 <div className={css.row}>
