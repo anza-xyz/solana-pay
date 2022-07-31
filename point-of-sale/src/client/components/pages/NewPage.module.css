@@ -11,6 +11,12 @@
     align-items: center;
 }
 
+.row {
+    display: flex;
+    justify-content: center;
+    margin: 48px;
+}
+
 @media (max-width: 767px) {
     .root {
         flex-direction: column;

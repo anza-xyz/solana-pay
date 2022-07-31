@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    images: {
+        domains: ['flodef.github.io'],
+    },
     reactStrictMode: true,
     async redirects() {
         return [
@@ -15,6 +18,17 @@ const nextConfig = {
                     {
                         type: 'query',
                         key: 'label',
+                    },
+                ],
+            },
+            {
+                source: '/',
+                destination: '/new',
+                permanent: false,
+                has: [
+                    {
+                        type: 'query',
+                        key: 'id',
                     },
                 ],
             },

@@ -8,11 +8,13 @@
     line-height: 24px;
     font-weight: 500;
     cursor: pointer;
+    visibility: visible;
 }
 
 .root[disabled] {
     cursor: default;
     opacity: 0.5;
+    visibility: hidden;
 }
 
 :global(html.light) .root {

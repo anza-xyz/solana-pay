@@ -1,0 +1,20 @@
+[
+    {
+        "index": 2,
+        "address": "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb",
+        "company": "Le pain d'Annette",
+        "maxValue": 300
+    },
+    {
+        "index": 3,
+        "address": "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx",
+        "company": "Nature & bulles",
+        "maxValue": 300
+    },
+    {
+        "index": 4,
+        "address": "BNnncdQZ9YokyQJX8of4K2YGw3pvLt2SVkXK131E1nFy",
+        "company": "Bloopsy Couture",
+        "maxValue": 300
+    }
+]

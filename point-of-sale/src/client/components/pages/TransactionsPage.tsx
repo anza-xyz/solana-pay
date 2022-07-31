@@ -9,10 +9,11 @@ import css from './TransactionsPage.module.css';
 const TransactionsPage: NextPage = () => {
     const router = useRouter();
 
+    // TODO : Add translation
     return (
         <div className={css.root}>
             <div className={css.header}>
-                <BackButton onClick={router.back}>Back</BackButton>
+                <BackButton onClick={router.back}>Retour</BackButton>
             </div>
             <div className={css.main}>
                 <Transactions />

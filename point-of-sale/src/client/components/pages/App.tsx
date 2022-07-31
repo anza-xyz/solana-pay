@@ -1,28 +1,31 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+// import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, WalletContext, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
-import { DEVNET_ENDPOINT } from '../../utils/constants';
+import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { SOLIcon } from '../images/SOLIcon';
+import { CURRENCY, IS_DEV, IS_MERCHANT_POS, USE_SSL } from '../../utils/env';
+import React, { useState, useEffect } from 'react';
 import css from './App.module.css';
 
 interface AppProps extends NextAppProps {
     host: string;
     query: {
+        id?: string;
         recipient?: string;
         label?: string;
         message?: string;
+        maxValue?: number;
     };
 }
 
@@ -32,13 +35,13 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     query,
     pageProps,
 }) => {
-    const baseURL = `https://${host}`;
+    const baseURL = (USE_SSL ? 'https' : 'http') + `://${host}`;
 
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
-    const connectWallet = false;
-    const network = WalletAdapterNetwork.Devnet;
+    const connectWallet = !IS_MERCHANT_POS || false;
+    const network = IS_DEV ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
     const wallets = useMemo(
-        () => (connectWallet ? [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })] : []),
+        () => (connectWallet ? [/*new PhantomWalletAdapter(), */ new SolflareWalletAdapter({ network })] : []),
         [connectWallet, network]
     );
 
@@ -46,21 +49,52 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const link = undefined;
     // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
-    let recipient: PublicKey | undefined = undefined;
-    const { recipient: recipientParam, label, message } = query;
-    if (recipientParam && label) {
-        try {
-            recipient = new PublicKey(recipientParam);
-        } catch (error) {
-            console.error(error);
+    const [label, setLabel] = useState('');
+    const [recipient, setRecipient] = useState(new PublicKey(0));
+    const [maxValue, setMaxValue] = useState(MAX_VALUE);
+    const { id, message } = query;
+    useEffect(() => {
+        if (IS_MERCHANT_POS) {
+            const { recipient, label, maxValue } = query;
+            a(recipient as string, label as string, maxValue as number);
+        } else {
+            if (id) {
+                fetch(`${baseURL}/api/findMerchant?id=${id}`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        const { address: recipient, company: label, maxValue } = data;
+                        a(recipient, label, maxValue);
+                    });
+            }
         }
-    }
+    }, [baseURL, id, query]);
+
+    const a = (recipient: string, label: string, maxValue: number) => {
+        if (recipient && label) {
+            try {
+                setRecipient(new PublicKey(recipient));
+                setLabel(label);
+                setMaxValue(maxValue);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+    const currency = CURRENCY;
+    const currencyDetail = CURRENCY_LIST[currency];
+    const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
+    const splToken = currencyDetail[0];
+    const icon = React.createElement(currencyDetail[1]);
+    const decimals = currencyDetail[2];
+    const minDecimals = currencyDetail[3];
+    const symbol = currencyDetail[4];
 
     return (
         <ThemeProvider>
             <FullscreenProvider>
                 {recipient && label ? (
-                    <ConnectionProvider endpoint={DEVNET_ENDPOINT}>
+                    <ConnectionProvider endpoint={endpoint}>
                         <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
@@ -69,10 +103,14 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     recipient={recipient}
                                     label={label}
                                     message={message}
-                                    symbol="SOL"
-                                    icon={<SOLIcon />}
-                                    decimals={9}
-                                    minDecimals={1}
+                                    splToken={splToken}
+                                    symbol={symbol}
+                                    icon={icon}
+                                    decimals={decimals}
+                                    minDecimals={minDecimals}
+                                    maxValue={maxValue}
+                                    currency={currency}
+                                    id={id}
                                     connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
@@ -98,14 +136,16 @@ App.getInitialProps = async (appContext) => {
     const props = await NextApp.getInitialProps(appContext);
 
     const { query, req } = appContext.ctx;
-    const recipient = query.recipient as string;
-    const label = query.label as string;
+    const id = query.id || undefined;
+    const recipient = query.recipient || undefined;
+    const label = query.label || undefined;
     const message = query.message || undefined;
-    const host = req?.headers.host || 'localhost:3001';
+    const maxValue = query.maxValue || MAX_VALUE;
+    const host = req?.headers.host || 'localhost:' + (USE_SSL ? '3001' : '3000');
 
     return {
         ...props,
-        query: { recipient, label, message },
+        query: { id, recipient, label, message, maxValue },
         host,
     };
 };

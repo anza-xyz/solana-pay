@@ -17,6 +17,7 @@ import { useIsOnline } from '../../hooks/useIsOnline';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
+import { IS_MERCHANT_POS } from '../../utils/env';
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -36,6 +37,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [confirmations, setConfirmations] = useState<Confirmations>(0);
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
+    const [error, setError] = useState<string>();
 
     const url = useMemo(() => {
         if (link) {
@@ -82,11 +84,12 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     }, [link, recipient, amount, splToken, reference, label, message, memo]);
 
     const reset = useCallback(() => {
+        setStatus(PaymentStatus.New);
         setAmount(undefined);
         setMemo(undefined);
         setReference(undefined);
         setSignature(undefined);
-        setStatus(PaymentStatus.New);
+        setError(undefined);
         setConfirmations(0);
         navigate('/new', true);
     }, [navigate]);
@@ -125,13 +128,15 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                         });
                     }
 
-                    if (!changed) {
-                        await sendTransaction(transaction, connection);
+                    if (!changed || !IS_MERCHANT_POS) {
+                        const txHash = await sendTransaction(transaction, connection);
+                        console.log(`Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`);
                     }
                 } catch (error) {
                     // If the transaction is declined or fails, try again
                     console.error(error);
-                    timeout = setTimeout(run, 5000);
+                    setError(error as string);
+                    // timeout = setTimeout(run, 5000);
                 }
             };
             let timeout = setTimeout(run, 0);
@@ -147,7 +152,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     useEffect(() => {
         if (!(status === PaymentStatus.Pending && reference && !signature)) return;
         if (!isOnline) {
-            console.error('No Internet Connection');
+            const errorMsg = 'No Internet Connection';
+            console.error(errorMsg);
+            setError(errorMsg);
             return;
         }
         let changed = false;
@@ -167,6 +174,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 // If the RPC node doesn't have the transaction signature yet, try again
                 if (!(error instanceof FindReferenceError)) {
                     console.error(error);
+                    setError(error);
                 }
             }
         }, 250);
@@ -201,6 +209,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
 
                 console.error(error);
+                setError(error);
                 setStatus(PaymentStatus.Invalid);
             }
         };
@@ -235,6 +244,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
             } catch (error: any) {
                 console.log(error);
+                setError(error);
             }
         }, 250);
 
@@ -257,6 +267,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 confirmations,
                 progress,
                 url,
+                error,
                 reset,
                 generate,
             }}

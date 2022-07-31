@@ -1,15 +1,13 @@
 import React, { FC } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
+import { SHOW_SYMBOL } from '../../utils/env';
 import { Amount } from './Amount';
 import css from './Summary.module.css';
 
 export const Summary: FC = () => {
-    const { symbol, curName } = useConfig();
+    const { symbol, currency, label } = useConfig();
     const { amount } = usePayment();
-
-    const showSymbol = Boolean(process.env.NEXT_PUBLIC_SHOW_SYMBOL) || false;
-    const currency = showSymbol ? symbol : curName;
 
     //TODO : Add translastion
     return (
@@ -18,8 +16,10 @@ export const Summary: FC = () => {
             <div className={css.total}>
                 <div className={css.totalLeft}>Total</div>
                 <div className={css.totalRight}>
-                    <div className={css.symbol}>{currency}</div>
+                    <div className={css.symbol}>{label}</div>
+                    {!SHOW_SYMBOL ? <div className={css.symbol}>{currency}</div> : null}
                     <div className={css.amount}>
+                        {SHOW_SYMBOL ? symbol : null}
                         <Amount amount={amount} />
                     </div>
                 </div>

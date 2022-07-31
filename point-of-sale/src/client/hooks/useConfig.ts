@@ -13,8 +13,10 @@ export interface ConfigContextState {
     icon: ReactElement;
     decimals: Digits;
     minDecimals: Digits;
+    maxValue: number;
     requiredConfirmations: Confirmations;
-    curName: string;
+    currency: string;
+    id?: string;
     connectWallet: boolean;
 }
 

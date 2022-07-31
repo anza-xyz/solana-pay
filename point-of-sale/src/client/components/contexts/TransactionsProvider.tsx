@@ -30,6 +30,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
     const [signatures, setSignatures] = useState<TransactionSignature[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string>();
 
     const getTokenAddress =
         // Get the ATA for the recipient and token
@@ -75,6 +76,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                 });
             } catch (error: any) {
                 console.error(error);
+                setError(error);
             } finally {
                 setLoading(false);
             }
@@ -108,6 +110,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
             } catch (error) {
                 if (changed) return;
                 console.error(error);
+                setError(error as string);
                 return;
             } finally {
                 setLoading(false);
