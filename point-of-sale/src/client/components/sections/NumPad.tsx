@@ -32,7 +32,7 @@ export const NumPad: FC = () => {
                 let newValue = (value + key).trim().replace(/^0{2,}/, '0');
                 if (newValue) {
                     newValue = /^[.,]/.test(newValue) ? `0${newValue}` : newValue.replace(/^0+(\d)/, '$1');
-                    if (regExp.test(newValue)) return Math.min(parseFloat(newValue), maxValue).toString();
+                    if (regExp.test(newValue)) return parseFloat(newValue) <= maxValue ? newValue : maxValue.toString();
                 }
                 return value;
             }),
