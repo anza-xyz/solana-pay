@@ -35,6 +35,7 @@ Learn how to integrate Solana Pay in your website, application or wallet.
 A Solana Pay transaction request URL describes an interactive request for any Solana transaction. The parameters in the URL are used by a wallet to make an HTTP request to compose any transaction.
 
 - [Create a transaction request](https://docs.solanapay.com/core/transaction-request/merchant-integration)
+- [Test a transaction request URL](https://glow.app/test/solana-pay)
 
 ### Transfer Requests
 
