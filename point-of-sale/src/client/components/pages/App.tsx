@@ -3,7 +3,7 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PublicKey } from '@solana/web3.js';
+import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
@@ -83,7 +83,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
-    const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
+    const endpoint = IS_MERCHANT_POS ? (IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT) : clusterApiUrl(network);
     const splToken = currencyDetail[0];
     const icon = React.createElement(currencyDetail[1]);
     const decimals = currencyDetail[2];
