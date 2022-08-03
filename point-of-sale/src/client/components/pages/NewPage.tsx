@@ -32,7 +32,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.body}>
                 <div className={css.row}>
-                    <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
+                    <img src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
                 </div>
                 <div className={css.row}>
                     <WalletMultiButton>
