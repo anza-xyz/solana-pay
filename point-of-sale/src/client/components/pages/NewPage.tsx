@@ -21,6 +21,10 @@ const NewPage: NextPage = () => {
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
 
+    if (!IS_MERCHANT_POS) {
+        select(SolflareWalletName);
+    }
+
     // TODO : Add translation
     return phone ? (
         <div className={css.root}>
@@ -34,10 +38,9 @@ const NewPage: NextPage = () => {
                         <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
                     </div>
                     <div className={css.row}>
-                        {/* <WalletMultiButton>
+                        <WalletMultiButton>
                             {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
-                        </WalletMultiButton> */}
-                        <WalletMultiButton />
+                        </WalletMultiButton>
                     </div>
                 </div>
             ) : (
