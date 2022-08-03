@@ -34,18 +34,19 @@ const NewPage: NextPage = () => {
                         <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
                     </div>
                     <div className={css.row}>
-                        <WalletMultiButton>
+                        {/* <WalletMultiButton>
                             {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
-                        </WalletMultiButton>
+                        </WalletMultiButton> */}
+                        <WalletMultiButton />
                     </div>
                 </div>
             ) : (
                 <div className={css.body}>
                     <NumPad />
                     <GenerateButton />
+                    <PoweredBy />
                 </div>
             )}
-            <PoweredBy />
         </div>
     ) : (
         <div className={css.root}>
