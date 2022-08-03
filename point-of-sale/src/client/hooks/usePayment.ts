@@ -12,6 +12,7 @@ export enum PaymentStatus {
     Valid = 'Valide',
     Invalid = 'Invalide',
     Finalized = 'Terminé',
+    Error = 'Erreur',
 }
 
 export interface PaymentContextState {

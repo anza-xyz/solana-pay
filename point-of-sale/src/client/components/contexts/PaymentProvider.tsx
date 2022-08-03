@@ -37,17 +37,18 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
     const [error, setError] = useState<string>();
 
-    function changeStatus(status: PaymentStatus) {
+    const changeStatus = (status: PaymentStatus) => {
         console.log(status);
         setStatus(status);
-    }
+    };
 
-    function sendError(error?: string) {
+    const sendError = (error?: object) => {
         if (error) {
+            changeStatus(PaymentStatus.Error);
             console.error(error);
-            setError(error);
         }
-    }
+        setError(error ? error.toString() : undefined);
+    };
 
     const url = useMemo(() => {
         if (link) {
@@ -94,7 +95,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     }, [link, recipient, amount, splToken, reference, label, message, memo]);
 
     const reset = useCallback(() => {
-        const timeOut = status === PaymentStatus.Pending ? 1000 : 3000;
         changeStatus(PaymentStatus.New);
         setConfirmations(0);
         setAmount(undefined);
@@ -102,7 +102,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setReference(undefined);
         setSignature(undefined);
         sendError(undefined);
-        setTimeout(() => navigate('/new', true), timeOut);
+        setTimeout(() => navigate('/new', true), status === PaymentStatus.Pending ? 1000 : 3000);
     }, [navigate, status]);
 
     const generate = useCallback(() => {
@@ -150,7 +150,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
             } catch (error) {
                 // If the transaction is declined or fails, try again
-                sendError(error as string);
+                sendError(error as object);
                 if (IS_MERCHANT_POS) {
                     timeout = setTimeout(run, 5000);
                 }

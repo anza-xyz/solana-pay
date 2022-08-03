@@ -1,0 +1,9 @@
+.error {
+    color: red;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 700;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}

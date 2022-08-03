@@ -6,6 +6,7 @@ import { useConfig } from '../../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import { IS_MERCHANT_POS, SHOW_SYMBOL } from '../../utils/env';
 import { BackButton } from '../buttons/BackButton';
+import { Error } from '../sections/Error';
 import { PoweredBy } from '../sections/PoweredBy';
 import { QRCode } from '../sections/QRCode';
 import { TransactionInfo } from '../sections/TransactionInfo';
@@ -13,7 +14,7 @@ import css from './PendingPage.module.css';
 
 const PendingPage: NextPage = () => {
     const { connectWallet } = useConfig();
-    const { reset, status } = usePayment();
+    const { reset, status, error } = usePayment();
     const { publicKey } = useWallet();
     const { setVisible } = useWalletModal();
 
@@ -56,7 +57,7 @@ const PendingPage: NextPage = () => {
                 ) : (
                     <div>
                         <div className={css.scan}></div>
-                        <div className={css.confirm}>{text}</div>
+                        {!error ? <div className={css.confirm}>{text}</div> : <Error />}
                     </div>
                 )}
             </div>
