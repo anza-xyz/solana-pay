@@ -23,7 +23,8 @@ const NewPage: NextPage = () => {
 
     useMemo(() => {
         if (phone) {
-            setTimeout(() => select(SolflareWalletName), 100);
+            // setTimeout(() => select(SolflareWalletName), 100);
+            // select(SolflareWalletName);
         }
     }, [select, phone]);
 
@@ -32,7 +33,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.body}>
                 <div className={css.row}>
-                    <img src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
+                    <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
                 </div>
                 <div className={css.row}>
                     <WalletMultiButton>
