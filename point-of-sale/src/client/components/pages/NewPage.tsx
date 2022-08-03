@@ -21,37 +21,30 @@ const NewPage: NextPage = () => {
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
 
-    useMemo(() => {
-        if (phone) {
-            // setTimeout(() => select(SolflareWalletName), 100);
-            // select(SolflareWalletName);
-        }
-    }, [select, phone]);
-
     // TODO : Add translation
-    return !IS_MERCHANT_POS && !publicKey ? (
-        <div className={css.root}>
-            <div className={css.body}>
-                <div className={css.row}>
-                    <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
-                </div>
-                <div className={css.row}>
-                    <WalletMultiButton>
-                        {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
-                    </WalletMultiButton>
-                </div>
-            </div>
-        </div>
-    ) : phone ? (
+    return phone ? (
         <div className={css.root}>
             <div className={css.top}>
                 <FullscreenButton />
                 <TransactionsLink />
             </div>
-            <div className={css.body}>
-                <NumPad />
-                <GenerateButton />
-            </div>
+            {!IS_MERCHANT_POS && !publicKey ? (
+                <div className={css.body}>
+                    <div className={css.row}>
+                        <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
+                    </div>
+                    <div className={css.row}>
+                        <WalletMultiButton>
+                            {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
+                        </WalletMultiButton>
+                    </div>
+                </div>
+            ) : (
+                <div className={css.body}>
+                    <NumPad />
+                    <GenerateButton />
+                </div>
+            )}
             <PoweredBy />
         </div>
     ) : (
