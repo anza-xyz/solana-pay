@@ -34,20 +34,8 @@
     align-items: center;
 }
 
-.amount {
-    line-height: 64px;
-    font-size: 48px;
-    font-weight: 700;
-}
-
 .code {
     margin: 24px;
-}
-
-.symbol {
-    font-size: 18px;
-    line-height: 32px;
-    font-weight: 700;
 }
 
 .scan {

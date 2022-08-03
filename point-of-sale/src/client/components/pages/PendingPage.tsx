@@ -1,19 +1,19 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useConfig } from '../../hooks/useConfig';
-import { usePayment } from '../../hooks/usePayment';
+import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import { IS_MERCHANT_POS, SHOW_SYMBOL } from '../../utils/env';
 import { BackButton } from '../buttons/BackButton';
-import { Amount } from '../sections/Amount';
 import { PoweredBy } from '../sections/PoweredBy';
 import { QRCode } from '../sections/QRCode';
+import { TransactionInfo } from '../sections/TransactionInfo';
 import css from './PendingPage.module.css';
 
 const PendingPage: NextPage = () => {
-    const { symbol, currency, label, connectWallet } = useConfig();
-    const { amount, reset } = usePayment();
+    const { connectWallet } = useConfig();
+    const { reset, status } = usePayment();
     const { publicKey } = useWallet();
     const { setVisible } = useWalletModal();
 
@@ -24,6 +24,19 @@ const PendingPage: NextPage = () => {
     }, [connectWallet, publicKey, setVisible]);
 
     // TODO : Add translation
+    const text = useMemo(() => {
+        switch (status) {
+            case PaymentStatus.Pending:
+                return "Merci d'approuver la transaction !";
+            case PaymentStatus.Sent:
+                return 'Envoie de la transaction ...';
+            case PaymentStatus.Confirmed:
+                return 'Vérification en cours';
+            default:
+                return null;
+        }
+    }, [status]);
+
     return (
         <div className={css.root}>
             <div className={css.header}>
@@ -31,13 +44,7 @@ const PendingPage: NextPage = () => {
                 {connectWallet && IS_MERCHANT_POS ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
-                <div className={css.symbol}>{label}</div>
-                <div className={css.amount}>
-                    {SHOW_SYMBOL ? symbol : null}
-                    <Amount amount={amount} />
-                </div>
-                {!SHOW_SYMBOL ? <div className={css.symbol}>{currency}</div> : null}
-
+                <TransactionInfo />
                 {IS_MERCHANT_POS ? (
                     <div>
                         <div className={css.code}>
@@ -49,7 +56,7 @@ const PendingPage: NextPage = () => {
                 ) : (
                     <div>
                         <div className={css.scan}></div>
-                        <div className={css.confirm}>Merci de confirmer la transaction.</div>
+                        <div className={css.confirm}>{text}</div>
                     </div>
                 )}
             </div>

@@ -30,22 +30,6 @@
     align-items: center;
 }
 
-.amount {
-    line-height: 64px;
-    font-size: 48px;
-    font-weight: 700;
-    justify-content: center;
-    align-items: center;
-}
-
-.symbol {
-    font-size: 18px;
-    line-height: 32px;
-    font-weight: 700;
-    justify-content: center;
-    align-items: center;
-}
-
 .footer {
     text-align: center;
 }

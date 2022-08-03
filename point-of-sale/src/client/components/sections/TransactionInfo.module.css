@@ -1,0 +1,22 @@
+.amount,
+.amountHidden {
+    line-height: 64px;
+    font-size: 48px;
+    font-weight: 700;
+    justify-content: center;
+    align-items: center;
+}
+
+.symbol,
+.symbolHidden {
+    font-size: 18px;
+    line-height: 32px;
+    font-weight: 700;
+    justify-content: center;
+    align-items: center;
+}
+
+.amountHidden,
+.symbolHidden {
+    visibility: hidden;
+}

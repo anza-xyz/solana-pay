@@ -16,8 +16,10 @@ export const Progress: FC = () => {
             case PaymentStatus.Confirmed:
             case PaymentStatus.Valid:
                 return progress >= 1 ? [1, complete] : [progress, Math.floor(progress * 100) + '%'];
+            case PaymentStatus.Invalid:
+                return [1, status];
             default:
-                return [0, status];
+                return [0, null];
         }
     }, [status, progress]);
 
@@ -26,10 +28,10 @@ export const Progress: FC = () => {
         () =>
             buildStyles({
                 pathTransitionDuration: 3,
-                pathColor: interpolated(value),
+                pathColor: status !== PaymentStatus.Invalid ? interpolated(value) : '#FF0000',
                 trailColor: 'rgba(0,0,0,.1)',
             }),
-        [interpolated, value]
+        [interpolated, value, status]
     );
 
     return (

@@ -30,11 +30,11 @@ interface currencyType {
     [key: string]: [PublicKey | undefined, React.FC<React.SVGProps<SVGSVGElement>>, Digits, Digits, string];
 }
 export const CURRENCY_LIST: currencyType = {
+    SOL: [undefined, SOLIcon, 9, 1, 'SOL'],
     agEUR: [MAINNET_AGEUR_MINT, agEURIcon, 8, 2, '€'],
     USDC: [MAINNET_USDC_MINT, USDCIcon, 6, 2, '$'],
     USDC_Dev: [DEVNET_DUMMY_MINT, USDCIcon, 6, 2, '$'],
     USDT: [MAINNET_USDT_MINT, USDTIcon, 6, 2, '$'],
-    SOL: [undefined, SOLIcon, 9, 1, 'SOL'],
 };
 
 export const MAX_VALUE = 10000;

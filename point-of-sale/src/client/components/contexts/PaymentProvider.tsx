@@ -17,7 +17,7 @@ import { useIsOnline } from '../../hooks/useIsOnline';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
-import { IS_MERCHANT_POS } from '../../utils/env';
+import { IS_DEV, IS_MERCHANT_POS } from '../../utils/env';
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -38,6 +38,18 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
     const [error, setError] = useState<string>();
+
+    function changeStatus(status: PaymentStatus) {
+        console.log(status);
+        setStatus(status);
+    }
+
+    function sendError(error?: string) {
+        if (error) {
+            console.error(error);
+            setError(error);
+        }
+    }
 
     const url = useMemo(() => {
         if (link) {
@@ -84,107 +96,112 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     }, [link, recipient, amount, splToken, reference, label, message, memo]);
 
     const reset = useCallback(() => {
-        setStatus(PaymentStatus.New);
+        const timeOut = status === PaymentStatus.Pending ? 1000 : 3000;
+        changeStatus(PaymentStatus.New);
+        setConfirmations(0);
         setAmount(undefined);
         setMemo(undefined);
         setReference(undefined);
         setSignature(undefined);
-        setError(undefined);
-        setConfirmations(0);
-        navigate('/new', true);
-    }, [navigate]);
+        sendError(undefined);
+        setTimeout(() => navigate('/new', true), timeOut);
+    }, [navigate, status]);
 
     const generate = useCallback(() => {
         if (status === PaymentStatus.New && !reference) {
             setReference(Keypair.generate().publicKey);
-            setStatus(PaymentStatus.Pending);
+            changeStatus(PaymentStatus.Pending);
             navigate('/pending');
         }
     }, [status, reference, navigate]);
 
     // If there's a connected wallet, use it to sign and send the transaction
     useEffect(() => {
-        if (status === PaymentStatus.Pending && connectWallet && publicKey) {
-            let changed = false;
+        if (!(status === PaymentStatus.Pending && connectWallet && publicKey)) return;
+        let changed = false;
 
-            const run = async () => {
-                try {
-                    const request = parseURL(url);
-                    let transaction: Transaction;
+        const run = async () => {
+            try {
+                const request = parseURL(url);
+                let transaction: Transaction;
 
-                    if ('link' in request) {
-                        const { link } = request;
-                        transaction = await fetchTransaction(connection, publicKey, link);
-                    } else {
-                        const { recipient, amount, splToken, reference, memo } = request;
-                        if (!amount) return;
+                if ('link' in request) {
+                    const { link } = request;
+                    transaction = await fetchTransaction(connection, publicKey, link);
+                } else {
+                    const { recipient, amount, splToken, reference, memo } = request;
+                    if (!amount) return;
 
-                        transaction = await createTransfer(connection, publicKey, {
-                            recipient,
-                            amount,
-                            splToken,
-                            reference,
-                            memo,
-                        });
-                    }
-
-                    if (!changed) {
-                        const txHash = await sendTransaction(transaction, connection);
-                        console.log(`Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`);
-                    }
-                } catch (error) {
-                    // If the transaction is declined or fails, try again
-                    console.error(error);
-                    setError(error as string);
-                    // timeout = setTimeout(run, 5000);
+                    transaction = await createTransfer(connection, publicKey, {
+                        recipient,
+                        amount,
+                        splToken,
+                        reference,
+                        memo,
+                    });
                 }
-            };
-            let timeout = setTimeout(run, 0);
 
-            return () => {
-                changed = true;
-                clearTimeout(timeout);
-            };
-        }
+                if (!changed) {
+                    const transactionHash = await sendTransaction(transaction, connection);
+                    changeStatus(PaymentStatus.Sent);
+                    console.log(
+                        `Transaction sent: https://solscan.io/tx/${transactionHash}${
+                            { IS_DEV } ? '?cluster=devnet' : ''
+                        }`
+                    );
+                }
+            } catch (error) {
+                // If the transaction is declined or fails, try again
+                sendError(error as string);
+                if (IS_MERCHANT_POS) {
+                    timeout = setTimeout(run, 5000);
+                }
+            }
+        };
+        let timeout = setTimeout(run, 0);
+
+        return () => {
+            changed = true;
+            clearTimeout(timeout);
+        };
     }, [status, connectWallet, publicKey, url, connection, sendTransaction]);
 
     // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {
-        if (IS_MERCHANT_POS) {
-            if (!(status === PaymentStatus.Pending && reference && !signature)) return;
-            if (!isOnline) {
-                const errorMsg = 'No Internet Connection';
-                console.error(errorMsg);
-                setError(errorMsg);
-                return;
-            }
-            let changed = false;
+        if (
+            !(
+                ((IS_MERCHANT_POS && status === PaymentStatus.Pending) ||
+                    (!IS_MERCHANT_POS && status === PaymentStatus.Sent)) &&
+                reference &&
+                !signature
+            )
+        )
+            return;
+        let changed = false;
 
-            const interval = setInterval(async () => {
-                let signature: ConfirmedSignatureInfo;
-                try {
-                    signature = await findReference(connection, reference);
+        const interval = setInterval(async () => {
+            let signature: ConfirmedSignatureInfo;
+            try {
+                signature = await findReference(connection, reference);
 
-                    if (!changed) {
-                        clearInterval(interval);
-                        setSignature(signature.signature);
-                        setStatus(PaymentStatus.Confirmed);
-                        navigate('/confirmed', true);
-                    }
-                } catch (error: any) {
-                    // If the RPC node doesn't have the transaction signature yet, try again
-                    if (!(error instanceof FindReferenceError)) {
-                        console.error(error);
-                        setError(error);
-                    }
+                if (!changed) {
+                    clearInterval(interval);
+                    setSignature(signature.signature);
+                    changeStatus(PaymentStatus.Confirmed);
+                    navigate('/confirmed', true);
                 }
-            }, 250);
+            } catch (error: any) {
+                // If the RPC node doesn't have the transaction signature yet, try again
+                if (!(error instanceof FindReferenceError)) {
+                    sendError(error);
+                }
+            }
+        }, 250);
 
-            return () => {
-                changed = true;
-                clearInterval(interval);
-            };
-        }
+        return () => {
+            changed = true;
+            clearInterval(interval);
+        };
     }, [status, reference, signature, connection, navigate, isOnline]);
 
     // When the status is confirmed, validate the transaction against the provided params
@@ -195,9 +212,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         const run = async () => {
             try {
                 await validateTransfer(connection, signature, { recipient, amount, splToken, reference });
-
                 if (!changed) {
-                    setStatus(PaymentStatus.Valid);
+                    changeStatus(PaymentStatus.Valid);
                 }
             } catch (error: any) {
                 // If the RPC node doesn't have the transaction yet, try again
@@ -210,9 +226,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     return;
                 }
 
-                console.error(error);
-                setError(error);
-                setStatus(PaymentStatus.Invalid);
+                sendError(error);
+                changeStatus(PaymentStatus.Invalid);
             }
         };
         let timeout = setTimeout(run, 0);
@@ -241,12 +256,11 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
                     if (confirmations >= requiredConfirmations || status.confirmationStatus === 'finalized') {
                         clearInterval(interval);
-                        setStatus(PaymentStatus.Finalized);
+                        changeStatus(PaymentStatus.Finalized);
                     }
                 }
             } catch (error: any) {
-                console.log(error);
-                setError(error);
+                sendError(error);
             }
         }, 250);
 

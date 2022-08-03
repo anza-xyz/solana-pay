@@ -22,7 +22,7 @@ const NewPage: NextPage = () => {
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
 
     if (!IS_MERCHANT_POS) {
-        select(SolflareWalletName);
+        setTimeout(() => select(SolflareWalletName), 100);
     }
 
     // TODO : Add translation

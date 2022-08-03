@@ -3,13 +3,15 @@ import BigNumber from 'bignumber.js';
 import { createContext, useContext } from 'react';
 import { Confirmations } from '../types';
 
+// TODO : Add translation
 export enum PaymentStatus {
-    New = 'New',
-    Pending = 'Pending',
-    Confirmed = 'Confirmed',
-    Valid = 'Valid',
-    Invalid = 'Invalid',
-    Finalized = 'Finalized',
+    New = 'Nouveau',
+    Pending = 'En cours',
+    Sent = 'Envoyé',
+    Confirmed = 'Confirmé',
+    Valid = 'Valide',
+    Invalid = 'Invalide',
+    Finalized = 'Terminé',
 }
 
 export interface PaymentContextState {
