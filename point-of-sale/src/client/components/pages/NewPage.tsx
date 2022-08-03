@@ -1,7 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
@@ -13,13 +13,21 @@ import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
 import Image from 'next/image';
 import css from './NewPage.module.css';
+import { SolflareWalletName } from '@solana/wallet-adapter-solflare';
 
 const NewPage: NextPage = () => {
-    const { id, connectWallet } = useConfig();
-    const { publicKey } = useWallet();
+    const { id } = useConfig();
+    const { publicKey, select, wallet } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' });
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
 
+    useMemo(() => {
+        if (phone) {
+            setTimeout(() => select(SolflareWalletName), 100);
+        }
+    }, [select, phone]);
+
+    // TODO : Add translation
     return !IS_MERCHANT_POS && !publicKey ? (
         <div className={css.root}>
             <div className={css.body}>
@@ -27,7 +35,9 @@ const NewPage: NextPage = () => {
                     <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
                 </div>
                 <div className={css.row}>
-                    <WalletMultiButton />
+                    <WalletMultiButton>
+                        {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
+                    </WalletMultiButton>
                 </div>
             </div>
         </div>

@@ -15,6 +15,7 @@ import { Transaction, TransactionsContext } from '../../hooks/useTransactions';
 import { Confirmations } from '../../types';
 import { arraysEqual } from '../../utils/arraysEqual';
 import { MAX_CONFIRMATIONS } from '../../utils/constants';
+import { IS_MERCHANT_POS } from '../../utils/env';
 
 export interface TransactionsProviderProps {
     children: ReactNode;
@@ -57,39 +58,41 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {
-        let changed = false;
+        if (IS_MERCHANT_POS) {
+            let changed = false;
 
-        const run = async () => {
-            try {
-                setLoading(true);
+            const run = async () => {
+                try {
+                    setLoading(true);
 
-                const confirmedSignatureInfos = await connection.getSignaturesForAddress(
-                    associatedToken || recipient,
-                    { limit: 10 },
-                    'confirmed'
-                );
-                if (changed) return;
+                    const confirmedSignatureInfos = await connection.getSignaturesForAddress(
+                        associatedToken || recipient,
+                        { limit: 10 },
+                        'confirmed'
+                    );
+                    if (changed) return;
 
-                setSignatures((prevSignatures) => {
-                    const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
-                    return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
-                });
-            } catch (error: any) {
-                console.error(error);
-                setError(error);
-            } finally {
-                setLoading(false);
-            }
-        };
+                    setSignatures((prevSignatures) => {
+                        const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
+                        return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
+                    });
+                } catch (error: any) {
+                    console.error(error);
+                    setError(error);
+                } finally {
+                    setLoading(false);
+                }
+            };
 
-        const interval = setInterval(run, 5000);
-        void run();
+            const interval = setInterval(run, 5000);
+            void run();
 
-        return () => {
-            changed = true;
-            clearInterval(interval);
-            setSignatures([]);
-        };
+            return () => {
+                changed = true;
+                clearInterval(interval);
+                setSignatures([]);
+            };
+        }
     }, [connection, associatedToken, recipient]);
 
     // When the signatures change, poll and update the transactions

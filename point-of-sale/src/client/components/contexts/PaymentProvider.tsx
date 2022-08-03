@@ -128,7 +128,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                         });
                     }
 
-                    if (!changed || !IS_MERCHANT_POS) {
+                    if (!changed) {
                         const txHash = await sendTransaction(transaction, connection);
                         console.log(`Transaction sent: https://solscan.io/tx/${txHash}?cluster=devnet`);
                     }
@@ -150,39 +150,41 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
 
     // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {
-        if (!(status === PaymentStatus.Pending && reference && !signature)) return;
-        if (!isOnline) {
-            const errorMsg = 'No Internet Connection';
-            console.error(errorMsg);
-            setError(errorMsg);
-            return;
-        }
-        let changed = false;
-
-        const interval = setInterval(async () => {
-            let signature: ConfirmedSignatureInfo;
-            try {
-                signature = await findReference(connection, reference);
-
-                if (!changed) {
-                    clearInterval(interval);
-                    setSignature(signature.signature);
-                    setStatus(PaymentStatus.Confirmed);
-                    navigate('/confirmed', true);
-                }
-            } catch (error: any) {
-                // If the RPC node doesn't have the transaction signature yet, try again
-                if (!(error instanceof FindReferenceError)) {
-                    console.error(error);
-                    setError(error);
-                }
+        if (IS_MERCHANT_POS) {
+            if (!(status === PaymentStatus.Pending && reference && !signature)) return;
+            if (!isOnline) {
+                const errorMsg = 'No Internet Connection';
+                console.error(errorMsg);
+                setError(errorMsg);
+                return;
             }
-        }, 250);
+            let changed = false;
 
-        return () => {
-            changed = true;
-            clearInterval(interval);
-        };
+            const interval = setInterval(async () => {
+                let signature: ConfirmedSignatureInfo;
+                try {
+                    signature = await findReference(connection, reference);
+
+                    if (!changed) {
+                        clearInterval(interval);
+                        setSignature(signature.signature);
+                        setStatus(PaymentStatus.Confirmed);
+                        navigate('/confirmed', true);
+                    }
+                } catch (error: any) {
+                    // If the RPC node doesn't have the transaction signature yet, try again
+                    if (!(error instanceof FindReferenceError)) {
+                        console.error(error);
+                        setError(error);
+                    }
+                }
+            }, 250);
+
+            return () => {
+                changed = true;
+                clearInterval(interval);
+            };
+        }
     }, [status, reference, signature, connection, navigate, isOnline]);
 
     // When the status is confirmed, validate the transaction against the provided params

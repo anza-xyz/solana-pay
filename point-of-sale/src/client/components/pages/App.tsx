@@ -1,7 +1,7 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
-// import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
-import { ConnectionProvider, WalletContext, WalletProvider } from '@solana/wallet-adapter-react';
+import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
@@ -41,7 +41,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const connectWallet = !IS_MERCHANT_POS || false;
     const network = IS_DEV ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
     const wallets = useMemo(
-        () => (connectWallet ? [/*new PhantomWalletAdapter(), */ new SolflareWalletAdapter({ network })] : []),
+        () => (connectWallet ? [new PhantomWalletAdapter(), new SolflareWalletAdapter({ network })] : []),
         [connectWallet, network]
     );
 
