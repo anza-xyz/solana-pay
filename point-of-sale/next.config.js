@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['flodef.github.io'],
+        // domains: ['flodef.github.io'],
+        domains: [process.env.IMAGE_DOMAIN],
     },
     reactStrictMode: true,
     async redirects() {
