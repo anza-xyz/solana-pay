@@ -18,7 +18,7 @@ import { SolflareWalletName } from '@solana/wallet-adapter-solflare';
 const NewPage: NextPage = () => {
     const { id } = useConfig();
     const { publicKey, select, wallet } = useWallet();
-    const phone = useMediaQuery({ query: '(max-width: 767px)' });
+    const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
 
     useMemo(() => {
