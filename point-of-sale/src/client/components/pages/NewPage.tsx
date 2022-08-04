@@ -20,6 +20,7 @@ const NewPage: NextPage = () => {
     const { publicKey, select, wallet } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
+    const generateText = 'Payer';
 
     if (!IS_MERCHANT_POS) {
         setTimeout(() => select(SolflareWalletName), 100);
@@ -46,7 +47,7 @@ const NewPage: NextPage = () => {
             ) : (
                 <div className={css.body}>
                     <NumPad />
-                    <GenerateButton />
+                    <GenerateButton>{generateText}</GenerateButton>
                     <PoweredBy />
                 </div>
             )}
@@ -65,7 +66,7 @@ const NewPage: NextPage = () => {
             <div className={css.side}>
                 <div className={css.summary}>
                     <Summary />
-                    <GenerateButton />
+                    <GenerateButton>{generateText}</GenerateButton>
                 </div>
                 <div className={css.bottom}>
                     <TransactionsLink />

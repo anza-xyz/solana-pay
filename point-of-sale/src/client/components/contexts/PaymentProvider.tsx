@@ -13,6 +13,7 @@ import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSig
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
+import { useError } from '../../hooks/useError';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
@@ -26,6 +27,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
     const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
+    const { processError } = useError();
 
     const [amount, setAmount] = useState<BigNumber>();
     const [memo, setMemo] = useState<string>();
@@ -35,7 +37,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const [confirmations, setConfirmations] = useState<Confirmations>(0);
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
-    const [error, setError] = useState<string>();
 
     const changeStatus = (status: PaymentStatus) => {
         console.log(status);
@@ -45,9 +46,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const sendError = (error?: object) => {
         if (error) {
             changeStatus(PaymentStatus.Error);
-            console.error(error);
+            setReference(undefined);
         }
-        setError(error ? error.toString() : undefined);
+        processError(error);
     };
 
     const url = useMemo(() => {
@@ -106,7 +107,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     }, [navigate, status]);
 
     const generate = useCallback(() => {
-        if (status === PaymentStatus.New && !reference) {
+        if ((status === PaymentStatus.New || status === PaymentStatus.Error) && !reference) {
             setReference(Keypair.generate().publicKey);
             changeStatus(PaymentStatus.Pending);
             navigate('/pending');
@@ -281,7 +282,6 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 confirmations,
                 progress,
                 url,
-                error,
                 reset,
                 generate,
             }}

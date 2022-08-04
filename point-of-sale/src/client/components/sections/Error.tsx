@@ -1,13 +1,15 @@
 import React, { FC, useMemo } from 'react';
+import { useError } from '../../hooks/useError';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import css from './Error.module.css';
 
 export const Error: FC = () => {
-    const { error, status } = usePayment();
+    const { status } = usePayment();
+    const { errorMessage } = useError();
 
-    const errorMessage = useMemo(() => {
+    const text = useMemo(() => {
         if (status === PaymentStatus.Error) {
-            switch (error) {
+            switch (errorMessage) {
                 case 'WalletSignTransactionError: Transaction cancelled':
                     return 'Vous avez refusé la transaction !';
                 case 'WalletSendTransactionError: failed to send transaction: Transaction simulation failed: Blockhash not found':
@@ -15,12 +17,12 @@ export const Error: FC = () => {
                 case 'CreateTransferError: insufficient funds':
                     return 'Le montant est supérieur à vos fonds !';
                 default:
-                    return error;
+                    return errorMessage;
             }
         } else {
             return null;
         }
-    }, []);
+    }, [errorMessage]);
 
-    return <div className={css.error}>{errorMessage}</div>;
+    return <div className={css.error}>{text}</div>;
 };

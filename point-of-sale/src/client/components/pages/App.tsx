@@ -17,6 +17,7 @@ import { SolanaPayLogo } from '../images/SolanaPayLogo';
 import { CURRENCY, IS_DEV, IS_MERCHANT_POS, USE_SSL } from '../../utils/env';
 import React, { useState, useEffect } from 'react';
 import css from './App.module.css';
+import { ErrorProvider } from '../contexts/ErrorProvider';
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -91,44 +92,46 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const symbol = currencyDetail[4];
 
     return (
-        <ThemeProvider>
-            <FullscreenProvider>
-                {recipient && label ? (
-                    <ConnectionProvider endpoint={endpoint}>
-                        <WalletProvider wallets={wallets} autoConnect={connectWallet}>
-                            <WalletModalProvider>
-                                <ConfigProvider
-                                    baseURL={baseURL}
-                                    link={link}
-                                    recipient={recipient}
-                                    label={label}
-                                    message={message}
-                                    splToken={splToken}
-                                    symbol={symbol}
-                                    icon={icon}
-                                    decimals={decimals}
-                                    minDecimals={minDecimals}
-                                    maxValue={maxValue}
-                                    currency={currency}
-                                    id={id}
-                                    connectWallet={connectWallet}
-                                >
-                                    <TransactionsProvider>
-                                        <PaymentProvider>
-                                            <Component {...pageProps} />
-                                        </PaymentProvider>
-                                    </TransactionsProvider>
-                                </ConfigProvider>
-                            </WalletModalProvider>
-                        </WalletProvider>
-                    </ConnectionProvider>
-                ) : (
-                    <div className={css.logo}>
-                        <SolanaPayLogo width={240} height={88} />
-                    </div>
-                )}
-            </FullscreenProvider>
-        </ThemeProvider>
+        <ErrorProvider>
+            <ThemeProvider>
+                <FullscreenProvider>
+                    {recipient && label ? (
+                        <ConnectionProvider endpoint={endpoint}>
+                            <WalletProvider wallets={wallets} autoConnect={connectWallet}>
+                                <WalletModalProvider>
+                                    <ConfigProvider
+                                        baseURL={baseURL}
+                                        link={link}
+                                        recipient={recipient}
+                                        label={label}
+                                        message={message}
+                                        splToken={splToken}
+                                        symbol={symbol}
+                                        icon={icon}
+                                        decimals={decimals}
+                                        minDecimals={minDecimals}
+                                        maxValue={maxValue}
+                                        currency={currency}
+                                        id={id}
+                                        connectWallet={connectWallet}
+                                    >
+                                        <TransactionsProvider>
+                                            <PaymentProvider>
+                                                <Component {...pageProps} />
+                                            </PaymentProvider>
+                                        </TransactionsProvider>
+                                    </ConfigProvider>
+                                </WalletModalProvider>
+                            </WalletProvider>
+                        </ConnectionProvider>
+                    ) : (
+                        <div className={css.logo}>
+                            <SolanaPayLogo width={240} height={88} />
+                        </div>
+                    )}
+                </FullscreenProvider>
+            </ThemeProvider>
+        </ErrorProvider>
     );
 };
 

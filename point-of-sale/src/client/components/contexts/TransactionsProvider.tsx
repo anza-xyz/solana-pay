@@ -11,6 +11,7 @@ import {
 import BigNumber from 'bignumber.js';
 import React, { FC, ReactNode, useEffect, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
+import { useError } from '../../hooks/useError';
 import { Transaction, TransactionsContext } from '../../hooks/useTransactions';
 import { Confirmations } from '../../types';
 import { arraysEqual } from '../../utils/arraysEqual';
@@ -25,13 +26,14 @@ export interface TransactionsProviderProps {
 export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, pollInterval }) => {
     pollInterval ||= 10000;
 
+    const { processError } = useError();
+
     const { connection } = useConnection();
     const { recipient, splToken } = useConfig();
     const [associatedToken, setAssociatedToken] = useState<PublicKey>();
     const [signatures, setSignatures] = useState<TransactionSignature[]>([]);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string>();
 
     const getTokenAddress =
         // Get the ATA for the recipient and token
@@ -58,41 +60,39 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {
-        if (IS_MERCHANT_POS) {
-            let changed = false;
+        if (!IS_MERCHANT_POS) return;
+        let changed = false;
 
-            const run = async () => {
-                try {
-                    setLoading(true);
+        const run = async () => {
+            try {
+                setLoading(true);
 
-                    const confirmedSignatureInfos = await connection.getSignaturesForAddress(
-                        associatedToken || recipient,
-                        { limit: 10 },
-                        'confirmed'
-                    );
-                    if (changed) return;
+                const confirmedSignatureInfos = await connection.getSignaturesForAddress(
+                    associatedToken || recipient,
+                    { limit: 10 },
+                    'confirmed'
+                );
+                if (changed) return;
 
-                    setSignatures((prevSignatures) => {
-                        const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
-                        return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
-                    });
-                } catch (error: any) {
-                    console.error(error);
-                    setError(error);
-                } finally {
-                    setLoading(false);
-                }
-            };
+                setSignatures((prevSignatures) => {
+                    const nextSignatures = confirmedSignatureInfos.map(({ signature }) => signature);
+                    return arraysEqual(prevSignatures, nextSignatures) ? prevSignatures : nextSignatures;
+                });
+            } catch (error: any) {
+                processError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-            const interval = setInterval(run, 5000);
-            void run();
+        const interval = setInterval(run, 5000);
+        void run();
 
-            return () => {
-                changed = true;
-                clearInterval(interval);
-                setSignatures([]);
-            };
-        }
+        return () => {
+            changed = true;
+            clearInterval(interval);
+            setSignatures([]);
+        };
     }, [connection, associatedToken, recipient]);
 
     // When the signatures change, poll and update the transactions
@@ -112,8 +112,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
                 ]);
             } catch (error) {
                 if (changed) return;
-                console.error(error);
-                setError(error as string);
+                processError(error as object);
                 return;
             } finally {
                 setLoading(false);

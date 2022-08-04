@@ -1,19 +1,22 @@
-import React, { FC } from 'react';
-import { usePayment } from '../../hooks/usePayment';
+import React, { FC, ReactNode } from 'react';
+import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import css from './GenerateButton.module.css';
 
-export const GenerateButton: FC = () => {
-    const { amount, generate } = usePayment();
+export interface GenerateButtonProps {
+    children: ReactNode;
+}
 
-    //TODO : Add translastion
+export const GenerateButton: FC<GenerateButtonProps> = ({ children }) => {
+    const { amount, status, generate } = usePayment();
+
     return (
         <button
             className={css.root}
             type="button"
             onClick={generate}
-            disabled={!amount || amount.isLessThanOrEqualTo(0)}
+            disabled={!amount || amount.isLessThanOrEqualTo(0) || status === PaymentStatus.Pending}
         >
-            Payer
+            {children}
         </button>
     );
 };
