@@ -3,18 +3,15 @@ import merchants from '../../server/data/merchant.json';
 
 interface GetResponse {
     index: number;
+    address: string;
     company: string;
+    maxValue: number;
 }
 
 const fetchMerchants: NextApiHandler<GetResponse[] | undefined> = async (request, response) => {
     // If get request
     if (request.method === 'GET') {
-        const merchantList = merchants.map((merchant) => {
-            const { index, company } = merchant;
-            return { index, company };
-        });
-
-        response.status(200).json(merchantList);
+        response.status(200).json(merchants.map((merchant) => merchant));
     } else {
         throw new Error(`Method ${request.method} not allowed`);
     }

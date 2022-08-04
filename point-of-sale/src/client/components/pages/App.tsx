@@ -56,26 +56,23 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
     const [merchants, setMerchants] = useState<MerchantInfo[]>();
 
-    const { id, message } = query;
+    const { id, message, recipient: recipientParam, label: labelParam, maxValue: maxValueParam } = query;
     useEffect(() => {
-        if (IS_MERCHANT_POS) {
-            const { recipient, label, maxValue } = query;
-            a(recipient as string, label as string, maxValue as number);
+        if (recipientParam && labelParam) {
+            a(recipientParam as string, labelParam as string, maxValueParam as number);
+        } else if (id) {
+            fetch(`${baseURL}/api/findMerchant?id=${id}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    const { address: recipient, company: label, maxValue } = data;
+                    a(recipient, label, maxValue);
+                });
         } else {
-            if (id) {
-                fetch(`${baseURL}/api/findMerchant?id=${id}`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        const { address: recipient, company: label, maxValue } = data;
-                        a(recipient, label, maxValue);
-                    });
-            } else {
-                fetch(`${baseURL}/api/fetchMerchants`)
-                    .then((response) => response.json())
-                    .then((data) => {
-                        setMerchants(data);
-                    });
-            }
+            fetch(`${baseURL}/api/fetchMerchants`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setMerchants(data);
+                });
         }
     }, [baseURL, id, query]);
 
@@ -84,7 +81,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             try {
                 setRecipient(new PublicKey(recipient));
                 setLabel(label);
-                setMaxValue(maxValue);
+                setMaxValue(maxValue ?? MAX_VALUE);
             } catch (error) {
                 console.error(error);
             }
@@ -133,7 +130,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 </WalletModalProvider>
                             </WalletProvider>
                         </ConnectionProvider>
-                    ) : merchants ? (
+                    ) : merchants && merchants.length > 0 ? (
                         <ConfigProvider
                             baseURL={baseURL}
                             recipient={recipient}
