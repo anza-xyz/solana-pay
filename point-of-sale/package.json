@@ -1,9 +1,9 @@
 {
     "private": true,
-    "name": "@solana/pay-point-of-sale",
-    "version": "0.0.0",
-    "author": "Solana Maintainers <maintainers@solana.foundation>",
-    "repository": "https://github.com/solana-labs/solana-pay",
+    "name": "@fims/fims-pay",
+    "version": "1.0.0",
+    "author": "Flojito Stillnet <flo@fims.fi>",
+    "repository": "https://github.com/flodef/FiMs-Pay",
     "license": "Apache-2.0",
     "scripts": {
         "clean": "shx rm -rf .next",

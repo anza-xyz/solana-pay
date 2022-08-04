@@ -1,7 +1,7 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
@@ -11,16 +11,20 @@ import { TransactionsLink } from '../buttons/TransactionsLink';
 import { NumPad } from '../sections/NumPad';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
-import Image from 'next/image';
 import css from './NewPage.module.css';
 import { SolflareWalletName } from '@solana/wallet-adapter-solflare';
+import { BackButton } from '../buttons/BackButton';
+import { useRouter } from 'next/router';
+import { Merchant } from '../sections/Merchant';
 
 const NewPage: NextPage = () => {
-    const { id } = useConfig();
+    const { id, label, recipient, maxValue } = useConfig();
     const { publicKey, select, wallet } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
-    const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
     const generateText = 'Payer';
+    const router = useRouter();
+    const { baseURL } = useConfig();
+    const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
 
     if (!IS_MERCHANT_POS) {
         setTimeout(() => select(SolflareWalletName), 100);
@@ -30,14 +34,16 @@ const NewPage: NextPage = () => {
     return phone ? (
         <div className={css.root}>
             <div className={css.top}>
+                {!IS_MERCHANT_POS ? (
+                    <BackButton onClick={() => router.push(baseURL)}>Choisir Marchand</BackButton>
+                ) : null}
+
                 <FullscreenButton />
                 <TransactionsLink />
             </div>
             {!IS_MERCHANT_POS && !publicKey ? (
                 <div className={css.body}>
-                    <div className={css.row}>
-                        <Image src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
-                    </div>
+                    <Merchant merchant={merchant} />
                     <div className={css.row}>
                         <WalletMultiButton>
                             {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}

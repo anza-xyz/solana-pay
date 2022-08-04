@@ -23,7 +23,7 @@ import { Merchant, MerchantInfo } from '../sections/Merchant';
 interface AppProps extends NextAppProps {
     host: string;
     query: {
-        id?: string;
+        id?: number;
         recipient?: string;
         label?: string;
         message?: string;

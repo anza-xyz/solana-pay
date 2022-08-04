@@ -16,7 +16,7 @@ export interface ConfigContextState {
     maxValue: number;
     requiredConfirmations: Confirmations;
     currency: string;
-    id?: string;
+    id?: number;
     connectWallet: boolean;
 }
 
