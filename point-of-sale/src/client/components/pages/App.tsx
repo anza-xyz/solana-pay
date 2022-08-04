@@ -38,6 +38,9 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     pageProps,
 }) => {
     const baseURL = (USE_SSL ? 'https' : 'http') + `://${host}`;
+    useEffect(() => {
+        document.title = (label ? label + ' @ ' : '') + 'FiMs Pay';
+    });
 
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
     const connectWallet = !IS_MERCHANT_POS || false;
