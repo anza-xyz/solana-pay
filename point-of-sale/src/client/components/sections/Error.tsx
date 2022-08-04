@@ -16,6 +16,8 @@ export const Error: FC = () => {
                     return 'Vous avez trop tardé à approuver la transaction !';
                 case 'CreateTransferError: insufficient funds':
                     return 'Le montant est supérieur à vos fonds !';
+                case 'CreateTransferError: recipient not found':
+                    return "Le porte-monnaie de ce commerçant à besoin d'être initialisé !";
                 default:
                     return errorMessage;
             }

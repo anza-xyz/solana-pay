@@ -18,6 +18,7 @@ import { CURRENCY, IS_DEV, IS_MERCHANT_POS, USE_SSL } from '../../utils/env';
 import React, { useState, useEffect } from 'react';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
+import { Merchant, MerchantInfo } from '../sections/Merchant';
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -53,6 +54,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [label, setLabel] = useState('');
     const [recipient, setRecipient] = useState(new PublicKey(0));
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
+    const [merchants, setMerchants] = useState<MerchantInfo[]>();
+
     const { id, message } = query;
     useEffect(() => {
         if (IS_MERCHANT_POS) {
@@ -65,6 +68,12 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                     .then((data) => {
                         const { address: recipient, company: label, maxValue } = data;
                         a(recipient, label, maxValue);
+                    });
+            } else {
+                fetch(`${baseURL}/api/fetchMerchants`)
+                    .then((response) => response.json())
+                    .then((data) => {
+                        setMerchants(data);
                     });
             }
         }
@@ -124,6 +133,23 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 </WalletModalProvider>
                             </WalletProvider>
                         </ConnectionProvider>
+                    ) : merchants ? (
+                        <ConfigProvider
+                            baseURL={baseURL}
+                            recipient={recipient}
+                            label={label}
+                            symbol={symbol}
+                            icon={icon}
+                            decimals={decimals}
+                            maxValue={maxValue}
+                            currency={currency}
+                        >
+                            <div>
+                                {merchants.map((merchant) => (
+                                    <Merchant key={merchant.index} merchant={merchant} />
+                                ))}
+                            </div>
+                        </ConfigProvider>
                     ) : (
                         <div className={css.logo}>
                             <SolanaPayLogo width={240} height={88} />
