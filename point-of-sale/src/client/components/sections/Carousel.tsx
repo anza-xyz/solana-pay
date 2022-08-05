@@ -26,7 +26,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
             onClickItem={onClickItem}
         >
             {merchants.map((merchant) => (
-                <Merchant merchant={merchant} />
+                <Merchant key={merchant.index} merchant={merchant} />
             ))}
         </Carousel>
     );
