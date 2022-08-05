@@ -17,34 +17,16 @@ export interface MerchantProps {
 }
 
 export const Merchant: FC<MerchantProps> = ({ merchant }) => {
-    const { status } = usePayment();
-    const { index: id, address: recipient, company: label, maxValue } = merchant;
+    const { index: id, company: label } = merchant;
     const merchantImageSrc = MERCHANT_IMAGE_PATH + id + '.png';
-
-    const navigate = useNavigateWithQuery();
-
-    const select = useCallback(() => {
-        if (status !== PaymentStatus.New) {
-            navigate('/new?id=' + id + '&recipient=' + recipient + '&label=' + label + '&maxValue=' + maxValue);
-        }
-    }, [navigate]);
 
     return (
         <div className={css.body}>
             <div className={css.row}>
-                <Image
-                    className={css.image}
-                    src={merchantImageSrc}
-                    alt="Merchant Logo"
-                    height={250}
-                    width={250}
-                    onClick={select}
-                />
+                <Image className={css.image} src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
             </div>
             <div className={css.row}>
-                <div className={css.label} onClick={select}>
-                    {label}
-                </div>
+                <div className={css.label}>{label}</div>
             </div>
         </div>
     );

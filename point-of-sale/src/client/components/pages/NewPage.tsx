@@ -35,7 +35,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.top}>
                 {!IS_MERCHANT_POS ? (
-                    <BackButton onClick={() => router.push(baseURL)}>Choisir Marchand</BackButton>
+                    <BackButton onClick={() => router.push(baseURL)}>Changer de Marchand</BackButton>
                 ) : null}
 
                 <FullscreenButton />

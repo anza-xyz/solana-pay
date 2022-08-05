@@ -18,7 +18,8 @@ import { CURRENCY, IS_DEV, IS_MERCHANT_POS, USE_SSL } from '../../utils/env';
 import React, { useState, useEffect } from 'react';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
-import { Merchant, MerchantInfo } from '../sections/Merchant';
+import { MerchantInfo, MerchantProps } from '../sections/Merchant';
+import { MerchantCarousel } from '../sections/Carousel';
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -144,11 +145,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                             maxValue={maxValue}
                             currency={currency}
                         >
-                            <div>
-                                {merchants.map((merchant) => (
-                                    <Merchant key={merchant.index} merchant={merchant} />
-                                ))}
-                            </div>
+                            <MerchantCarousel merchants={merchants} />
                         </ConfigProvider>
                     ) : (
                         <div className={css.logo}>
