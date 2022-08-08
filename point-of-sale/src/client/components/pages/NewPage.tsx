@@ -43,10 +43,10 @@ const NewPage: NextPage = () => {
             </div>
             {!IS_MERCHANT_POS && !publicKey ? (
                 <div className={css.body}>
-                    <Merchant merchant={merchant} />
+                    <Merchant index={merchant.index} company={merchant.company} />
                     <div className={css.row}>
                         <WalletMultiButton>
-                            {wallet ? 'Connexion à ' + wallet.adapter.name : 'Choisir son portefeuille'}
+                            {wallet ? 'Connexion à ' + wallet.adapter.name + '...' : 'Choisir son portefeuille'}
                         </WalletMultiButton>
                     </div>
                 </div>

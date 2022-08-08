@@ -18,7 +18,7 @@ import { CURRENCY, IS_DEV, IS_MERCHANT_POS, USE_SSL } from '../../utils/env';
 import React, { useState, useEffect } from 'react';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
-import { MerchantInfo, MerchantProps } from '../sections/Merchant';
+import { MerchantInfo } from '../sections/Merchant';
 import { MerchantCarousel } from '../sections/Carousel';
 
 interface AppProps extends NextAppProps {
