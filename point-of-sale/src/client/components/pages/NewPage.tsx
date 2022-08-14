@@ -26,7 +26,7 @@ const NewPage: NextPage = () => {
     const { baseURL } = useConfig();
     const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
 
-    if (!IS_MERCHANT_POS) {
+    if (!IS_MERCHANT_POS && !wallet) {
         setTimeout(() => select(SolflareWalletName), 100);
     }
 
@@ -45,7 +45,7 @@ const NewPage: NextPage = () => {
                 <div className={css.body}>
                     <Merchant index={merchant.index} company={merchant.company} />
                     <div className={css.row}>
-                        <WalletMultiButton>
+                        <WalletMultiButton className={css.button}>
                             {wallet ? 'Connexion à ' + wallet.adapter.name + '...' : 'Choisir son portefeuille'}
                         </WalletMultiButton>
                     </div>

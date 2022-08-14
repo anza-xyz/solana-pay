@@ -17,6 +17,11 @@
     margin: 48px;
 }
 
+.button[disabled] {
+    background: transparent;
+    color: black;
+}
+
 @media (max-width: 767px) {
     .root {
         flex-direction: column;

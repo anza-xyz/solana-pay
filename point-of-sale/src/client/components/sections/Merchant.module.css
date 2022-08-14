@@ -18,6 +18,7 @@
     justify-content: center;
     margin-top: 6px;
     margin-bottom: 6px;
+    cursor: pointer;
 }
 
 .label {
@@ -27,9 +28,4 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-}
-
-.image,
-.label {
-    cursor: pointer;
 }
