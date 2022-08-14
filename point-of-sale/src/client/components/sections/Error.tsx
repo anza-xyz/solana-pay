@@ -8,18 +8,21 @@ export const Error: FC = () => {
     const { errorMessage } = useError();
 
     const text = useMemo(() => {
-        if (status === PaymentStatus.Error) {
-            switch (errorMessage) {
-                case 'WalletSignTransactionError: Transaction cancelled':
+        if (status === PaymentStatus.Error && errorMessage) {
+            const e = errorMessage.split(': ');
+            switch (e[0]) {
+                case 'WalletSignTransactionError':
                     return 'Vous avez refusé la transaction !';
-                case 'WalletSendTransactionError: failed to send transaction: Transaction simulation failed: Blockhash not found':
+                case 'WalletSendTransactionError':
                     return 'Vous avez trop tardé à approuver la transaction !';
-                case 'CreateTransferError: insufficient funds':
-                    return 'Le montant est supérieur à vos fonds !';
-                case 'CreateTransferError: recipient not found':
-                    return "Le porte-monnaie de ce commerçant à besoin d'être initialisé !";
+                case 'CreateTransferError':
+                    return e[1] === 'insufficient funds'
+                        ? 'Le montant est supérieur à vos fonds !'
+                        : e[1] === 'recipient not found'
+                        ? "Le porte-monnaie de ce commerçant à besoin d'être initialisé !"
+                        : 'Erreur de transfert !';
                 default:
-                    return errorMessage;
+                    return 'Erreur inconnue : ' + errorMessage;
             }
         } else {
             return null;
