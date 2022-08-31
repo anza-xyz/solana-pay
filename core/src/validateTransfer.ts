@@ -92,7 +92,7 @@ export async function validateTransfer(
     return response;
 }
 
-function validateMemo(instruction: TransactionInstruction, memo: string): void {
+function validateMemo(instruction: TransactionInstruction | undefined, memo: string): void {
     // Check that the instruction is a memo instruction with no keys and the expected memo data.
     if (!instruction) throw new ValidateTransferError('missing memo instruction');
     if (!instruction.programId.equals(MEMO_PROGRAM_ID)) throw new ValidateTransferError('invalid memo program');
@@ -101,12 +101,14 @@ function validateMemo(instruction: TransactionInstruction, memo: string): void {
 }
 
 async function validateSystemTransfer(
-    instruction: TransactionInstruction,
+    instruction: TransactionInstruction | undefined,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
+    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
+
     const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
     if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
 
@@ -131,13 +133,15 @@ async function validateSystemTransfer(
 }
 
 async function validateSPLTokenTransfer(
-    instruction: TransactionInstruction,
+    instruction: TransactionInstruction | undefined,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     splToken: SPLToken,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
+    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
+
     const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
     const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
     if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
