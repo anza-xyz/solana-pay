@@ -72,33 +72,31 @@ export async function validateTransfer(
     }
 
     const transaction = Transaction.populate(message);
-    // TODO: could _potentially_ support instructions at arbitrary indexes
-    let instructionIndex = 0;
-
-    if (memo !== undefined) {
-        validateMemo(transaction.instructions[instructionIndex], memo);
-        instructionIndex++;
-    }
 
     const [preAmount, postAmount] = splToken
         ? await validateSPLTokenTransfer(
-              transaction.instructions[instructionIndex],
+              transaction.instructions[transaction.instructions.length - 1],
               message,
               meta,
               recipient,
               splToken,
               reference
           )
-        : await validateSystemTransfer(transaction.instructions[instructionIndex], message, meta, recipient, reference);
+        : await validateSystemTransfer(transaction.instructions[transaction.instructions.length - 1], message, meta, recipient, reference);
     if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransferError('amount not transferred');
+
+    if (memo !== undefined) {
+        validateMemo(transaction.instructions[transaction.instructions.length - 2], memo);
+    }
 
     return response;
 }
 
 function validateMemo(instruction: TransactionInstruction, memo: string): void {
-    // Check that the instruction is a memo instruction with the expected memo.
+    // Check that the instruction is a memo instruction with no keys and the expected memo data.
     if (!instruction) throw new ValidateTransferError('missing memo instruction');
     if (!instruction.programId.equals(MEMO_PROGRAM_ID)) throw new ValidateTransferError('invalid memo program');
+    if (instruction.keys.length) throw new ValidateTransferError('invalid memo keys');
     if (!instruction.data.equals(Buffer.from(memo, 'utf8'))) throw new ValidateTransferError('invalid memo');
 }
 
