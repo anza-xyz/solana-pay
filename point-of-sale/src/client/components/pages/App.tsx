@@ -35,7 +35,9 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 
     // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
     const connectWallet = false;
+    // If you're testing without a mobile wallet, set this to Devnet or Mainnet to configure some browser wallets.
     const network = WalletAdapterNetwork.Devnet;
+
     const wallets = useMemo(
         () => (connectWallet ? [
             new GlowWalletAdapter({ network }),
