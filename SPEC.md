@@ -53,7 +53,7 @@ If the field is not provided, the URL describes a native SOL transfer. If the fi
 The wallet must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
 
 ### Reference
-Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
+Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded 32 byte arrays. These may or may not be public keys, on or off the curve, and may or may not correspond with accounts on Solana.
 
 If the values are provided, the wallet must include them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
 
