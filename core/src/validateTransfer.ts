@@ -62,7 +62,7 @@ export async function validateTransfer(
     const response = await connection.getTransaction(signature, options);
     if (!response) throw new ValidateTransferError('not found');
 
-    const message = response.transaction.message;
+    const { message, signatures } = response.transaction;
     const meta = response.meta;
     if (!meta) throw new ValidateTransferError('missing meta');
     if (meta.err) throw meta.err;
@@ -71,44 +71,49 @@ export async function validateTransfer(
         reference = [reference];
     }
 
-    const transaction = Transaction.populate(message);
+    // Deserialize the transaction and make a copy of the instructions we're going to mutate it.
+    const transaction = Transaction.populate(message, signatures);
+    const instructions = transaction.instructions.slice();
 
+    // Transfer instruction must be the last instruction
+    const instruction = instructions.pop();
+    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
     const [preAmount, postAmount] = splToken
         ? await validateSPLTokenTransfer(
-              transaction.instructions[transaction.instructions.length - 1],
+              instruction,
               message,
               meta,
               recipient,
               splToken,
               reference
           )
-        : await validateSystemTransfer(transaction.instructions[transaction.instructions.length - 1], message, meta, recipient, reference);
+        : await validateSystemTransfer(instruction, message, meta, recipient, reference);
     if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransferError('amount not transferred');
 
     if (memo !== undefined) {
-        validateMemo(transaction.instructions[transaction.instructions.length - 2], memo);
+        // Memo instruction must be the second to last instruction
+        const instruction = instructions.pop();
+        if (!instruction) throw new ValidateTransferError('missing memo instruction');
+        validateMemo(instruction, memo);
     }
 
     return response;
 }
 
-function validateMemo(instruction: TransactionInstruction | undefined, memo: string): void {
+function validateMemo(instruction: TransactionInstruction, memo: string): void {
     // Check that the instruction is a memo instruction with no keys and the expected memo data.
-    if (!instruction) throw new ValidateTransferError('missing memo instruction');
     if (!instruction.programId.equals(MEMO_PROGRAM_ID)) throw new ValidateTransferError('invalid memo program');
     if (instruction.keys.length) throw new ValidateTransferError('invalid memo keys');
     if (!instruction.data.equals(Buffer.from(memo, 'utf8'))) throw new ValidateTransferError('invalid memo');
 }
 
 async function validateSystemTransfer(
-    instruction: TransactionInstruction | undefined,
+    instruction: TransactionInstruction,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
-    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
-
     const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
     if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
 
@@ -133,15 +138,13 @@ async function validateSystemTransfer(
 }
 
 async function validateSPLTokenTransfer(
-    instruction: TransactionInstruction | undefined,
+    instruction: TransactionInstruction,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     splToken: SPLToken,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
-    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
-
     const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
     const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
     if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
