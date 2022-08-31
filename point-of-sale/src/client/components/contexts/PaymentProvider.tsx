@@ -42,7 +42,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             url.searchParams.append('recipient', recipient.toBase58());
 
             if (amount) {
-                url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
+                url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces() ?? 0));
             }
 
             if (splToken) {
