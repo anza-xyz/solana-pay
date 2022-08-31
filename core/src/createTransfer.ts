@@ -116,7 +116,7 @@ async function createSystemInstruction(
     if (recipientInfo.executable) throw new CreateTransferError('recipient executable');
 
     // Check that the amount provided doesn't have greater precision than SOL
-    if (amount.decimalPlaces() > SOL_DECIMALS) throw new CreateTransferError('amount decimals invalid');
+    if (amount.decimalPlaces() ?? 0 > SOL_DECIMALS) throw new CreateTransferError('amount decimals invalid');
 
     // Convert input decimal amount to integer lamports
     amount = amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR);
@@ -145,7 +145,7 @@ async function createSPLTokenInstruction(
     if (!mint.isInitialized) throw new CreateTransferError('mint not initialized');
 
     // Check that the amount provided doesn't have greater precision than the mint
-    if (amount.decimalPlaces() > mint.decimals) throw new CreateTransferError('amount decimals invalid');
+    if (amount.decimalPlaces() ?? 0 > mint.decimals) throw new CreateTransferError('amount decimals invalid');
 
     // Convert input decimal amount to integer tokens according to the mint decimals
     amount = amount.times(TEN.pow(mint.decimals)).integerValue(BigNumber.ROUND_FLOOR);
