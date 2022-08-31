@@ -1,7 +1,6 @@
 {
-    "extends": ["next/core-web-vitals"],
-    "plugins": ["prettier"],
+    "extends": "next",
     "rules": {
-        "import/no-anonymous-default-export": "off"
+        "react/no-unescaped-entities": "off"
     }
 }
