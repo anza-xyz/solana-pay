@@ -11,35 +11,28 @@ slug: /core/overview
 
 Businesses and developers can use Solana Pay to accept payments in SOL or any SPL token without intermediaries. It offers frictionless and portable integration options like payment links, pay now buttons or QR codes on your app, dApp, website, blog, and so much more.
 
-## How it works
-
-### Web app to mobile wallet
-
-![web app to mobile wallet diagram](../images/qr-code-flow.png)
-
-Payment requests can be encoded as a URL according to the scheme, scanned using a QR code, sent and confirmed by the wallet, and discovered by the app.
-
-### Web app to browser wallet
-
-![web app to browser wallet diagram](../images/dapp-web-wallet-flow.png)
-
-With a Solana Pay button, you could integrate an embeddable payment button that can be added to your existing app.
-
-### Mobile app to mobile wallet
-
-![mobile app to mobile wallet diagram](../images/mobile-app-mobile-wallet-flow.png)
-
-Payment requests could be encoded as a deep link. The app prepares a payment request, and passes control to the wallet. The wallet signs, sends, and confirms it, or cancels the request and passes control back to the app.
-
 ## Getting Started
 
 Learn how to integrate Solana Pay in your website, application or wallet.
 
--   [Merchant Integration](./MERCHANT_INTEGRATION.md)
--   [Wallet Integration](./WALLET_INTEGRATION.md)
--   [API Reference](https://docs.solanapay.com/api/core)
--   [Brand Guidelines](https://solanapay.com/branding)
--   [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
+### Transaction Requests
+
+A Solana Pay transaction request URL describes an interactive request for any Solana transaction. The parameters in the URL are used by a wallet to make an HTTP request to compose any transaction.
+
+- [Create a transaction request](./transaction-request/MERCHANT_INTEGRATION.md)
+
+### Transfer Requests
+
+A Solana Pay transfer request URL describes a non-interactive request for a SOL or SPL Token transfer. The parameters in the URL are used by a wallet to directly compose the transaction.
+
+- [Create a transfer request](./transfer-request/MERCHANT_INTEGRATION.md)
+- [Handle a transfer request](./transfer-request/WALLET_INTEGRATION.md)
+
+## Other resources
+
+- [API Reference](https://docs.solanapay.com/api/core)
+- [Brand Guidelines](https://solanapay.com/branding)
+- [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
 
 ## License
 

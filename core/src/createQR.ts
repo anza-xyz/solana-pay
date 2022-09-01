@@ -12,22 +12,22 @@ import QRCodeStyling, {
 /**
  * Create a QR code from a Solana Pay URL.
  *
- * @param url - The URL to encode in the QR code.
- * @param size - Size of canvas in `px`.
- * @param background - Background color for QR code.
- * @param color - Color for QR code pattern.
+ * @param url - The URL to encode.
+ * @param size - Width and height in pixels.
+ * @param background - Background color, which should be light for device compatibility.
+ * @param color - Foreground color, which should be dark for device compatibility.
  */
-export function createQR(url: string, size = 512, background = 'white', color = 'black'): QRCodeStyling {
+export function createQR(url: string | URL, size = 512, background = 'white', color = 'black'): QRCodeStyling {
     return new QRCodeStyling(createQROptions(url, size, background, color));
 }
 
 /** @ignore */
-export function createQROptions(url: string, size = 512, background = 'white', color = 'black'): Options {
+export function createQROptions(url: string | URL, size = 512, background = 'white', color = 'black'): Options {
     return {
         type: 'svg' as DrawType,
         width: size,
         height: size,
-        data: url,
+        data: String(url),
         margin: 16,
         qrOptions: {
             typeNumber: 0 as TypeNumber,

@@ -44,6 +44,16 @@ const config = {
             colorMode: {
                 defaultMode: 'dark',
                 respectPrefersColorScheme: true,
+                switchConfig: {
+                    darkIcon: '🌙',
+                    darkIconStyle: {
+                        marginLeft: '2px',
+                    },
+                    lightIcon: '☀️',
+                    lightIconStyle: {
+                        marginLeft: '1px',
+                    },
+                },
             },
             navbar: {
                 logo: {
@@ -72,7 +82,7 @@ const config = {
                         items: [
                             {
                                 label: 'Discord',
-                                href: 'https://discordapp.com/invite/pquxPsq',
+                                href: 'https://discord.com/invite/solana',
                             },
                             {
                                 label: 'Twitter',

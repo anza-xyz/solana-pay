@@ -21,18 +21,52 @@ const sidebars = {
     tutorialSidebar: [
         {
             type: 'doc',
-            id: 'INTRODUCTION', // document id
-            label: 'Solana Pay', // sidebar label
-        },
-        {
-            type: 'doc',
-            id: 'SPEC', // document id
-            label: 'Specification', // sidebar label
+            id: 'INTRODUCTION',
+            label: 'Introduction',
         },
         {
             type: 'category',
             label: 'Getting Started',
-            items: ['core/OVERVIEW', 'core/MERCHANT_INTEGRATION', 'core/WALLET_INTEGRATION'],
+            items: [
+                'core/OVERVIEW',
+                {
+                    type: 'doc',
+                    id: 'SPEC',
+                    label: 'Specification',
+                },
+            ],
+            collapsed: false,
+        },
+        {
+            type: 'category',
+            label: 'Transaction Request',
+            items: [
+                'core/transaction-request/OVERVIEW',
+                {
+                    type: 'doc',
+                    id: 'core/transaction-request/MERCHANT_INTEGRATION',
+                    label: 'Create a transaction request',
+                },
+            ],
+            collapsed: true,
+        },
+        {
+            type: 'category',
+            label: 'Transfer Request',
+            items: [
+                'core/transfer-request/OVERVIEW',
+                {
+                    type: 'doc',
+                    id: 'core/transfer-request/MERCHANT_INTEGRATION',
+                    label: 'Create a transfer request',
+                },
+                {
+                    type: 'doc',
+                    id: 'core/transfer-request/WALLET_INTEGRATION',
+                    label: 'Handle a transfer request',
+                },
+            ],
+            collapsed: true,
         },
         {
             type: 'link',

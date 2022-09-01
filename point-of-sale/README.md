@@ -2,7 +2,7 @@
 
 This is an example of how you can use the `@solana/pay` JavaScript library to create a simple point of sale system.
 
-You can [check out the demo](https://solana-labs.github.io/solana-pay/app?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay) (using devnet), use the code as a reference, or run it yourself to start accepting decentralized payments in-person.
+You can [check out the app](https://app.solanapay.com?recipient=GvHeR432g7MjN9uKyX3Dzg66TqwrEWgANLnnFZXMeyyj&label=Solana+Pay), use the code as a reference, or run it yourself to start accepting decentralized payments in-person.
 
 ## Prerequisites
 
@@ -58,17 +58,24 @@ yarn install
 
 ### Start the local dev server
 ```shell
-yarn start
+yarn dev
+```
+
+### In a separate terminal, run a local SSL proxy
+```shell
+yarn proxy
 ```
 
 ### Open the point of sale app
 ```shell
-open "http://localhost:1234?recipient=Your+Merchant+Address&label=Your+Store+Name"
+open "https://localhost:3001?recipient=Your+Merchant+Address&label=Your+Store+Name"
 ```
 
+You may need to accept a locally signed SSL certificate to open the page.
+
 ## Accepting USDC on Mainnet
-Import the Mainnet endpoint, along with USDC's mint address and icon in the `RootRoute.tsx` file.
-```jsx
+Import the Mainnet endpoint, along with USDC's mint address and icon in the [`client/components/pages/App.tsx`](https://github.com/solana-labs/solana-pay/blob/master/point-of-sale/src/client/components/pages/App.tsx) file.
+```tsx
 import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
 import { USDCIcon } from '../images/USDCIcon';
 ```
@@ -87,30 +94,81 @@ minDecimals={2}
 
 When you're done, it should look like this:
 
-```jsx
+```tsx
 <ConnectionProvider endpoint={MAINNET_ENDPOINT}>
     <WalletProvider wallets={wallets} autoConnect={connectWallet}>
         <WalletModalProvider>
             <ConfigProvider
+                baseURL={baseURL}
+                link={link}
                 recipient={recipient}
                 label={label}
+                message={message}
                 splToken={MAINNET_USDC_MINT}
                 symbol="USDC"
                 icon={<USDCIcon />}
                 decimals={6}
                 minDecimals={2}
-                requiredConfirmations={9}
                 connectWallet={connectWallet}
             >
 ```
 
+## Using Transaction Requests
+
+[Transaction Requests](../SPEC.md#specification-transaction-request) are a new feature in Solana Pay.
+
+In the [`client/components/pages/App.tsx`](https://github.com/solana-labs/solana-pay/blob/master/point-of-sale/src/client/components/pages/App.tsx) file, toggle these lines:
+
+```tsx
+    // Toggle comments on these lines to use transaction requests instead of transfer requests.
+    const link = undefined;
+    // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
+```
+
+When you're done, it should look like this:
+
+```tsx
+    // Toggle comments on these lines to use transaction requests instead of transfer requests.
+    // const link = undefined;
+    const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
+```
+
+The generated QR codes in the app should now use transaction requests. To see what's going on and customize it, check out the [`server/api/index.ts`](https://github.com/solana-labs/solana-pay/blob/master/point-of-sale/src/server/api/index.ts) file.
+
 ## Deploying to Vercel
 
-You can deploy this point of sale app to Vercel with a few clicks. Fork the project and configure it like this:
+You can deploy this point of sale app to Vercel with a few clicks.
 
-![Solana Pay Point of Sale app Vercel configuration](solana-pay-point-of-sale-vercel.png)
+### 1. Fork the project
+
+Fork the Solana Pay repository
+
+### 2. Login to Vercel
+
+Login to Vercel and create a new project
+
+![](./setup/1.New.png)
+
+Import the forked repository from GitHub.
+
+![](./setup/2.Import.png)
+
+> If you're forked repository is not listed, you'll need to adjust your GitHub app permissions. Search for the and select the `Missing Git repository? Adjust GitHub App Permissions` option.
+
+### 3. Configure project
+
+Choose `point-of-sale` as the root directory:
+
+![](./setup/3.Root_directory.png)
+
+Configure the project as follows:
+
+![](./setup/4.Configuration.png)
+
+### Deploy project
 
 Once the deployment finishes, navigate to
+
 ```
 https://<YOUR DEPLOYMENT URL>?recipient=<YOUR WALLET ADDRESS>&label=Your+Store+Name
 ```

@@ -1,0 +1,31 @@
+---
+title: Overview
+slug: /core/transaction-request/overview
+---
+
+Learn how to integrate transaction requests into your payments flow.
+
+With transaction requests, it’s now possible to bring any Solana transaction into the real world through an interactive request between a checkout app and a mobile wallet, enabling NFT minting, dynamic discounts, tokenized loyalty programs, and so much more. Here’s how it works:
+
+![transaction request flow](../../images/transaction-request-flow-dark.png)
+
+import Card from '@site/src/components/Card';
+
+### Start with a guide
+
+<section className="row">
+    <Card link="https://www.pointer.gg/tutorials/solana-pay-irl-payments/944eba7e-82c6-4527-b55c-5411cdf63b23">
+        <h2 className="text--truncate cardTitle">Taking payments IRL with Solana Pay</h2>
+        <p className="text--truncate cardDescription">Learn to take payments both online and IRL with Solana Pay!</p>
+    </Card>
+</section>
+
+### Use cases
+
+Transaction requests elevate the power of a simple purchase, allowing any transaction that’s possible on Solana. Here are a some initial use cases for devs to explore:
+
+-   Merchants can enact a true bi-directional communication channel with customers. They can atomically mint an NFT or transfer loyalty tokens in the transaction at the point of sale.
+-   Composable DeFi transactions involving borrowing, swaps, escrow, privacy, and more, can occur at the point of sale, enabling refunds, chargebacks, insurance, buy-now-pay-later, discounts, rewards, and yield generation.
+-   Merchants can opt to pay for transaction fees, token account creation, and NFT minting on their customers’ behalf so they don't need SOL in their wallet, reducing the friction of interacting with the Solana ecosystem.
+-   Merchants can decline to respond to a transaction request, which could be used to allow permissioned payments, such as in cases where authentication is required for compliance.
+-   Think beyond payments. Merchants and brands can create dynamic experiences that send tokens, invitations, and gifts to customers. Check out mtnPay’s Booth app which mints 1:1 NFTs for customers using transaction requests.

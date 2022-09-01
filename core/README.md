@@ -30,8 +30,22 @@ Payment requests could be encoded as a deep link. The app prepares a payment req
 
 Learn how to integrate Solana Pay in your website, application or wallet.
 
-- [Merchant Integration](https://docs.solanapay.com/core/merchant-integration)
-- [Wallet Integration](https://docs.solanapay.com/core/wallet-integration)
+### Transaction Requests
+
+A Solana Pay transaction request URL describes an interactive request for any Solana transaction. The parameters in the URL are used by a wallet to make an HTTP request to compose any transaction.
+
+- [Create a transaction request](https://docs.solanapay.com/core/transaction-request/merchant-integration)
+- [Test a transaction request URL](https://glow.app/test/solana-pay)
+
+### Transfer Requests
+
+A Solana Pay transfer request URL describes a non-interactive request for a SOL or SPL Token transfer. The parameters in the URL are used by a wallet to directly compose the transaction.
+
+- [Create a transfer request](https://docs.solanapay.com/core/transfer-request/merchant-integration)
+- [Handle a transfer request](https://docs.solanapay.com/core/transfer-request/wallet-integration)
+
+## Other resources
+
 - [API Reference](https://docs.solanapay.com/api/core)
 - [Brand Guidelines](https://solanapay.com/branding)
 - [Solana Pay Buttons](https://www.figma.com/community/file/1070341985720702755)
