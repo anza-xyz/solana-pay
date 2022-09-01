@@ -5,6 +5,9 @@
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
+    "engines": {
+        "node": ">=16"
+    },
     "scripts": {
         "clean": "shx rm -rf .next",
         "dev": "next dev",
