@@ -38,18 +38,21 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const navigate = useNavigateWithQuery();
     const progress = useMemo(() => confirmations / requiredConfirmations, [confirmations, requiredConfirmations]);
 
-    const changeStatus = (status: PaymentStatus) => {
+    const changeStatus = useCallback((status: PaymentStatus) => {
         console.log(status);
         setStatus(status);
-    };
+    }, []);
 
-    const sendError = (error?: object) => {
-        if (error) {
-            changeStatus(PaymentStatus.Error);
-            setReference(undefined);
-        }
-        processError(error);
-    };
+    const sendError = useCallback(
+        (error?: object) => {
+            if (error) {
+                changeStatus(PaymentStatus.Error);
+                setReference(undefined);
+            }
+            processError(error);
+        },
+        [changeStatus, processError]
+    );
 
     const url = useMemo(() => {
         if (link) {
@@ -58,7 +61,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             url.searchParams.append('recipient', recipient.toBase58());
 
             if (amount) {
-                url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
+                url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces() ?? 0));
             }
 
             if (splToken) {
@@ -104,7 +107,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setSignature(undefined);
         sendError(undefined);
         setTimeout(() => navigate('/new', true), status === PaymentStatus.Pending ? 1000 : 3000);
-    }, [navigate, status]);
+    }, [navigate, status, changeStatus, sendError]);
 
     const generate = useCallback(() => {
         if ((status === PaymentStatus.New || status === PaymentStatus.Error) && !reference) {
@@ -112,7 +115,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changeStatus(PaymentStatus.Pending);
             navigate('/pending');
         }
-    }, [status, reference, navigate]);
+    }, [status, reference, navigate, changeStatus]);
 
     // If there's a connected wallet, use it to sign and send the transaction
     useEffect(() => {
@@ -163,7 +166,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearTimeout(timeout);
         };
-    }, [status, connectWallet, publicKey, url, connection, sendTransaction]);
+    }, [status, connectWallet, publicKey, url, connection, sendTransaction, changeStatus, sendError]);
 
     // When the status is pending, poll for the transaction using the reference key
     useEffect(() => {
@@ -201,7 +204,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, reference, signature, connection, navigate]);
+    }, [status, reference, signature, connection, navigate, changeStatus, sendError]);
 
     // When the status is confirmed, validate the transaction against the provided params
     useEffect(() => {
@@ -235,7 +238,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearTimeout(timeout);
         };
-    }, [status, signature, amount, connection, recipient, splToken, reference]);
+    }, [status, signature, amount, connection, recipient, splToken, reference, changeStatus, sendError]);
 
     // When the status is valid, poll for confirmations until the transaction is finalized
     useEffect(() => {
@@ -267,7 +270,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             changed = true;
             clearInterval(interval);
         };
-    }, [status, signature, connection, requiredConfirmations]);
+    }, [status, signature, connection, requiredConfirmations, changeStatus, sendError]);
 
     return (
         <PaymentContext.Provider

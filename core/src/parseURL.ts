@@ -1,7 +1,7 @@
 import { PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { HTTPS_PROTOCOL, SOLANA_PROTOCOL } from './constants';
-import { Amount, Label, Link, Memo, Message, Recipient, Reference, SPLToken } from './types';
+import { HTTPS_PROTOCOL, SOLANA_PROTOCOL } from './constants.js';
+import type { Amount, Label, Link, Memo, Message, Recipient, Reference, SPLToken } from './types.js';
 
 /**
  * A Solana Pay transaction request URL.
