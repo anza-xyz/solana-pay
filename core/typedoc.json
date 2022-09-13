@@ -1,6 +1,5 @@
 {
     "entryPoints": ["src/index.ts"],
-    "excludeInternal": true,
-    "excludePrivate": true,
-    "out": "./docs"
+    "out": "docs",
+    "readme": "README.md"
 }
