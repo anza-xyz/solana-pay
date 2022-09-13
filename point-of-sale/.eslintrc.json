@@ -1,7 +1,7 @@
 {
-    "extends": ["next/babel", "next/core-web-vitals"],
+    "extends": ["next", "next/babel", "next/core-web-vitals"],
     "plugins": ["prettier"],
     "rules": {
-        "import/no-anonymous-default-export": "off"
+        "react/no-unescaped-entities": "off"
     }
 }

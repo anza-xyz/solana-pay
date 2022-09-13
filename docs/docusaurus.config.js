@@ -44,6 +44,16 @@ const config = {
             colorMode: {
                 defaultMode: 'dark',
                 respectPrefersColorScheme: true,
+                switchConfig: {
+                    darkIcon: '🌙',
+                    darkIconStyle: {
+                        marginLeft: '2px',
+                    },
+                    lightIcon: '☀️',
+                    lightIconStyle: {
+                        marginLeft: '1px',
+                    },
+                },
             },
             navbar: {
                 logo: {
