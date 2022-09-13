@@ -1,4 +1,5 @@
-import { Commitment, Connection, PublicKey, Transaction } from '@solana/web3.js';
+import type { Commitment, Connection, PublicKey } from '@solana/web3.js';
+import { Transaction } from '@solana/web3.js';
 import fetch from 'cross-fetch';
 import { toUint8Array } from 'js-base64';
 import nacl from 'tweetnacl';

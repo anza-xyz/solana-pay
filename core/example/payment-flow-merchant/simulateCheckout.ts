@@ -1,4 +1,5 @@
-import { Keypair, PublicKey } from '@solana/web3.js';
+import type { PublicKey } from '@solana/web3.js';
+import { Keypair } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 /**
