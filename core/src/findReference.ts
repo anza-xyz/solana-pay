@@ -1,5 +1,5 @@
-import { ConfirmedSignatureInfo, Connection, Finality, SignaturesForAddressOptions } from '@solana/web3.js';
-import { Reference } from './types';
+import type { ConfirmedSignatureInfo, Connection, Finality, SignaturesForAddressOptions } from '@solana/web3.js';
+import type { Reference } from './types.js';
 
 /**
  * Thrown when no transaction signature can be found referencing a given public key.
