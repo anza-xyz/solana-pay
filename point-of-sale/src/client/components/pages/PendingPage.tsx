@@ -58,8 +58,14 @@ const PendingPage: NextPage = () => {
                 ) : (
                     <div>
                         <div className={css.scan}></div>
-                        {status !== PaymentStatus.Error ? <div className={css.confirm}>{text}</div> : <Error />}
-                        <GenerateButton>Réessayer</GenerateButton>
+                        {status !== PaymentStatus.Error ? (
+                            <div className={css.confirm}>{text}</div>
+                        ) : (
+                            <div>
+                                <Error />
+                                <GenerateButton>Réessayer</GenerateButton>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>
