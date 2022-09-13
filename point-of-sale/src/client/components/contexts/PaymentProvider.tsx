@@ -106,7 +106,10 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         setReference(undefined);
         setSignature(undefined);
         sendError(undefined);
-        setTimeout(() => navigate('/new', true), status === PaymentStatus.Pending ? 1000 : 3000);
+        setTimeout(
+            () => navigate('/new', true),
+            status !== PaymentStatus.Finalized ? 1000 : 3000
+        );
     }, [navigate, status, changeStatus, sendError]);
 
     const generate = useCallback(() => {

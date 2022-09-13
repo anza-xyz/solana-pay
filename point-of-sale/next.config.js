@@ -10,27 +10,6 @@ const nextConfig = {
                 source: '/',
                 destination: '/new',
                 permanent: false,
-                has: [
-                    {
-                        type: 'query',
-                        key: 'recipient',
-                    },
-                    {
-                        type: 'query',
-                        key: 'label',
-                    },
-                ],
-            },
-            {
-                source: '/',
-                destination: '/new',
-                permanent: false,
-                has: [
-                    {
-                        type: 'query',
-                        key: 'id',
-                    },
-                ],
             },
         ];
     },
