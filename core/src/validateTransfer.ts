@@ -4,21 +4,19 @@ import {
     isTransferCheckedInstruction,
     isTransferInstruction,
 } from '@solana/spl-token';
-import {
+import type {
     ConfirmedTransactionMeta,
     Connection,
     Finality,
-    LAMPORTS_PER_SOL,
     Message,
-    SystemInstruction,
-    Transaction,
     TransactionInstruction,
     TransactionResponse,
     TransactionSignature,
 } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, SystemInstruction, Transaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { MEMO_PROGRAM_ID } from './constants';
-import { Amount, Memo, Recipient, Reference, References, SPLToken } from './types';
+import { MEMO_PROGRAM_ID } from './constants.js';
+import type { Amount, Memo, Recipient, Reference, References, SPLToken } from './types.js';
 
 /**
  * Thrown when a transaction doesn't contain a valid Solana Pay transfer.
@@ -79,14 +77,7 @@ export async function validateTransfer(
     const instruction = instructions.pop();
     if (!instruction) throw new ValidateTransferError('missing transfer instruction');
     const [preAmount, postAmount] = splToken
-        ? await validateSPLTokenTransfer(
-              instruction,
-              message,
-              meta,
-              recipient,
-              splToken,
-              reference
-          )
+        ? await validateSPLTokenTransfer(instruction, message, meta, recipient, splToken, reference)
         : await validateSystemTransfer(instruction, message, meta, recipient, reference);
     if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransferError('amount not transferred');
 
