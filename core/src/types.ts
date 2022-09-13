@@ -1,5 +1,5 @@
-import { PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
+import type { PublicKey } from '@solana/web3.js';
+import type BigNumber from 'bignumber.js';
 
 /** `recipient` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#recipient). */
 export type Recipient = PublicKey;

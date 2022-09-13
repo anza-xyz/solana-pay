@@ -1,10 +1,10 @@
 import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { encodeURL, findReference, FindReferenceError, validateTransfer } from '../../src';
-import { MERCHANT_WALLET } from './constants';
-import { establishConnection } from './establishConnection';
-import { simulateCheckout } from './simulateCheckout';
-import { simulateWalletInteraction } from './simulateWalletInteraction';
+import { encodeURL, findReference, FindReferenceError, validateTransfer } from '../../src.js';
+import { MERCHANT_WALLET } from './constants.js';
+import { establishConnection } from './establishConnection.js';
+import { simulateCheckout } from './simulateCheckout.js';
+import { simulateWalletInteraction } from './simulateWalletInteraction.js';
 
 async function main() {
     console.log("Let's simulate a Solana Pay flow ... \n");
