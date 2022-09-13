@@ -15,7 +15,7 @@
         "start": "next start",
         "lint": "next lint",
         "fmt": "prettier --write '{*,**/*}.{js,ts,jsx,tsx,json}'",
-        "nuke": "shx rm -rf node_modules yarn.lock",
+        "nuke": "shx rm -rf node_modules package-lock.json || true",
         "proxy": "local-ssl-proxy --source 3001 --target 3000"
     },
     "dependencies": {
