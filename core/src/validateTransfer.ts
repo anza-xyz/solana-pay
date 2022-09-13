@@ -4,20 +4,19 @@ import {
     isTransferCheckedInstruction,
     isTransferInstruction,
 } from '@solana/spl-token';
-import {
+import type {
     ConfirmedTransactionMeta,
     Connection,
     Finality,
-    LAMPORTS_PER_SOL,
     Message,
-    SystemInstruction,
-    Transaction,
+    TransactionInstruction,
     TransactionResponse,
     TransactionSignature,
 } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, SystemInstruction, Transaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { MEMO_PROGRAM_ID } from './constants';
-import { Amount, Memo, Recipient, Reference, References, SPLToken } from './types';
+import { MEMO_PROGRAM_ID } from './constants.js';
+import type { Amount, Memo, Recipient, Reference, References, SPLToken } from './types.js';
 
 /**
  * Thrown when a transaction doesn't contain a valid Solana Pay transfer.
@@ -61,7 +60,7 @@ export async function validateTransfer(
     const response = await connection.getTransaction(signature, options);
     if (!response) throw new ValidateTransferError('not found');
 
-    const message = response.transaction.message;
+    const { message, signatures } = response.transaction;
     const meta = response.meta;
     if (!meta) throw new ValidateTransferError('missing meta');
     if (meta.err) throw meta.err;
@@ -70,33 +69,47 @@ export async function validateTransfer(
         reference = [reference];
     }
 
+    // Deserialize the transaction and make a copy of the instructions we're going to mutate it.
+    const transaction = Transaction.populate(message, signatures);
+    const instructions = transaction.instructions.slice();
+
+    // Transfer instruction must be the last instruction
+    const instruction = instructions.pop();
+    if (!instruction) throw new ValidateTransferError('missing transfer instruction');
     const [preAmount, postAmount] = splToken
-        ? await validateSPLTokenTransfer(message, meta, recipient, splToken, reference)
-        : await validateSystemTransfer(message, meta, recipient, reference);
+        ? await validateSPLTokenTransfer(instruction, message, meta, recipient, splToken, reference)
+        : await validateSystemTransfer(instruction, message, meta, recipient, reference);
     if (postAmount.minus(preAmount).lt(amount)) throw new ValidateTransferError('amount not transferred');
 
-    if (memo) {
-        // Check that the second instruction is a memo instruction with the expected memo.
-        const transaction = Transaction.populate(message);
-        const instruction = transaction.instructions[1];
+    if (memo !== undefined) {
+        // Memo instruction must be the second to last instruction
+        const instruction = instructions.pop();
         if (!instruction) throw new ValidateTransferError('missing memo instruction');
-        if (!instruction.programId.equals(MEMO_PROGRAM_ID)) throw new ValidateTransferError('invalid memo program');
-        if (!instruction.data.equals(Buffer.from(memo, 'utf8'))) throw new ValidateTransferError('invalid memo');
+        validateMemo(instruction, memo);
     }
 
     return response;
 }
 
+function validateMemo(instruction: TransactionInstruction, memo: string): void {
+    // Check that the instruction is a memo instruction with no keys and the expected memo data.
+    if (!instruction.programId.equals(MEMO_PROGRAM_ID)) throw new ValidateTransferError('invalid memo program');
+    if (instruction.keys.length) throw new ValidateTransferError('invalid memo keys');
+    if (!instruction.data.equals(Buffer.from(memo, 'utf8'))) throw new ValidateTransferError('invalid memo');
+}
+
 async function validateSystemTransfer(
+    instruction: TransactionInstruction,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
+    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
+    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
+
     if (references) {
-        // Check that the first instruction is a system transfer instruction.
-        const transaction = Transaction.populate(message);
-        const instruction = transaction.instructions[0];
+        // Check that the instruction is a system transfer instruction.
         SystemInstruction.decodeTransfer(instruction);
 
         // Check that the expected reference keys exactly match the extra keys provided to the instruction.
@@ -109,9 +122,6 @@ async function validateSystemTransfer(
         }
     }
 
-    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipient));
-    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
-
     return [
         new BigNumber(meta.preBalances[accountIndex] || 0).div(LAMPORTS_PER_SOL),
         new BigNumber(meta.postBalances[accountIndex] || 0).div(LAMPORTS_PER_SOL),
@@ -119,21 +129,25 @@ async function validateSystemTransfer(
 }
 
 async function validateSPLTokenTransfer(
+    instruction: TransactionInstruction,
     message: Message,
     meta: ConfirmedTransactionMeta,
     recipient: Recipient,
     splToken: SPLToken,
     references?: Reference[]
 ): Promise<[BigNumber, BigNumber]> {
+    const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
+    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
+    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
+
     if (references) {
         // Check that the first instruction is an SPL token transfer instruction.
-        const transaction = Transaction.populate(message);
-        const instruction = decodeInstruction(transaction.instructions[0]);
-        if (!isTransferCheckedInstruction(instruction) && !isTransferInstruction(instruction))
+        const decodedInstruction = decodeInstruction(instruction);
+        if (!isTransferCheckedInstruction(decodedInstruction) && !isTransferInstruction(decodedInstruction))
             throw new ValidateTransferError('invalid transfer');
 
         // Check that the expected reference keys exactly match the extra keys provided to the instruction.
-        const extraKeys = instruction.keys.multiSigners;
+        const extraKeys = decodedInstruction.keys.multiSigners;
         const length = extraKeys.length;
         if (length !== references.length) throw new ValidateTransferError('invalid references');
 
@@ -141,10 +155,6 @@ async function validateSPLTokenTransfer(
             if (!extraKeys[i].pubkey.equals(references[i])) throw new ValidateTransferError(`invalid reference ${i}`);
         }
     }
-
-    const recipientATA = await getAssociatedTokenAddress(splToken, recipient);
-    const accountIndex = message.accountKeys.findIndex((pubkey) => pubkey.equals(recipientATA));
-    if (accountIndex === -1) throw new ValidateTransferError('recipient not found');
 
     const preBalance = meta.preTokenBalances?.find((x) => x.accountIndex === accountIndex);
     const postBalance = meta.postTokenBalances?.find((x) => x.accountIndex === accountIndex);

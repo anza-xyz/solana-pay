@@ -1,4 +1,4 @@
-import QRCodeStyling, {
+import type {
     CornerDotType,
     CornerSquareType,
     DotType,
@@ -8,6 +8,7 @@ import QRCodeStyling, {
     Options,
     TypeNumber,
 } from '@solana/qr-code-styling';
+import QRCodeStyling from '@solana/qr-code-styling';
 
 /**
  * Create a QR code from a Solana Pay URL.
