@@ -4,25 +4,27 @@
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
-    "engines": {
-        "node": ">=16"
-    },
     "type": "module",
     "sideEffects": false,
-    "main": "lib/cjs/index.js",
-    "module": "lib/esm/index.mjs",
-    "types": "lib/types/index.d.ts",
-    "exports": {
-        "import": "./lib/esm/index.mjs",
-        "require": "./lib/cjs/index.js"
+    "engines": {
+        "node": ">=16"
     },
     "files": [
         "lib",
         "src",
-        "LICENSE"
+        "LICENSE",
+        "README.md"
     ],
     "publishConfig": {
         "access": "public"
+    },
+    "main": "./lib/cjs/index.js",
+    "module": "./lib/esm/index.js",
+    "types": "./lib/types/index.d.ts",
+    "exports": {
+        "require": "./lib/cjs/index.js",
+        "import": "./lib/esm/index.js",
+        "types": "./lib/types/index.d.ts"
     },
     "scripts": {
         "nuke": "shx rm -rf node_modules package-lock.json || true",
