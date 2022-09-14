@@ -8,19 +8,19 @@ export interface NavigateOptions {
 }
 
 export function useNavigateWithQuery() {
-    const { baseURL } = useConfig();
     const router = useRouter();
     const { query } = router;
 
     return useCallback(
         (pathname: string, replace = false) => {
-            const url = String(createURLWithQuery(pathname, baseURL, query));
+            const origin = window.location.protocol + '//' + window.location.host;
+            const url = String(createURLWithQuery(pathname, origin, query));
             if (replace) {
                 router.replace(url);
             } else {
                 router.push(url);
             }
         },
-        [baseURL, query, router]
+        [query, router]
     );
 }

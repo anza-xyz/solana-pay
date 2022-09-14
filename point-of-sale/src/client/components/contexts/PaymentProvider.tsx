@@ -150,8 +150,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                     const transactionHash = await sendTransaction(transaction, connection);
                     changeStatus(PaymentStatus.Sent);
                     console.log(
-                        `Transaction sent: https://solscan.io/tx/${transactionHash}${
-                            { IS_DEV } ? '?cluster=devnet' : ''
+                        `Transaction sent: https://solscan.io/tx/${transactionHash}${{ IS_DEV } ? '?cluster=devnet' : ''
                         }`
                     );
                 }

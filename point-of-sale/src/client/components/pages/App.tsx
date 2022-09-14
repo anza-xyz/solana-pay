@@ -31,7 +31,7 @@ interface AppProps extends NextAppProps {
     };
 }
 
-const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<AppInitialProps> } = ({
+const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<AppInitialProps>; } = ({
     Component,
     host,
     query,
@@ -51,10 +51,10 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         () =>
             connectWallet
                 ? [
-                      new GlowWalletAdapter({ network }),
-                      new PhantomWalletAdapter(),
-                      new SolflareWalletAdapter({ network }),
-                  ]
+                    new GlowWalletAdapter({ network }),
+                    new PhantomWalletAdapter(),
+                    new SolflareWalletAdapter({ network }),
+                ]
                 : [],
         [connectWallet, network]
     );
