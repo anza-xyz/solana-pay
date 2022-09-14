@@ -14,7 +14,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ children }) => {
             className={css.root}
             type="button"
             onClick={generate}
-            disabled={!amount || amount.isLessThanOrEqualTo(0) || status === PaymentStatus.Pending}
+            disabled={!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error)}
         >
             {children}
         </button>

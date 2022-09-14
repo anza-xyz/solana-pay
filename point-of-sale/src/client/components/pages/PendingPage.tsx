@@ -29,6 +29,8 @@ const PendingPage: NextPage = () => {
     const text = useMemo(() => {
         switch (status) {
             case PaymentStatus.Pending:
+                return "Création de la transaction ...";
+            case PaymentStatus.Creating:
                 return "Merci d'approuver la transaction !";
             case PaymentStatus.Sent:
                 return 'Envoie de la transaction ...';

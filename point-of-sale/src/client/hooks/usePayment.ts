@@ -7,6 +7,7 @@ import { Confirmations } from '../types';
 export enum PaymentStatus {
     New = 'Nouveau',
     Pending = 'En cours',
+    Creating = 'Création',
     Sent = 'Envoyé',
     Confirmed = 'Confirmé',
     Valid = 'Valide',

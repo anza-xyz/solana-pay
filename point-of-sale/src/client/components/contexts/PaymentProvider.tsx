@@ -147,6 +147,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 }
 
                 if (!changed) {
+                    changeStatus(PaymentStatus.Creating);
                     const transactionHash = await sendTransaction(transaction, connection);
                     changeStatus(PaymentStatus.Sent);
                     console.log(

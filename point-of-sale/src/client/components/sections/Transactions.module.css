@@ -1,6 +1,3 @@
-.root {
-}
-
 .title {
     font-size: 32px;
     font-weight: 500;
@@ -20,10 +17,6 @@
 :global(html.dark) .transaction:not(:last-of-type) {
     box-shadow: var(--theme-dark-separator);
 }
-
-.icon {
-}
-
 
 .left {
     flex: 1;
