@@ -4,6 +4,7 @@ import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
 import { SHOW_SYMBOL } from '../../utils/env';
+import { requestFullscreen } from "../../utils/fullscreen";
 import { BackspaceIcon } from '../images/BackspaceIcon';
 import css from './NumPad.module.css';
 
@@ -13,7 +14,10 @@ interface NumPadInputButton {
 }
 
 const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
-    const onClick = useCallback(() => onInput(input), [onInput, input]);
+    const onClick = useCallback(() => {
+        requestFullscreen();
+        onInput(input);
+    }, [onInput, input]);
     return (
         <button className={css.button} type="button" onClick={onClick}>
             {input}

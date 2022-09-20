@@ -18,6 +18,7 @@ import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
 import { IS_DEV, IS_MERCHANT_POS } from '../../utils/env';
+import { exitFullscreen } from "../../utils/fullscreen";
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -117,6 +118,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             setReference(Keypair.generate().publicKey);
             changeStatus(PaymentStatus.Pending);
             navigate('/pending');
+            exitFullscreen();
         }
     }, [status, reference, navigate, changeStatus]);
 
