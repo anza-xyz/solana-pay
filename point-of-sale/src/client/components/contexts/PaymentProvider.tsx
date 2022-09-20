@@ -118,7 +118,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             setReference(Keypair.generate().publicKey);
             changeStatus(PaymentStatus.Pending);
             navigate('/pending');
-            exitFullscreen();
+            if (!IS_MERCHANT_POS) {
+                exitFullscreen();
+            }
         }
     }, [status, reference, navigate, changeStatus]);
 

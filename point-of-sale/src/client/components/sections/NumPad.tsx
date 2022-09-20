@@ -3,7 +3,7 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
-import { SHOW_SYMBOL } from '../../utils/env';
+import { IS_MERCHANT_POS, SHOW_SYMBOL } from '../../utils/env';
 import { requestFullscreen } from "../../utils/fullscreen";
 import { BackspaceIcon } from '../images/BackspaceIcon';
 import css from './NumPad.module.css';
@@ -15,7 +15,9 @@ interface NumPadInputButton {
 
 const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
     const onClick = useCallback(() => {
-        requestFullscreen();
+        if (!IS_MERCHANT_POS) {
+            requestFullscreen();
+        }
         onInput(input);
     }, [onInput, input]);
     return (
