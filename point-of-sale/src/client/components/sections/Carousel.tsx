@@ -5,6 +5,7 @@ import { Merchant, MerchantInfo, MerchantProps } from './Merchant';
 import css from './Carousel.module.css';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { useConfig } from '../../hooks/useConfig';
+import { requestFullscreen } from "../../utils/fullscreen";
 
 export interface MerchantsProps {
     merchants: MerchantInfo[];
@@ -16,6 +17,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
     const merchantList = useMemo(() => merchants, []);
     const onClickItem = (index: number, item: ReactNode) => {
         const { index: id, address: recipient, company: label, maxValue } = merchantList[index];
+        requestFullscreen();
         const url = new URL(`${baseURL}/new`);
         url.searchParams.append('id', id.toString());
         url.searchParams.append('recipient', recipient.toString());
