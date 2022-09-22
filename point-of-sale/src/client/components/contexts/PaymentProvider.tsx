@@ -38,6 +38,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const url = useMemo(() => {
         if (link) {
             const url = new URL(String(link));
+            console.log(url)
 
             url.searchParams.append('recipient', recipient.toBase58());
 

@@ -2,6 +2,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
 import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import BigNumber from "bignumber.js"
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { BackButton } from '../buttons/BackButton';
@@ -12,15 +14,22 @@ import css from './PendingPage.module.css';
 
 const PendingPage: NextPage = () => {
     const { symbol, connectWallet } = useConfig();
-    const { amount, reset } = usePayment();
+    const { amount, reset, setAmount } = usePayment();
     const { publicKey } = useWallet();
     const { setVisible } = useWalletModal();
+    const { query } = useRouter()
 
     useEffect(() => {
         if (connectWallet && !publicKey) {
             setVisible(true);
         }
     }, [connectWallet, publicKey, setVisible]);
+
+    useEffect(() => {
+        if (query.amount) {
+            setAmount(BigNumber(parseInt(query.amount)))
+        }
+    }, [query.amount, setAmount])
 
     return (
         <div className={css.root}>

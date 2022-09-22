@@ -7,7 +7,7 @@ import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/a
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
 import { DEVNET_ENDPOINT } from '../../utils/constants';
-import { ConfigProvider } from '../contexts/ConfigProvider';
+import { ConfigProvider } from '../contexts/ConfigProvider'; 
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
