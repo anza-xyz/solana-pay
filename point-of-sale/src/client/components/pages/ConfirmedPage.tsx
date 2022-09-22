@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import React from 'react';
+import axios from 'axios';
 import { usePayment } from '../../hooks/usePayment';
 import { BackButton } from '../buttons/BackButton';
 import { TransactionsLink } from '../buttons/TransactionsLink';

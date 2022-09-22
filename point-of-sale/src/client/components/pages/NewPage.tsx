@@ -17,6 +17,9 @@ const NewPage: NextPage = () => {
     const { query } = useRouter();
     const { setAmount } = usePayment();
 
+    if (query.memo) sessionStorage.setItem("memo", query.memo as string)
+    if (query.message) sessionStorage.setItem("message", query.message as string)
+
     useEffect(() => {
         if (query.amount) {
             setAmount(BigNumber(parseInt(query.amount as string)))
