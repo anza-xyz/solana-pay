@@ -22,6 +22,7 @@ interface AppProps extends NextAppProps {
         recipient?: string;
         label?: string;
         message?: string;
+        memo?: string
     };
 }
 
@@ -52,7 +53,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
     let recipient: PublicKey | undefined = undefined;
-    const { recipient: recipientParam, label, message } = query;
+    const { recipient: recipientParam, label, message, memo } = query;
     if (recipientParam && label) {
         try {
             recipient = new PublicKey(recipientParam);
@@ -74,6 +75,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     recipient={recipient}
                                     label={label}
                                     message={message}
+                                    memo={memo}
                                     symbol="SOL"
                                     icon={<SOLIcon />}
                                     decimals={9}

@@ -20,7 +20,7 @@ const ConfirmedPage: NextPage = () => {
             <div className={css.main}>
                 <Progress />
                 <a
-                    href="https://dashboard.ultainfinitywealthlaunchpad.com/"
+                    href={`http://localhost:3000/verify-payment`}
                     target="_blank"
                     rel="noreferrer"
                     style={{ marginTop: '20px' }}
