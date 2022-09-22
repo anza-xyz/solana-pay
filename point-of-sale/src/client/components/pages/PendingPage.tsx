@@ -27,7 +27,7 @@ const PendingPage: NextPage = () => {
 
     useEffect(() => {
         if (query.amount) {
-            setAmount(BigNumber(parseInt(query.amount)))
+            setAmount(BigNumber(parseInt(query.amount as string)))
         }
     }, [query.amount, setAmount])
 
