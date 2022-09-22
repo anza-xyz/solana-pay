@@ -8,7 +8,7 @@ import { Progress } from '../sections/Progress';
 import css from './ConfirmedPage.module.css';
 
 const ConfirmedPage: NextPage = () => {
-    const { reset } = usePayment();
+    const { reset, signature } = usePayment();
 
     return (
         <div className={css.root}>
@@ -18,6 +18,10 @@ const ConfirmedPage: NextPage = () => {
             </div>
             <div className={css.main}>
                 <Progress />
+                <a href="" style={{marginTop: "20px", cursor: "pointer"}}>
+                    <button>Go to Ultainfinity</button>
+                </a>
+                {signature}
             </div>
             <div className={css.footer}>
                 <PoweredBy />
