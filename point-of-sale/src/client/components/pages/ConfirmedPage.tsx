@@ -18,10 +18,15 @@ const ConfirmedPage: NextPage = () => {
             </div>
             <div className={css.main}>
                 <Progress />
-                <a href="" style={{marginTop: "20px", cursor: "pointer"}}>
-                    <button>Go to Ultainfinity</button>
+                <a
+                    href="https://dashboard.ultainfinitywealthlaunchpad.com/"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{ marginTop: '20px' }}
+                >
+                    <button style={{ cursor: 'pointer' }}>Go to Ultainfinity</button>
                 </a>
-                {signature}
+                {/* {signature} */}
             </div>
             <div className={css.footer}>
                 <PoweredBy />
