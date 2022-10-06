@@ -33,7 +33,7 @@ const PendingPage: NextPage = () => {
             case PaymentStatus.Creating:
                 return "Merci d'approuver la transaction !";
             case PaymentStatus.Sent:
-                return 'Envoie de la transaction ...';
+                return 'Envoi de la transaction ...';
             case PaymentStatus.Confirmed:
                 return 'Vérification en cours ...';
             default:
