@@ -16,5 +16,11 @@
         "address": "BNnncdQZ9YokyQJX8of4K2YGw3pvLt2SVkXK131E1nFy",
         "company": "Bloopsy Couture",
         "maxValue": 300
+    },
+    {
+        "index": 5,
+        "address": "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg",
+        "company": "Garage Nicolas",
+        "maxValue": 3000
     }
 ]
