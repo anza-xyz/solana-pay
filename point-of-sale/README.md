@@ -53,17 +53,17 @@ gh repo clone solana-labs/solana-pay
 ### Install dependencies
 ```shell
 cd solana-pay/point-of-sale
-yarn install
+npm install
 ```
 
 ### Start the local dev server
 ```shell
-yarn dev
+npm run dev
 ```
 
 ### In a separate terminal, run a local SSL proxy
 ```shell
-yarn proxy
+npm run proxy
 ```
 
 ### Open the point of sale app

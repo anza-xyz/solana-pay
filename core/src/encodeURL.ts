@@ -1,5 +1,5 @@
-import { SOLANA_PROTOCOL } from './constants';
-import { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types';
+import { SOLANA_PROTOCOL } from './constants.js';
+import type { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types.js';
 
 /**
  * Fields of a Solana Pay transaction request URL.
@@ -73,7 +73,7 @@ function encodeTransferRequestURL({
     const url = new URL(SOLANA_PROTOCOL + pathname);
 
     if (amount) {
-        url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces()));
+        url.searchParams.append('amount', amount.toFixed(amount.decimalPlaces() ?? 0));
     }
 
     if (splToken) {

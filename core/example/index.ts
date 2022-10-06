@@ -1,6 +1,7 @@
 import { createAssociatedTokenAccount } from '@solana/spl-token';
 import { clusterApiUrl, Connection, Keypair, LAMPORTS_PER_SOL, sendAndConfirmRawTransaction } from '@solana/web3.js';
-import { createTransfer, encodeURL, findReference, parseURL, TransferRequestURL, validateTransfer } from '../src';
+import type { TransferRequestURL } from '../src.js';
+import { createTransfer, encodeURL, findReference, parseURL, validateTransfer } from '../src.js';
 
 (async function () {
     const cluster = 'devnet';

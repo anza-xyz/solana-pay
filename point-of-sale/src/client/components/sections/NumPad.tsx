@@ -26,7 +26,7 @@ export const NumPad: FC = () => {
 
     const [value, setValue] = useState('0');
     const onInput = useCallback(
-        (key) =>
+        (key: Digits | '.') =>
             setValue((value) => {
                 let newValue = (value + key).trim().replace(/^0{2,}/, '0');
                 if (newValue) {

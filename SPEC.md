@@ -48,14 +48,16 @@ If a value is not provided, the wallet must prompt the user for the amount. If t
 ### SPL Token
 A single `spl-token` field is allowed as an optional query parameter. The value must be the base58-encoded public key of an SPL Token mint account.
 
-If the field is not provided, the URL describes a native SOL transfer. If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used.
+If the field is provided, the [Associated Token Account](https://spl.solana.com/associated-token-account) convention must be used, and the wallet must include a `TokenProgram.Transfer` or `TokenProgram.TransferChecked` instruction as the last instruction of the transaction.
+
+If the field is not provided, the URL describes a native SOL transfer, and the wallet must include a `SystemProgram.Transfer` instruction as the last instruction of the transaction instead.
 
 The wallet must derive the ATA address from the `recipient` and `spl-token` fields. Transfers to auxiliary token accounts are not supported.
 
 ### Reference
-Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded public keys.
+Multiple `reference` fields are allowed as optional query parameters. The values must be base58-encoded 32 byte arrays. These may or may not be public keys, on or off the curve, and may or may not correspond with accounts on Solana.
 
-If the values are provided, the wallet must include them in the order provided as read-only, non-signer keys to the `SystemProgram.transfer` or `TokenProgram.transfer`/`TokenProgram.transferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
+If the values are provided, the wallet must include them in the order provided as read-only, non-signer keys to the `SystemProgram.Transfer` or `TokenProgram.Transfer`/`TokenProgram.TransferChecked` instruction in the payment transaction. The values may or may not be unique to the payment request, and may or may not correspond to an account on Solana.
 
 Because Solana validators index transactions by these account keys, `reference` values can be used as client IDs (IDs usable before knowing the eventual payment transaction). The [`getSignaturesForAddress`](https://docs.solana.com/developing/clients/jsonrpc-api#getsignaturesforaddress) RPC method can be used locate transactions this way.
 
@@ -74,7 +76,7 @@ A single `memo` field is allowed as an optional query parameter. The value must 
 
 The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value and should display the decoded value to the user. The memo will be recorded by validators and should not include private or sensitive information.
 
-A single SPL Memo instruction must be included immediately before the SOL or SPL Token transfer instruction to avoid ambiguity with other instructions in the transaction.
+If the field is provided, the wallet must include a `MemoProgram` instruction as the second to last instruction of the transaction, immediately before the SOL or SPL Token transfer instruction, to avoid ambiguity with other instructions in the transaction.
 
 ### Examples
 

@@ -1,8 +1,9 @@
-import { Connection, LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
+import type { Connection } from '@solana/web3.js';
+import { LAMPORTS_PER_SOL, sendAndConfirmTransaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
-import { TransferRequestURL } from '../../lib/types';
-import { createTransfer, parseURL } from '../../src';
-import { CUSTOMER_WALLET } from './constants';
+import type { TransferRequestURL } from '../../lib/types.js';
+import { createTransfer, parseURL } from '../../src.js';
+import { CUSTOMER_WALLET } from './constants.js';
 
 export async function simulateWalletInteraction(connection: Connection, url: URL) {
     /**
