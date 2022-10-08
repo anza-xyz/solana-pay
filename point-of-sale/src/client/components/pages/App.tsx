@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
-import { DEVNET_ENDPOINT } from '../../utils/constants';
+
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
@@ -15,6 +15,8 @@ import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
 import { SOLIcon } from '../images/SOLIcon';
 import css from './App.module.css';
+import { MAINNET_ENDPOINT, MAINNET_USDC_MINT } from '../../utils/constants';
+import { USDCIcon } from '../images/USDCIcon';
 
 interface AppProps extends NextAppProps {
     host: string;
