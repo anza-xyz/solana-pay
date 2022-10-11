@@ -4,9 +4,9 @@ import { HTTPS_PROTOCOL, SOLANA_PROTOCOL } from './constants.js';
 import type { Amount, Label, Link, Memo, Message, Recipient, Reference, SPLToken } from './types.js';
 
 /**
- * A Solana Pay transaction request URL.
+ * A Solana Pay interactive request URL.
  */
-export interface TransactionRequestURL {
+export interface InteractiveRequestURL {
     /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
     link: Link;
     /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label-1). */
@@ -49,7 +49,7 @@ export class ParseURLError extends Error {
  *
  * @throws {ParseURLError}
  */
-export function parseURL(url: string | URL): TransactionRequestURL | TransferRequestURL {
+export function parseURL(url: string | URL): InteractiveRequestURL | TransferRequestURL {
     if (typeof url === 'string') {
         if (url.length > 2048) throw new ParseURLError('length invalid');
         url = new URL(url);
@@ -58,10 +58,10 @@ export function parseURL(url: string | URL): TransactionRequestURL | TransferReq
     if (url.protocol !== SOLANA_PROTOCOL) throw new ParseURLError('protocol invalid');
     if (!url.pathname) throw new ParseURLError('pathname missing');
 
-    return /[:%]/.test(url.pathname) ? parseTransactionRequestURL(url) : parseTransferRequestURL(url);
+    return /[:%]/.test(url.pathname) ? parseInteractiveRequestURL(url) : parseTransferRequestURL(url);
 }
 
-function parseTransactionRequestURL({ pathname, searchParams }: URL): TransactionRequestURL {
+function parseInteractiveRequestURL({ pathname, searchParams }: URL): InteractiveRequestURL {
     const link = new URL(decodeURIComponent(pathname));
     if (link.protocol !== HTTPS_PROTOCOL) throw new ParseURLError('link invalid');
 
