@@ -38,11 +38,11 @@ interface FetchInteractionServerResponse {
     message?: string;
 }
 
-export const isTransactionResponse = (value: FetchInteractionResponse): boolean => {
+export const isTransactionResponse = (value: FetchInteractionResponse): value is FetchTransactionResponse => {
     return 'transaction' in value;
 };
 
-export const isSignMessageResponse = (value: FetchInteractionResponse): boolean => {
+export const isSignMessageResponse = (value: FetchInteractionResponse): value is FetchSignMessageResponse => {
     return 'data' in value && `state` in value;
 };
 
