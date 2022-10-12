@@ -153,10 +153,10 @@ The wallet should display the domain of the URL as the request is being made. If
 
 The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
-{"transaction":"<transaction | null>"}
+{"transaction":"<transaction>"}
 ```
 
-The `<transaction>` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize), or `null`. The wallet must base64-decode any non-null transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
+The `<transaction>` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize). The wallet must base64-decode the transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
 
 The application may respond with a partially or fully signed transaction. The wallet must validate the transaction as **untrusted**.
 
@@ -184,7 +184,7 @@ The application may also include an optional `message` field in the response bod
 
 The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
 
-For example, this might be the name of an item being purchased, a discount applied to the purchase, an error, or a thank you note. The wallet should display at least the first 80 characters of any non-empty message, even if the `transaction` field is `null`.
+For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
