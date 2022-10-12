@@ -120,7 +120,10 @@ export async function fetchInteraction(
             transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
         }
 
-        return { transaction, message: json.message };
+        return {
+            transaction,
+            message: json.message,
+        };
     }
 
     /**
@@ -131,8 +134,14 @@ export async function fetchInteraction(
         if (json.transaction) throw new FetchInteractionError('invalid sign message response');
         if (typeof json.state !== 'string') throw new FetchInteractionError('invalid state field');
         if (!isBase64(json.data)) throw new FetchInteractionError('invalid data field');
-        return { data: json.data, state: json.state, message: json.message };
+        return {
+            data: json.data,
+            state: json.state,
+            message: json.message,
+        };
     }
 
-    return { message: json.message };
+    return {
+        message: json.message,
+    };
 }
