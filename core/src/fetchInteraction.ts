@@ -131,9 +131,9 @@ export async function fetchInteraction(
      */
 
     if (json.data) {
-        if (json.transaction) throw new FetchInteractionError('invalid sign message response');
         if (typeof json.state !== 'string') throw new FetchInteractionError('invalid state field');
         if (!isBase64(json.data)) throw new FetchInteractionError('invalid data field');
+
         return {
             data: json.data,
             state: json.state,
