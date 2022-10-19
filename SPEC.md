@@ -271,9 +271,9 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 {"data":"<data>","state":"<state>"}
 ```
 
-The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
+The `<data>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
 
-The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified.
+The `<state>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value that functions as a [MAC](https://en.wikipedia.org/wiki/Message_authentication_code). The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified.
 
 
 The application may also include an optional `message` field in the response body:
@@ -281,7 +281,7 @@ The application may also include an optional `message` field in the response bod
 {"message":"<message>","data":"<data>","state":"<state>"}
 ```
 
-The `<message>` value must be a UTF-8 string that describes the nature of the sign-message response.
+The `<message>` value must be a UTF-8 encoded string that describes the nature of the sign-message response.
 
 For example, this might be the name of the application or event with which the user is interacting, context about how the sign-message request is being used, or a thank you note. The wallet should display the value to the user.
 
@@ -296,9 +296,9 @@ The PUT request is used to send the results of signing the message back to the s
 
 The `<account>` value must be the base58-encoded public key of the account that signed the message.
 
-The `<state>` value must be the unmodifed UTF-8-encoded `<state>` value from the response of the preceeding POST request.
+The `<state>` value must be the unmodifed `<state>` value from the response of the preceeding POST request.
 
-The `<signature>` value is the base-58 encoded signature from signing the `<data>` field with the users private key.
+The `<signature>` value is the base58-encoded signature from signing the `<data>` field with the users private key.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
