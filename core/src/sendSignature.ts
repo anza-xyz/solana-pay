@@ -16,7 +16,7 @@ export type SendSignatureResponse = {
  * Send the results of a Solana Pay sign-message request to the server.
  *
  * @param account - Account that signed the data
- * @param signature - The signature from signing the data.
+ * @param signature - The base58-encoded signature from signing the data.
  * @param state - MAC value that was sent by the server during the POST request.
  * @param link - `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link).
  *
