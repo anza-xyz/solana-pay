@@ -271,9 +271,9 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 {"data":"<data>","state":"<state>"}
 ```
 
-The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send it back to the server from which is was retrieved. 
+The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send it back to the server in a [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
 
-The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in order to verify that the contents of the <data> field were not modified before signing.
+The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in order to verify that the contents of the `<data>` field were not modified before signing.
 
 
 The application may also include an optional `message` field in the response body:
@@ -283,7 +283,33 @@ The application may also include an optional `message` field in the response bod
 
 The `<message>` value must be a UTF-8 string that describes the nature of the sign-message response.
 
-For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
+For example, this might be the name of the application or event with which the user is interacting, context about how the sign-message request is being used, or a thank you note. The wallet should display the value to the user.
+
+The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
+
+#### PUT Request
+
+The wallet must make an HTTP `PUT` JSON request to the URL with a body of
+```json
+{"account":"<account>","state":"<state>","signature":"<signature>"}
+```
+
+The `<account>` value must be the base58-encoded public key of an account that may sign the data.
+The `<state>` value must be the unmodifed UTF-8-encoded `<state>` value from the response of the preceeding POST request.
+The `<signature>` The <signature> value is the base-58 encoded signature from signing the <data> field with the users private key.
+
+The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
+
+The wallet should display the domain of the URL as the request is being made. If a `GET` request was made, the wallet should also display the label and render the icon image from the response.
+
+#### PUT Response
+
+The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+```json
+{"success":"<success>"}
+```
+
+The `<success>` value must be a boolean value indicating whether signature verification succeeded or failed.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
