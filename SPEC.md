@@ -101,12 +101,14 @@ A Solana Pay interactive request URL describes an interactive request where the 
 
 1. Transaction Request: A Solana Pay transaction request URL describes an interactive request that returns any Solana transaction.
 2. Sign-message Request: A Solana Pay sign-message request URL describes an interactive request that is used to verify ownership of an address.
+
+The initial request URL structure for both types of interactive requests are the same. As such, wallets will not know which type of interaction is being requested until the POST request response payload is received from the server.
+
+### Link
 ```html
 solana:<link>
 ```
-The initial request URL structure for both types of interactive requests are the same. As such, wallets will not know which type of interaction is being requested until the response payload is received from the server.
 
-### Link
 A single `link` field is required as the pathname. The value must be a conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL.
 
 If the URL contains query parameters, it must be URL-encoded. Protocol query parameters may be added to this specification. URL-encoding the value prevents conflicting with protocol parameters.
