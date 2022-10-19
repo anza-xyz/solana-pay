@@ -12,7 +12,7 @@ A standard URL protocol for requesting native SOL transfers, SPL Token transfers
 
 These URLs may be encoded in QR codes or NFC tags, or sent between users and applications to request payment, compose transactions, and sign messages.
 
-Applications should ensure that a transaction has been confirmed before they release goods or services being sold. Applications should also ensure that signed messages are valid before granting access to objects or events. 
+Applications should ensure that a transaction has been confirmed, or that a signed message is valid, before they release goods or services being sold, or grant access to objects or events.
 
 Mobile wallets should register to handle the URL scheme to provide a seamless yet secure experience when Solana Pay URLs are encountered in the environment.
 
