@@ -295,7 +295,9 @@ The PUT request is used to send the results of signing the message back to the s
 ```
 
 The `<account>` value must be the base58-encoded public key of the account that signed the message.
+
 The `<state>` value must be the unmodifed UTF-8-encoded `<state>` value from the response of the preceeding POST request.
+
 The `<signature>` value is the base-58 encoded signature from signing the `<data>` field with the users private key.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
