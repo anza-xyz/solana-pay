@@ -258,7 +258,7 @@ The wallet must make an HTTP `POST` JSON request to the URL with a body of
 {"account":"<account>"}
 ```
 
-The `<account>` value must be the base58-encoded public key of an account that may sign the transaction.
+The `<account>` value must be the base58-encoded public key of an account that may sign the data.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
@@ -268,36 +268,20 @@ The wallet should display the domain of the URL as the request is being made. If
 
 The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
-{"transaction":"<transaction>"}
+{"data":"<data>","state":"<state>"}
 ```
 
-The `<transaction>` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize). The wallet must base64-decode the transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
+The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send it back to the server from which is was retrieved. 
 
-The application may respond with a partially or fully signed transaction. The wallet must validate the transaction as **untrusted**.
+The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in order to verify that the contents of the <data> field were not modified before signing.
 
-If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#signatures) are empty:
-  - The application should set the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) to the `account` in the request, or the zero value (`new PublicKey(0)` or `new PublicKey("11111111111111111111111111111111")`).
-  - The application should set the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash), or the zero value (`new PublicKey(0).toBase58()` or `"11111111111111111111111111111111"`).
-  - The wallet must ignore the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) in the transaction and set the `feePayer` to the `account` in the request.
-  - The wallet must ignore the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) in the transaction and set the `recentBlockhash` to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash).
-
-If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#signatures) are nonempty:
-  - The application must set the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) to the [public key of the first signature](https://solana-labs.github.io/solana-web3.js/modules.html#SignaturePubkeyPair).
-  - The application must set the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash).
-  - The application must serialize and deserialize the transaction before signing it. This ensures consistent ordering of the account keys, as a workaround for [this issue](https://github.com/solana-labs/solana/issues/21722).
-  - The wallet must not set the  [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) and [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash).
-  - The wallet must verify the signatures, and if any are invalid, the wallet must reject the transaction as **malformed**.
-
-The wallet must only sign the transaction with the `account` in the request, and must do so only if a signature for the `account` in the request is expected.
-
-If any signature except a signature for the `account` in the request is expected, the wallet must reject the transaction as **malicious**.
 
 The application may also include an optional `message` field in the response body:
 ```json
-{"message":"<message>","transaction":"<transaction>"}
+{"message":"<message>","data":"<data>","state":"<state>"}
 ```
 
-The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
+The `<message>` value must be a UTF-8 string that describes the nature of the sign-message response.
 
 For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
