@@ -271,9 +271,9 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 {"data":"<data>","state":"<state>"}
 ```
 
-The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send it back to the server in a [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
+The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
 
-The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in order to verify that the contents of the `<data>` field were not modified before signing.
+The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified before signing.
 
 
 The application may also include an optional `message` field in the response body:
