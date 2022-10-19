@@ -71,10 +71,11 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 <ConfigProvider
                                     baseURL={baseURL}
                                     link={link}
+                                    splToken={new PublicKey("2wmVCSfPxGPjrnMMn7rchp4uaeoTqN39mXFC2zhPdri9")}
                                     recipient={recipient}
                                     label={label}
                                     message={message}
-                                    symbol="SOL"
+                                    symbol="usdc"
                                     icon={<SOLIcon />}
                                     decimals={9}
                                     minDecimals={1}
