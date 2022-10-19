@@ -95,14 +95,16 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael
 ```
 
-## Specification: Transaction Request
+## Specification: Interactive Request
 
-A Solana Pay transaction request URL describes an interactive request for any Solana transaction.
+A Solana Pay interactive request URL describes an interactive request where the parameters in the URL are used by a wallet to make an HTTP request to a remote server. Currently two types of interactive requests exist:
+
+1. Transaction Request: A Solana Pay transaction request URL describes an interactive request that returns any Solana transaction.
+2. Sign-message Request: A Solana Pay sign-message request URL describes an interactive request that is used to verify ownership of an address.
 ```html
 solana:<link>
 ```
-
-The request is interactive because the parameters in the URL are used by a wallet to make an HTTP request to compose a transaction.
+The initial request URL structure for both types of interactive requests are the same. As such, wallets will not know which type of interaction is being requested until the response payload is received from the server.
 
 ### Link
 A single `link` field is required as the pathname. The value must be a conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS URL.
@@ -135,6 +137,8 @@ The `<icon>` value must be an absolute HTTP or HTTPS URL of an icon image. The f
 The wallet should not cache the response except as instructed by [HTTP caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching#controlling_caching) response headers.
 
 The wallet should display the label and render the icon image to user.
+
+### Transction Request
 
 #### POST Request
 
@@ -188,21 +192,21 @@ For example, this might be the name of an item being purchased, a discount appli
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
-### Example
+### Transation Request Example
 
 ##### URL describing a transaction request.
 ```
-solana:https://example.com/solana-pay
+solana:https://example.com/solana-pay/transction-request
 ```
 
 ##### URL describing a transaction request with query parameters.
 ```
-solana:https%3A%2F%2Fexample.com%2Fsolana-pay%3Forder%3D12345
+solana:https%3A%2F%2Fexample.com%2Fsolana-pay%2Ftransaction-request%3Forder%3D12345
 ```
 
 ##### GET Request
 ```
-GET /solana-pay?order=12345 HTTP/1.1
+GET /solana-pay/transaction-request?order=12345 HTTP/1.1
 Host: example.com
 Connection: close
 Accept: application/json
@@ -222,7 +226,116 @@ Content-Encoding: gzip
 
 ##### POST Request
 ```
-POST /solana-pay?order=12345 HTTP/1.1
+POST /solana-pay/transction-request?order=12345 HTTP/1.1
+Host: example.com
+Connection: close
+Accept: application/json
+Accept-Encoding: br, gzip, deflate
+Content-Type: application/json
+Content-Length: 57
+
+{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN"}
+```
+
+##### POST Response
+```
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: application/json
+Content-Length: 298
+Content-Encoding: gzip
+
+{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
+```
+### Sign-message Request
+
+#### POST Request
+
+The wallet must make an HTTP `POST` JSON request to the URL with a body of
+```json
+{"account":"<account>"}
+```
+
+The `<account>` value must be the base58-encoded public key of an account that may sign the transaction.
+
+The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
+
+The wallet should display the domain of the URL as the request is being made. If a `GET` request was made, the wallet should also display the label and render the icon image from the response.
+
+#### POST Response
+
+The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+```json
+{"transaction":"<transaction>"}
+```
+
+The `<transaction>` value must be a base64-encoded [serialized transaction](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#serialize). The wallet must base64-decode the transaction and [deserialize it](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#from).
+
+The application may respond with a partially or fully signed transaction. The wallet must validate the transaction as **untrusted**.
+
+If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#signatures) are empty:
+  - The application should set the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) to the `account` in the request, or the zero value (`new PublicKey(0)` or `new PublicKey("11111111111111111111111111111111")`).
+  - The application should set the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash), or the zero value (`new PublicKey(0).toBase58()` or `"11111111111111111111111111111111"`).
+  - The wallet must ignore the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) in the transaction and set the `feePayer` to the `account` in the request.
+  - The wallet must ignore the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) in the transaction and set the `recentBlockhash` to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash).
+
+If the transaction [`signatures`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#signatures) are nonempty:
+  - The application must set the [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) to the [public key of the first signature](https://solana-labs.github.io/solana-web3.js/modules.html#SignaturePubkeyPair).
+  - The application must set the [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash) to the [latest blockhash](https://solana-labs.github.io/solana-web3.js/classes/Connection.html#getLatestBlockhash).
+  - The application must serialize and deserialize the transaction before signing it. This ensures consistent ordering of the account keys, as a workaround for [this issue](https://github.com/solana-labs/solana/issues/21722).
+  - The wallet must not set the  [`feePayer`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#feePayer) and [`recentBlockhash`](https://solana-labs.github.io/solana-web3.js/classes/Transaction.html#recentBlockhash).
+  - The wallet must verify the signatures, and if any are invalid, the wallet must reject the transaction as **malformed**.
+
+The wallet must only sign the transaction with the `account` in the request, and must do so only if a signature for the `account` in the request is expected.
+
+If any signature except a signature for the `account` in the request is expected, the wallet must reject the transaction as **malicious**.
+
+The application may also include an optional `message` field in the response body:
+```json
+{"message":"<message>","transaction":"<transaction>"}
+```
+
+The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
+
+For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
+
+The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
+
+### Sign-message Request Example
+
+##### URL describing a sign-message request.
+```
+solana:https://example.com/solana-pay/sign-message
+```
+
+##### URL describing a transaction request with query parameters.
+```
+solana:https%3A%2F%2Fexample.com%2Fsolana-pay%2Fsign-message%3Fid%3D678910
+```
+
+##### GET Request
+```
+GET /solana-pay/sign-message?id=678910 HTTP/1.1
+Host: example.com
+Connection: close
+Accept: application/json
+Accept-Encoding: br, gzip, deflate
+```
+
+##### GET Response
+```
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: application/json
+Content-Length: 62
+Content-Encoding: gzip
+
+{"label":"Michael Vines","icon":"https://example.com/icon.svg"}
+```
+
+##### POST Request
+```
+POST /solana-pay/sign-message?id=678910 HTTP/1.1
 Host: example.com
 Connection: close
 Accept: application/json
