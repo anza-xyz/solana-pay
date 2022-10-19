@@ -50,10 +50,6 @@ export const isErrorResponse = (value: FetchInteractionErrorResponse): value is 
     return !isSignMessageResponse(value) && !isTransactionResponse(value);
 };
 
-const isBase64 = (value: string): boolean => {
-    return /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(value);
-};
-
 /**
  * Fetch a transaction from a Solana Pay transaction request link.
  *
@@ -135,8 +131,8 @@ export async function fetchInteraction(
      */
 
     if (json.data) {
+        if (typeof json.data !== 'string') throw new FetchInteractionError('invalid data field');
         if (typeof json.state !== 'string') throw new FetchInteractionError('invalid state field');
-        if (!isBase64(json.data)) throw new FetchInteractionError('invalid data field');
 
         return {
             data: json.data,
