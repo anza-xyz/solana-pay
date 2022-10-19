@@ -1,18 +1,18 @@
 # Solana Pay Specification
 
 ## Summary
-A standard protocol to encode Solana transaction requests within URLs to enable payments and other use cases.
+A standard protocol to encode Solana transaction and message-signing requests within URLs to enable payments, authentication, and other use cases.
 
 Rough consensus on this spec has been reached, and implementations exist in Phantom, FTX, and Slope.
 
 This standard draws inspiration from [BIP 21](https://github.com/bitcoin/bips/blob/master/bip-0021.mediawiki) and [EIP 681](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-681.md).
 
 ## Motivation
-A standard URL protocol for requesting native SOL transfers, SPL Token transfers, and Solana transactions allows for a better user experience across apps and wallets in the Solana ecosystem.
+A standard URL protocol for requesting native SOL transfers, SPL Token transfers, Solana transactions, and message signing allows for a better user experience across apps and wallets in the Solana ecosystem.
 
-These URLs may be encoded in QR codes or NFC tags, or sent between users and applications to request payment and compose transactions.
+These URLs may be encoded in QR codes or NFC tags, or sent between users and applications to request payment, compose transactions, and sign messages.
 
-Applications should ensure that a transaction has been confirmed and is valid before they release goods or services being sold, or grant access to objects or events. 
+Applications should ensure that a transaction has been confirmed before they release goods or services being sold. Applications should also ensure that signed messages are valid before granting access to objects or events. 
 
 Mobile wallets should register to handle the URL scheme to provide a seamless yet secure experience when Solana Pay URLs are encountered in the environment.
 
