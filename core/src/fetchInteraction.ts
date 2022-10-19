@@ -46,6 +46,10 @@ export const isSignMessageResponse = (value: FetchInteractionResponse): value is
     return 'data' in value && `state` in value;
 };
 
+export const isErrorResponse = (value: FetchInteractionErrorResponse): value is FetchInteractionErrorResponse => {
+    return !isSignMessageResponse(value) && !isTransactionResponse(value);
+};
+
 const isBase64 = (value: string): boolean => {
     return /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/.test(value);
 };
