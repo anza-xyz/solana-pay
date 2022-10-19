@@ -381,7 +381,7 @@ Accept-Encoding: br, gzip, deflate
 Content-Type: application/json
 Content-Length: 57
 
-{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN", "signature":"3ApozYFyp2ZxWuGvJS7Q1oV8M3YsLMV3WmwbjGCgktqXfdevjCZ92vA4F9V7Xj7KrN7JTtYStBSBeWnNN7vyHkg5","state":"eyJhbGciOiJIUzI1NiJ9.U0lHTl9USElTX01FU1NBR0U.KcZ1FnrT1ImAL-7LbALfZOx9F4I4LMuEE8_bg5Zmec4"}
+{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN","signature":"3ApozYFyp2ZxWuGvJS7Q1oV8M3YsLMV3WmwbjGCgktqXfdevjCZ92vA4F9V7Xj7KrN7JTtYStBSBeWnNN7vyHkg5","state":"eyJhbGciOiJIUzI1NiJ9.U0lHTl9USElTX01FU1NBR0U.KcZ1FnrT1ImAL-7LbALfZOx9F4I4LMuEE8_bg5Zmec4"}
 ```
 
 ##### PUT Response
