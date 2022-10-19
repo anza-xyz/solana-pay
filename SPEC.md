@@ -102,7 +102,7 @@ A Solana Pay interactive request URL describes an interactive request where the 
 1. Transaction Request: A Solana Pay transaction request URL describes an interactive request that returns any Solana transaction.
 2. Sign-message Request: A Solana Pay sign-message request URL describes an interactive request that is used to verify ownership of an address.
 
-The initial request URL structure for both types of interactive requests are the same. As such, wallets will not know which type of interaction is being requested until the POST request response payload is received from the server.
+The request URL structure for both types of interactive requests are the same. As such, wallets will not know which type of interaction is being requested until the POST request response payload is received from the server.
 
 ### Link
 ```html
@@ -258,7 +258,7 @@ The wallet must make an HTTP `POST` JSON request to the URL with a body of
 {"account":"<account>"}
 ```
 
-The `<account>` value must be the base58-encoded public key of an account that may sign the data.
+The `<account>` value must be the base58-encoded public key of the account that will sign the message.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
@@ -273,7 +273,7 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 
 The `<data>` value must be a [UTF-8 encoded](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
 
-The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified before signing.
+The `<state>` value must be a UTF-8 encoded string value that functions as a MAC. The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified.
 
 
 The application may also include an optional `message` field in the response body:
@@ -289,14 +289,14 @@ The wallet and application should allow additional fields in the request body an
 
 #### PUT Request
 
-The wallet must make an HTTP `PUT` JSON request to the URL with a body of
+The PUT request is used to send the results of signing the message back to the server. The wallet must make an HTTP `PUT` JSON request to the URL with a body of
 ```json
 {"account":"<account>","state":"<state>","signature":"<signature>"}
 ```
 
-The `<account>` value must be the base58-encoded public key of an account that may sign the data.
+The `<account>` value must be the base58-encoded public key of the account that signed the message.
 The `<state>` value must be the unmodifed UTF-8-encoded `<state>` value from the response of the preceeding POST request.
-The `<signature>` The <signature> value is the base-58 encoded signature from signing the <data> field with the users private key.
+The `<signature>` value is the base-58 encoded signature from signing the `<data>` field with the users private key.
 
 The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
@@ -320,7 +320,7 @@ The wallet and application should allow additional fields in the request body an
 solana:https://example.com/solana-pay/sign-message
 ```
 
-##### URL describing a transaction request with query parameters.
+##### URL describing a sign-message request with query parameters.
 ```
 solana:https%3A%2F%2Fexample.com%2Fsolana-pay%2Fsign-message%3Fid%3D678910
 ```
@@ -366,7 +366,31 @@ Content-Type: application/json
 Content-Length: 298
 Content-Encoding: gzip
 
-{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
+{"message":"Sign the message to login","data":"alskdfjaisdjfasjdflkasdjfiaj","state":"statehere"}
+```
+
+##### PUT Request
+```
+POST /solana-pay/sign-message?id=678910 HTTP/1.1
+Host: example.com
+Connection: close
+Accept: application/json
+Accept-Encoding: br, gzip, deflate
+Content-Type: application/json
+Content-Length: 57
+
+{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN", "signature":"signature here","state":"statehere"}
+```
+
+##### PUT Response
+```
+HTTP/1.1 200 OK
+Connection: close
+Content-Type: application/json
+Content-Length: 298
+Content-Encoding: gzip
+
+{"success":true}
 ```
 
 ## Extensions
