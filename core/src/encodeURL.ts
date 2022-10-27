@@ -2,9 +2,9 @@ import { SOLANA_PROTOCOL } from './constants.js';
 import type { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types.js';
 
 /**
- * Fields of a Solana Pay transaction or message signing request URL.
+ * Fields of a Solana Pay transaction request URL.
  */
-export interface InteractiveRequestURLFields {
+export interface TransactionRequestURLFields {
     /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link). */
     link: URL;
     /** `label` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#label-1). */
@@ -38,11 +38,11 @@ export interface TransferRequestURLFields {
  *
  * @param fields Fields to encode in the URL.
  */
-export function encodeURL(fields: InteractiveRequestURLFields | TransferRequestURLFields): URL {
-    return 'link' in fields ? encodeInteractiveRequestURL(fields) : encodeTransferRequestURL(fields);
+export function encodeURL(fields: TransactionRequestURLFields | TransferRequestURLFields): URL {
+    return 'link' in fields ? encodeTransactionRequestURL(fields) : encodeTransferRequestURL(fields);
 }
 
-function encodeInteractiveRequestURL({ link, label, message }: InteractiveRequestURLFields): URL {
+function encodeTransactionRequestURL({ link, label, message }: TransactionRequestURLFields): URL {
     // Remove trailing slashes
     const pathname = link.search
         ? encodeURIComponent(String(link).replace(/\/\?/, '?'))
