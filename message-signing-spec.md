@@ -69,7 +69,7 @@ The wallet should display the domain of the URL as the request is being made. If
 
 #### POST Response
 
-The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [error handling](#error-handling) specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages) must be handled appropriately. The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
 {"data":"<data>","state":"<state>"}
 ```
@@ -86,7 +86,7 @@ The application may also include an optional `message` field in the response bod
 
 The `<message>` value must be a UTF-8 encoded string that describes the nature of the sign-message response.
 
-For example, this might be the name of the application or event with which the user is interacting, context about how the sign-message request is being used, or a thank you note. The wallet should display the value to the user.
+For example, this might be the name of the application with which the user is interacting or context about how the sign-message request is being used. The wallet must display at least the first 80 characters of the message field to the user if it is included in the response.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
@@ -111,14 +111,17 @@ The wallet should display the domain of the URL as the request is being made. If
 
 #### PUT Response
 
-The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
-```json
-{"success":"<success>"}
-```
-
-The `<success>` value must be a boolean value indicating whether signature verification succeeded or failed.
+The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [error handling](#error-handling) specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages) must be handled appropriately. The application must respond with these, or with an HTTP `OK` response. An HTTP `OK` response indicates that signature verification was successful.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
+
+#### Error Handling
+If the application responds with an HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error, it must be accompanied by a JSON body containing a UTF-8 string `message` field describing the nature of the error:
+```json
+{"message":"<message>"}
+```
+
+The wallet must display at least the first 80 characters of the `message` field to the user.
 
 ### Sign-message Request Example
 
