@@ -202,5 +202,5 @@ Content-Type: application/json
 Content-Length: 298
 Content-Encoding: gzip
 
-{"success":true}
+{}
 ```
