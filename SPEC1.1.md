@@ -74,9 +74,9 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 {"data":"<data>","state":"<state>"}
 ```
 
-The `<data>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
+The `<data>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value. The wallet must sign the `data` value with the private key that corresponds to the `account` in the request and send `data` and the resulting signature back to the server in the proceeding [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request).
 
-The `<state>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value that functions as a [MAC](https://en.wikipedia.org/wiki/Message_authentication_code). The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified.
+The `<state>` value must be a [UTF-8](https://developer.mozilla.org/en-US/docs/Glossary/UTF-8) string value, and must contain a [MAC](https://en.wikipedia.org/wiki/Message_authentication_code). The wallet will pass this value back to the server in the [PUT request](https://github.com/bedrock-foundation/solana-pay/edit/master/SPEC.md#put-request) in order to verify that the contents of the `<data>` field were not modified.
 
 
 The application may also include an optional `message` field in the response body:
@@ -94,10 +94,12 @@ The wallet and application should allow additional fields in the request body an
 
 The PUT request is used to send the results of signing the message back to the server. The wallet must make an HTTP `PUT` JSON request to the URL with a body of
 ```json
-{"account":"<account>","state":"<state>","signature":"<signature>"}
+{"account":"<account>","data":"<data>","state":"<state>","signature":"<signature>"}
 ```
 
 The `<account>` value must be the base58-encoded public key of the account that signed the message.
+
+The `<data>` value must be the unmodifed `<data>` value from the response of the preceeding POST request.
 
 The `<state>` value must be the unmodifed `<state>` value from the response of the preceeding POST request.
 
@@ -184,7 +186,7 @@ Accept-Encoding: br, gzip, deflate
 Content-Type: application/json
 Content-Length: 57
 
-{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN","signature":"3ApozYFyp2ZxWuGvJS7Q1oV8M3YsLMV3WmwbjGCgktqXfdevjCZ92vA4F9V7Xj7KrN7JTtYStBSBeWnNN7vyHkg5","state":"eyJhbGciOiJIUzI1NiJ9.U0lHTl9USElTX01FU1NBR0U.KcZ1FnrT1ImAL-7LbALfZOx9F4I4LMuEE8_bg5Zmec4"}
+{"account":"mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN","data":"SIGN_THIS_MESSAGE","state":"eyJhbGciOiJIUzI1NiJ9.U0lHTl9USElTX01FU1NBR0U.KcZ1FnrT1ImAL-7LbALfZOx9F4I4LMuEE8_bg5Zmec4","signature":"3ApozYFyp2ZxWuGvJS7Q1oV8M3YsLMV3WmwbjGCgktqXfdevjCZ92vA4F9V7Xj7KrN7JTtYStBSBeWnNN7vyHkg5"}
 ```
 
 ##### PUT Response
