@@ -1,4 +1,4 @@
-# Solana Pay 1.1 Specification
+# Solana Pay Message Signing Specification
 
 ## Summary
 A standard protocol to encode Solana Pay message-signing requests within URLs.
