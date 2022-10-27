@@ -117,7 +117,8 @@ In either case, the wallet must [URL-decode](https://developer.mozilla.org/en-US
 
 The wallet should make an HTTP `GET` JSON request to the URL. The request should not identify the wallet or the user.
 
-The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and the application should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
+The wallet should make the request with an [Accept-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Encoding), and 
+should respond with a [Content-Encoding header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Encoding) for HTTP compression.
 
 The wallet should display the domain of the URL as the request is being made.
 
@@ -151,7 +152,7 @@ The wallet should display the domain of the URL as the request is being made. If
 
 #### POST Response
 
-The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses), [server error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses), and [redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [Error Handling] specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
 {"transaction":"<transaction>"}
 ```
@@ -182,11 +183,19 @@ The application may also include an optional `message` field in the response bod
 {"message":"<message>","transaction":"<transaction>"}
 ```
 
-The `<message>` value must be a UTF-8 string that describes the nature of the transaction response.
+The `<message>` value must be a UTF-8 string that describes the nature of the transaction response. The wallet must display at least the first 80 characters of the `message` field to the user if it is included in the response.
 
 For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
+
+#### Error Handling
+If the application responds with a HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error, it must be accompanied with a JSON body containing a UTF-8 string `message` field describing the nature of the error:
+```json
+{"message":"<message>"}
+```
+
+The wallet must display at least the first 80 characters of the `message` field to the user.
 
 ### Example
 
