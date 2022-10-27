@@ -190,7 +190,7 @@ For example, this might be the name of an item being purchased, a discount appli
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
 #### Error Handling
-If the application responds with an HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error in response to the POST or PUT operations, the wallet must consider the entire message-signing request as failed. 
+If the application responds with an HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error in response to the POST or PUT operations, the wallet must consider the entire transaction request as failed. 
 
 Client and server errors may optionally be accompanied by a JSON body containing a UTF-8 string `message` field describing the nature of the error:
 ```json
