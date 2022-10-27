@@ -46,7 +46,7 @@ The wallet must handle HTTP [client error](https://developer.mozilla.org/en-US/d
 {"label":"<label>","icon":"<icon>"}
 ```
 
-The `<label>` value must be a UTF-8 string that describes the source of the transaction request. For example, this might be the name of a brand, store, application, or person making the request.
+The `<label>` value must be a UTF-8 string that describes the source of the sign-message request. For example, this might be the name of a brand, store, application, or person making the request.
 
 The `<icon>` value must be an absolute HTTP or HTTPS URL of an icon image. The file must be an SVG, PNG, or WebP image, or the wallet must reject it as **malformed**.
 
@@ -99,9 +99,9 @@ The PUT request is used to send the results of signing the message back to the s
 
 The `<account>` value must be the base58-encoded public key of the account that signed the message.
 
-The `<data>` value must be the unmodifed `<data>` value from the response of the preceeding POST request.
+The `<data>` value must be the unmodified `<data>` value from the response of the preceding POST request.
 
-The `<state>` value must be the unmodifed `<state>` value from the response of the preceeding POST request.
+The `<state>` value must be the unmodified `<state>` value from the response of the preceding POST request.
 
 The `<signature>` value is the base58-encoded signature from signing the `<data>` field with the users private key.
 
@@ -199,11 +199,3 @@ Content-Encoding: gzip
 
 {"success":true}
 ```
-
-## Extensions
-
-Additional formats and fields may be incorporated into this specification to enable new use cases while ensuring compatibility with apps and wallets.
-
-Please open a Github issue to propose changes to the specification in order to solicit feedback from application and wallet developers.
-
-[An actual example of such a proposal.](https://github.com/solana-labs/solana-pay/issues/26)
