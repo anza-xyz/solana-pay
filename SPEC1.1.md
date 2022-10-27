@@ -152,7 +152,7 @@ The wallet should display the domain of the URL as the request is being made. If
 
 #### POST Response
 
-The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [Error Handling] specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages). The application must respond with these, or with an HTTP `OK` JSON response with a body of
+The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [error handling](#error-handling) specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages) must be handled appropriately. The application must respond with these, or with an HTTP `OK` JSON response with a body of
 ```json
 {"transaction":"<transaction>"}
 ```
@@ -190,7 +190,7 @@ For example, this might be the name of an item being purchased, a discount appli
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
 #### Error Handling
-If the application responds with a HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error, it must be accompanied with a JSON body containing a UTF-8 string `message` field describing the nature of the error:
+If the application responds with a HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error, it must be accompanied by a JSON body containing a UTF-8 string `message` field describing the nature of the error:
 ```json
 {"message":"<message>"}
 ```
