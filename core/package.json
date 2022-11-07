@@ -9,9 +9,6 @@
     },
     "type": "module",
     "sideEffects": false,
-    "engines": {
-        "node": ">=16"
-    },
     "files": [
         "lib",
         "src",
