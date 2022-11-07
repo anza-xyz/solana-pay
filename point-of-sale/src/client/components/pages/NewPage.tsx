@@ -12,7 +12,8 @@ import { NumPad } from '../sections/NumPad';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
 import css from './NewPage.module.css';
-import { SolflareWalletName } from '@solana/wallet-adapter-solflare';
+import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
+
 import { BackButton } from '../buttons/BackButton';
 import { useRouter } from 'next/router';
 import { Merchant } from '../sections/Merchant';
@@ -26,9 +27,9 @@ const NewPage: NextPage = () => {
     const { baseURL } = useConfig();
     const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
 
-    // if (!IS_MERCHANT_POS && !wallet) {
-    // setTimeout(() => select(SolflareWalletName), 100);
-    // }
+    if (!IS_MERCHANT_POS && !wallet) {
+        setTimeout(() => select(SolanaMobileWalletAdapterWalletName), 100);
+    }
 
     // TODO : Add translation
     return phone ? (
