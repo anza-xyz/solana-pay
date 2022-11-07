@@ -13,7 +13,7 @@ export interface MerchantsProps {
 export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
     const { baseURL } = useConfig();
     const navigate = useNavigateWithQuery();
-    const merchantList = useMemo(() => merchants, []);
+    const merchantList = useMemo(() => merchants, [merchants]);
     const onClickItem = useCallback((index: number, item: ReactNode) => {
         const { index: id, address: recipient, company: label, maxValue } = merchantList[index];
         const url = new URL(`${baseURL}/new`);
@@ -22,7 +22,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
         url.searchParams.append('label', label.toString());
         url.searchParams.append('maxValue', maxValue.toString());
         navigate(url.toString());
-    }, []);
+    }, [baseURL, merchantList, navigate]);
 
     return (
         <Carousel

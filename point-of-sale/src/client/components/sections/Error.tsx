@@ -19,15 +19,15 @@ export const Error: FC = () => {
                     return e[1] === 'insufficient funds'
                         ? 'Le montant est supérieur à vos fonds !'
                         : e[1] === 'recipient not found'
-                        ? "Le porte-monnaie de ce commerçant à besoin d'être initialisé !"
-                        : 'Erreur de transfert !';
+                            ? "Le porte-monnaie de ce commerçant à besoin d'être initialisé !"
+                            : 'Erreur de transfert !';
                 default:
                     return 'Erreur inconnue : ' + errorMessage;
             }
         } else {
             return null;
         }
-    }, [errorMessage]);
+    }, [errorMessage, status]);
 
     return <div className={css.error}>{text}</div>;
 };
