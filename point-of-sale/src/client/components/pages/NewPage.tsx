@@ -26,9 +26,9 @@ const NewPage: NextPage = () => {
     const { baseURL } = useConfig();
     const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
 
-    if (!IS_MERCHANT_POS && !wallet) {
-        setTimeout(() => select(SolflareWalletName), 100);
-    }
+    // if (!IS_MERCHANT_POS && !wallet) {
+    // setTimeout(() => select(SolflareWalletName), 100);
+    // }
 
     // TODO : Add translation
     return phone ? (
@@ -46,7 +46,7 @@ const NewPage: NextPage = () => {
                     <Merchant index={merchant.index} company={merchant.company} />
                     <div className={css.row}>
                         <WalletMultiButton className={css.button}>
-                            {wallet ? 'Connexion à ' + wallet.adapter.name + '...' : 'Choisir son portefeuille'}
+                            {wallet ? 'Connexion à ' + wallet.adapter.name + '...' : 'Se connecter'}
                         </WalletMultiButton>
                     </div>
                 </div>

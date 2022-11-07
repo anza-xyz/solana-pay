@@ -17,8 +17,8 @@
     margin: 48px;
 }
 
-.button[disabled] {
-    background: transparent;
+.button, .button[disabled] {
+    background: gold;
     color: black;
 }
 
