@@ -2,6 +2,7 @@ import { clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { SOLIcon } from '../components/images/SOLIcon';
 import { USDCIcon } from '../components/images/USDCIcon';
 import { USDTIcon } from '../components/images/USDTIcon';
+import { EURIcon } from '../components/images/EURIcon';
 import { agEURIcon } from '../components/images/agEURIcon';
 import { Digits } from '../types';
 
@@ -22,8 +23,8 @@ export const DEVNET_DUMMY_MINT = new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSz
 
 export const MAINNET_USDC_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
 export const MAINNET_USDT_MINT = new PublicKey('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB');
+export const MAINNET_EUR_MINT = new PublicKey('Pnsjp9dbenPeFZWqqPHDygzkCZ4Gr37G8mgdRK2KjQp');
 export const MAINNET_AGEUR_MINT = new PublicKey('CbNYA9n3927uXUukee2Hf4tm3xxkffJPPZvGazc2EAH1');
-
 // Format
 // CURRENCY: [Mint address, icon tsx file, number of decimals, number of decimals min, symbol]
 interface currencyType {
@@ -31,6 +32,7 @@ interface currencyType {
 }
 export const CURRENCY_LIST: currencyType = {
     SOL: [undefined, SOLIcon, 9, 1, 'SOL'],
+    EUR: [MAINNET_EUR_MINT, EURIcon, 9, 2, '€'],
     agEUR: [MAINNET_AGEUR_MINT, agEURIcon, 8, 2, '€'],
     USDC: [MAINNET_USDC_MINT, USDCIcon, 6, 2, '$'],
     USDC_Dev: [DEVNET_DUMMY_MINT, USDCIcon, 6, 2, '$'],
