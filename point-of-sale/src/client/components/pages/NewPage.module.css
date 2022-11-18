@@ -14,12 +14,12 @@
 .row {
     display: flex;
     justify-content: center;
-    margin: 48px;
+    margin: 48px 24px;
 }
 
 .button {
     margin: 24px auto;
-    padding: 12px 24px;
+    padding: 12px 48px;
     border: 0;
     border-radius: 8px;
     display: block;
