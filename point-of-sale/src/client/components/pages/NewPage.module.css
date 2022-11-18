@@ -19,7 +19,7 @@
 
 .button {
     margin: 24px auto;
-    padding: 12px 48px;
+    padding: 12px 48px 48px 48px;
     border: 0;
     border-radius: 8px;
     display: block;

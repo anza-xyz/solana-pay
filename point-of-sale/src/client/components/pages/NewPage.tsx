@@ -47,7 +47,7 @@ const NewPage: NextPage = () => {
                     <Merchant index={merchant.index} company={merchant.company} />
                     <div className={css.row}>
                         <WalletMultiButton className={css.button}>
-                            {wallet ? 'Connexion à ' + wallet.adapter.name.split(" ")[0] + '...' : 'Se connecter'}
+                            {wallet ? 'Connexion à ' + wallet.adapter.name.split(" ")[0] + ' ...' : 'Se connecter'}
                         </WalletMultiButton>
                     </div>
                 </div>
