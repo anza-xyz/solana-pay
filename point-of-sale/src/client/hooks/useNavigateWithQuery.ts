@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import { useCallback } from 'react';
 import { createURLWithQuery } from '../utils/createURLWithQuery';
-import { useConfig } from './useConfig';
 
 export interface NavigateOptions {
     replace: boolean;

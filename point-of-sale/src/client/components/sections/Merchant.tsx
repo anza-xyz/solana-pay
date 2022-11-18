@@ -23,7 +23,7 @@ export const Merchant: FC<MerchantProps> = ({ index, company }) => {
     return (
         <div className={css.body}>
             <div className={css.row}>
-                <Image className={css.image} src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} />
+                <Image className={css.image} src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} priority={true} />
             </div>
             <div className={css.row}>
                 <div className={css.label}>{company}</div>

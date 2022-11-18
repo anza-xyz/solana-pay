@@ -17,9 +17,24 @@
     margin: 48px;
 }
 
-.button, .button[disabled] {
-    background: gold;
-    color: black;
+.button {
+    margin: 24px auto;
+    padding: 12px 24px;
+    border: 0;
+    border-radius: 8px;
+    display: block;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    cursor: pointer;
+    visibility: visible;
+    background: black;
+}
+
+.button[disabled] {
+    cursor: default;
+    opacity: 0.5;
+    visibility: hidden;
 }
 
 @media (max-width: 767px) {
