@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { useConfig } from "../../hooks/useConfig";
 import { useError } from '../../hooks/useError';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import css from './Error.module.css';
@@ -6,6 +7,7 @@ import css from './Error.module.css';
 export const Error: FC = () => {
     const { status } = usePayment();
     const { errorMessage } = useError();
+    const { currency } = useConfig();
 
     const text = useMemo(() => {
         if (status === PaymentStatus.Error && errorMessage) {
@@ -16,7 +18,7 @@ export const Error: FC = () => {
                 case 'WalletSendTransactionError':
                     return 'Vous avez trop tardé à approuver la transaction !';
                 case 'TokenAccountNotFoundError':
-                    return 'Le marchand doit ajouter cette monnaie à son porte-monnaie !';
+                    return 'Vous devez ajouter la monnaie "' + currency + '" à votre porte-monnaie !';
                 case 'CreateTransferError':
                     return e[1] === 'insufficient funds'
                         ? 'Le montant est supérieur à vos fonds !'
@@ -33,7 +35,7 @@ export const Error: FC = () => {
         } else {
             return null;
         }
-    }, [errorMessage, status]);
+    }, [errorMessage, status, currency]);
 
     return <div className={css.error}>{text}</div>;
 };
