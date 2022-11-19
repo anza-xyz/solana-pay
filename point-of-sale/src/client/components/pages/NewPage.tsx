@@ -27,10 +27,6 @@ const NewPage: NextPage = () => {
     const { baseURL } = useConfig();
     const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
 
-    if (!IS_MERCHANT_POS && !wallet) {
-        setTimeout(() => select(SolanaMobileWalletAdapterWalletName), 100);
-    }
-
     // TODO : Add translation
     return phone ? (
         <div className={css.root}>
