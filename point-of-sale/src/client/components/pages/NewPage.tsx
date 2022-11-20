@@ -38,22 +38,17 @@ const NewPage: NextPage = () => {
                 <FullscreenButton />
                 <TransactionsLink />
             </div>
-            {!IS_MERCHANT_POS && !publicKey ? (
-                <div className={css.body}>
-                    <Merchant index={merchant.index} company={merchant.company} />
-                    <div className={css.row}>
-                        <WalletMultiButton className={css.button}>
-                            {wallet ? 'Connexion à ' + wallet.adapter.name.split(" ")[0] + ' ...' : 'Se connecter'}
-                        </WalletMultiButton>
-                    </div>
-                </div>
-            ) : (
-                <div className={css.body}>
-                    <NumPad />
+            <div className={css.body}>
+                <NumPad />
+                {publicKey || IS_MERCHANT_POS ? (
                     <GenerateButton>{generateText}</GenerateButton>
-                    <PoweredBy />
-                </div>
-            )}
+                ) : (
+                    <WalletMultiButton className={css.button} disabled={wallet ? true : false}>
+                        {wallet ? 'Connexion à ' + wallet.adapter.name.split(" ")[0] + ' ...' : 'Se connecter'}
+                    </WalletMultiButton>
+                )}
+                <PoweredBy />
+            </div>
         </div>
     ) : (
         <div className={css.root}>

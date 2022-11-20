@@ -9,6 +9,7 @@
     font-weight: 500;
     cursor: pointer;
     visibility: visible;
+    background: black;
 }
 
 .root[disabled] {
