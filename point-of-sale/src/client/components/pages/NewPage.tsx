@@ -40,7 +40,7 @@ const NewPage: NextPage = () => {
                 const status = response.value;
                 if (!status) return;
             } catch (error: any) {
-                alert(error);
+                // alert(error);
                 // sendError(error);
             }
         };
