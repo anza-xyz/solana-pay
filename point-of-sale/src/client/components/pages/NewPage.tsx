@@ -1,31 +1,56 @@
-import { useWallet } from '@solana/wallet-adapter-react';
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
 import { FullscreenButton } from '../buttons/FullscreenButton';
 import { GenerateButton } from '../buttons/GenerateButton';
 import { TransactionsLink } from '../buttons/TransactionsLink';
+import { ConnectionButton } from '../buttons/ConnectionButton';
 import { NumPad } from '../sections/NumPad';
 import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
 import css from './NewPage.module.css';
-import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
-
 import { BackButton } from '../buttons/BackButton';
 import { useRouter } from 'next/router';
-import { Merchant } from '../sections/Merchant';
+import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
 
 const NewPage: NextPage = () => {
-    const { id, label, recipient, maxValue } = useConfig();
+    const { connection } = useConnection();
     const { publicKey, select, wallet } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const generateText = 'Payer';
     const router = useRouter();
-    const { baseURL } = useConfig();
-    const merchant = { index: id as number, address: recipient.toString(), company: label, maxValue };
+    const { baseURL, splToken } = useConfig();
+
+    useEffect(() => {
+        if (!IS_MERCHANT_POS && !wallet) {
+            setTimeout(() => select(SolflareWalletName), 100);
+        }
+    });
+
+    useEffect(() => {
+        if (!(connection && publicKey && splToken)) return;
+        let changed = false;
+
+        const run = async () => {
+            try {
+                const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
+                const status = response.value;
+                if (!status) return;
+            } catch (error: any) {
+                alert(error);
+                // sendError(error);
+            }
+        };
+        let timeout = setTimeout(run, 0);
+
+        return () => {
+            changed = true;
+            clearTimeout(timeout);
+        };
+    }, [connection, publicKey, splToken]);
 
     // TODO : Add translation
     return phone ? (
@@ -37,16 +62,11 @@ const NewPage: NextPage = () => {
 
                 <FullscreenButton />
                 <TransactionsLink />
+                <ConnectionButton />
             </div>
             <div className={css.body}>
                 <NumPad />
-                {publicKey || IS_MERCHANT_POS ? (
-                    <GenerateButton>{generateText}</GenerateButton>
-                ) : (
-                    <WalletMultiButton className={css.button} disabled={wallet ? true : false}>
-                        {wallet ? 'Connexion à ' + wallet.adapter.name.split(" ")[0] + ' ...' : 'Se connecter'}
-                    </WalletMultiButton>
-                )}
+                <GenerateButton>{generateText}</GenerateButton>
                 <PoweredBy />
             </div>
         </div>
