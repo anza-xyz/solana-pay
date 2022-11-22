@@ -30,28 +30,6 @@ const NewPage: NextPage = () => {
         }
     });
 
-    useEffect(() => {
-        if (!(connection && publicKey && splToken)) return;
-        let changed = false;
-
-        const run = async () => {
-            try {
-                const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
-                const status = response.value;
-                if (!status) return;
-            } catch (error: any) {
-                // alert(error);
-                // sendError(error);
-            }
-        };
-        let timeout = setTimeout(run, 0);
-
-        return () => {
-            changed = true;
-            clearTimeout(timeout);
-        };
-    }, [connection, publicKey, splToken]);
-
     // TODO : Add translation
     return phone ? (
         <div className={css.root}>
