@@ -11,11 +11,9 @@ export const TransactionsLink: FC = () => {
     const phone = useMediaQuery({ query: '(max-width: 767px)' });
 
     return IS_MERCHANT_POS ? (
-        <Link href={to} passHref>
-            <a className={css.link}>
-                <ActivityIcon />
-                {phone ? null : 'Recent Transactions'}
-            </a>
+        <Link href={to} passHref className={css.link}>
+            <ActivityIcon />
+            {phone ? null : 'Recent Transactions'}
         </Link>
     ) : null;
 };
