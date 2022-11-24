@@ -100,7 +100,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
-    const endpoint = IS_MERCHANT_POS ? (IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT) : clusterApiUrl(network);
+    const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
     const splToken = currencyDetail[0];
     const icon = React.createElement(currencyDetail[1]);
     const decimals = currencyDetail[2];

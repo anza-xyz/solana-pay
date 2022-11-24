@@ -33,7 +33,7 @@
         "color-interpolate": "^1.0.5",
         "cors": "^2.8.5",
         "date-fns": "^2.29.3",
-        "express-rate-limit": "^6.6.0",
+        "express-rate-limit": "^6.7.0",
         "react": "^18.2.0",
         "react-circular-progressbar": "^2.1.0",
         "react-dom": "^18.2.0",
