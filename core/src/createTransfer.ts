@@ -89,11 +89,7 @@ async function createSystemInstruction(
     connection: Connection
 ): Promise<TransactionInstruction> {
     // Check that the sender and recipient accounts exist
-    const senderInfo = await connection.getAccountInfo(sender);
-    if (!senderInfo) throw new CreateTransferError('sender not found');
-
-    const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new CreateTransferError('recipient not found');
+    const {senderInfo, recipientInfo} = await checkAccount(connection, sender, recipient);
 
     // Check that the sender and recipient are valid native accounts
     if (!senderInfo.owner.equals(SystemProgram.programId)) throw new CreateTransferError('sender owner invalid');
@@ -127,12 +123,8 @@ async function createSPLTokenInstruction(
     connection: Connection
 ): Promise<TransactionInstruction> {
     // Check that the sender and recipient accounts exist
-    const senderInfo = await connection.getAccountInfo(sender);
-    if (!senderInfo) throw new CreateTransferError('sender not found');
+    await checkAccount(connection, sender, recipient);
 
-    const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new CreateTransferError('recipient not found');
-        
     // Check that the token provided is an initialized mint
     const mint = await getMint(connection, splToken);
     if (!mint.isInitialized) throw new CreateTransferError('mint not initialized');
@@ -161,4 +153,15 @@ async function createSPLTokenInstruction(
 
     // Create an instruction to transfer SPL tokens, asserting the mint and decimals match
     return createTransferCheckedInstruction(senderATA, splToken, recipientATA, sender, tokens, mint.decimals);
+}
+
+// Check that the sender and recipient accounts exist
+async function checkAccount(connection:Connection, sender:PublicKey, recipient:PublicKey):Promise<{senderInfo:any, recipientInfo:any}> {
+    const senderInfo = await connection.getAccountInfo(sender);
+    if (!senderInfo) throw new CreateTransferError('sender not found');
+
+    const recipientInfo = await connection.getAccountInfo(recipient);
+    if (!recipientInfo) throw new CreateTransferError('recipient not found');
+
+    return {senderInfo, recipientInfo};
 }
