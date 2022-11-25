@@ -44,13 +44,6 @@ export async function createTransfer(
     { recipient, amount, splToken, reference, memo }: CreateTransferFields,
     { commitment }: { commitment?: Commitment } = {}
 ): Promise<Transaction> {
-    // Check that the sender and recipient accounts exist
-    const senderInfo = await connection.getAccountInfo(sender);
-    if (!senderInfo) throw new CreateTransferError('sender not found');
-
-    const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new CreateTransferError('recipient not found');
-
     // A native SOL or SPL token transfer instruction
     const instruction = splToken
         ? await createSPLTokenInstruction(recipient, amount, splToken, sender, connection)
@@ -70,7 +63,7 @@ export async function createTransfer(
     // Create the transaction
     const transaction = new Transaction();
     transaction.feePayer = sender;
-    transaction.recentBlockhash = (await connection.getRecentBlockhash(commitment)).blockhash;
+    transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
 
     // If a memo is provided, add it to the transaction before adding the transfer instruction
     if (memo != null) {
@@ -133,6 +126,13 @@ async function createSPLTokenInstruction(
     sender: PublicKey,
     connection: Connection
 ): Promise<TransactionInstruction> {
+    // Check that the sender and recipient accounts exist
+    const senderInfo = await connection.getAccountInfo(sender);
+    if (!senderInfo) throw new CreateTransferError('sender not found');
+
+    const recipientInfo = await connection.getAccountInfo(recipient);
+    if (!recipientInfo) throw new CreateTransferError('recipient not found');
+        
     // Check that the token provided is an initialized mint
     const mint = await getMint(connection, splToken);
     if (!mint.isInitialized) throw new CreateTransferError('mint not initialized');
