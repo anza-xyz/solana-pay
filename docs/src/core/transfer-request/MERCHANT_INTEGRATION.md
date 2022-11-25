@@ -15,7 +15,7 @@ Before you can receive payments, you'll need to obtain a native SOL address. Thi
 
 If you want to receive USDC or another SPL token on Solana, you'll need to create a token account, which may require a small amount of SOL.
 
-One way to do both is to use FTX / FTX.us, which will provide a native SOL deposit address and an associated USDC token account to receive payments.
+One way to do both is to use Coinbase, which will provide a native SOL deposit address and an associated USDC token account to receive payments.
 
 ---
 
