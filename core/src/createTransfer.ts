@@ -1,5 +1,5 @@
 import { createTransferCheckedInstruction, getAccount, getAssociatedTokenAddress, getMint } from '@solana/spl-token';
-import { Commitment, Connection, PublicKey } from '@solana/web3.js';
+import type { AccountInfo, Commitment, Connection, PublicKey } from '@solana/web3.js';
 import { LAMPORTS_PER_SOL, SystemProgram, Transaction, TransactionInstruction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { MEMO_PROGRAM_ID, SOL_DECIMALS, TEN } from './constants.js';
@@ -47,11 +47,11 @@ export async function createTransfer(
     // Check that the sender accounts exist
     const senderInfo = await connection.getAccountInfo(sender);
     if (!senderInfo) throw new CreateTransferError('sender not found');
-    
+
     // A native SOL or SPL token transfer instruction
     const instruction = splToken
-        ? await createSPLTokenInstruction(recipient, amount, splToken, senderInfo, connection)
-        : await createSystemInstruction(recipient, amount, sender, connection);
+        ? await createSPLTokenInstruction(recipient, amount, splToken, sender, connection)
+        : await createSystemInstruction(recipient, amount, senderInfo, connection);
 
     // If reference accounts are provided, add them to the transfer instruction
     if (reference) {
@@ -69,12 +69,13 @@ export async function createTransfer(
     transaction.feePayer = sender;
     transaction.recentBlockhash = (await connection.getLatestBlockhash(commitment)).blockhash;
 
-    // Check whether sender can pay for transaction fee 
+    // Check whether sender can pay for transaction fee
     const response = await connection.getFeeForMessage(transaction.compileMessage(), commitment);
-    const feeInLamports = response.value || 5000;   // Set the minimal transaction fee in case it was not fetch
+    const feeInLamports = response.value || 5000; // Set the minimal transaction fee in case it was not fetch
     const lamportsNeeded = feeInLamports + (splToken ? 0 : convertAmountToLamports(amount));
-    if (lamportsNeeded > senderInfo.lamports) throw new CreateTransferError('insufficient SOL funds to pay for transaction fee');
-  
+    if (lamportsNeeded > senderInfo.lamports)
+        throw new CreateTransferError('insufficient SOL funds to pay for transaction fee');
+
     // If a memo is provided, add it to the transaction before adding the transfer instruction
     if (memo != null) {
         transaction.add(
@@ -95,15 +96,16 @@ export async function createTransfer(
 async function createSystemInstruction(
     recipient: PublicKey,
     amount: BigNumber,
-    senderInfo: ,
+    senderInfo: AccountInfo<Buffer>,
     connection: Connection
-): Promise<TransactionInstruction> {    
+): Promise<TransactionInstruction> {
     // Check that the sender is valid native accounts
     if (!senderInfo.owner.equals(SystemProgram.programId)) throw new CreateTransferError('sender owner invalid');
     if (senderInfo.executable) throw new CreateTransferError('sender executable');
 
     // Check that the recipient is valid native accounts
     const recipientInfo = await connection.getAccountInfo(recipient);
+    if (!recipientInfo) throw new CreateTransferError('sender not found');
     if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new CreateTransferError('recipient owner invalid');
     if (recipientInfo.executable) throw new CreateTransferError('recipient executable');
 
@@ -116,7 +118,7 @@ async function createSystemInstruction(
 
     // Create an instruction to transfer native SOL
     return SystemProgram.transfer({
-        fromPubkey: sender,
+        fromPubkey: senderInfo.owner,
         toPubkey: recipient,
         lamports,
     });
@@ -159,7 +161,13 @@ async function createSPLTokenInstruction(
     return createTransferCheckedInstruction(senderATA, splToken, recipientATA, sender, tokens, mint.decimals);
 }
 
-// Convert input decimal amount to integer lamports
-function convertAmountToLamports(amount:BigNumber) {
+/**
+ * Convert input decimal amount to integer lamports.
+ *
+ * @param amount - The decimal amount to convert.
+ *
+ * @return - The converted amount in integer lamports.
+ */
+function convertAmountToLamports(amount: BigNumber) {
     return amount.times(LAMPORTS_PER_SOL).integerValue(BigNumber.ROUND_FLOOR).toNumber();
 }
