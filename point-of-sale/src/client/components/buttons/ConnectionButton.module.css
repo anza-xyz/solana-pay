@@ -4,6 +4,7 @@
     margin: 12px;
     display: inline-flex;
     align-items: center;
+    float: right;
     gap: 8px;
     font-weight: 500;
     color: inherit;

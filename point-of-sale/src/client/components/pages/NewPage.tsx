@@ -15,44 +15,22 @@ import css from './NewPage.module.css';
 import { BackButton } from '../buttons/BackButton';
 import { useRouter } from 'next/router';
 import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
+import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 
 const NewPage: NextPage = () => {
-    const { connection } = useConnection();
-    const { publicKey, select, wallet } = useWallet();
+    const { wallet, select, connect } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const generateText = 'Payer';
     const router = useRouter();
-    const { baseURL, splToken } = useConfig();
+    const { baseURL } = useConfig();
 
-    useEffect(() => {
-        if (!IS_MERCHANT_POS && !wallet) {
-            setTimeout(() => select(SolflareWalletName), 100);
-        }
-    });
-
-    //TODO
-    // useEffect(() => {
-    // if (!(connection && publicKey && splToken)) return;
-    //     let changed = false;
-
-    //     const run = async () => {
-    //         try {
-    //             const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
-    //             const status = response.value;
-    //             if (!status) return;
-    //             alert(status);
-    //         } catch (error: any) {
-    //             alert(error);
-    //             // sendError(error);
-    //         }
-    //     };
-    //     let timeout = setTimeout(run, 0);
-
-    //     return () => {
-    //         changed = true;
-    //         clearTimeout(timeout);
-    //     };
-    // }, [connection, publicKey, splToken]);
+    useEffect(
+        () => {
+            if (!wallet && !IS_MERCHANT_POS) {
+                let isMobile = /Mobi|Android/i.test(navigator.userAgent);
+                setTimeout(() => select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName), 100);
+            };
+        }, [select, connect, wallet]);
 
     // TODO : Add translation
     return phone ? (

@@ -7,19 +7,19 @@ import { useWallet } from "@solana/wallet-adapter-react";
 import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
 
 export const ConnectionButton: FC = () => {
-    const { wallet, connect, disconnect } = useWallet();
+    const { wallet, connect, disconnect, connected, select } = useWallet();
 
     const handleClick = useCallback(async () => {
         if (!wallet) {
-            connect().catch(() => { });
+            connect().catch(() => setTimeout(() => select(SolflareWalletName), 100));
         } else {
             disconnect().catch(() => { });
         }
-    }, [wallet, connect, disconnect]);
+    }, [wallet, connect, disconnect, select]);
 
     return !IS_MERCHANT_POS ? (
         <button className={css.button} type="button" onClick={handleClick}>
-            {wallet ? <ConnectIcon /> : <DisconnectIcon />}
+            {connected ? <ConnectIcon /> : <DisconnectIcon />}
         </button>
     ) : null;
 };
