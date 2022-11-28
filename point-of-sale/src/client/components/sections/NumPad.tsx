@@ -1,3 +1,5 @@
+import { getAccount, getAssociatedTokenAddress } from "@solana/spl-token";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -29,6 +31,10 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 
 export const NumPad: FC = () => {
     const { symbol, currency, minDecimals, maxValue } = useConfig();
+    const { connection } = useConnection();
+    const { publicKey } = useWallet();
+    const { splToken, decimals } = useConfig();
+
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + minDecimals + '})?$'), [minDecimals]);
 
     const [value, setValue] = useState('0');
@@ -49,11 +55,37 @@ export const NumPad: FC = () => {
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
+    //TODO
+    const [current, setCurrent] = useState(' ');
+    useEffect(() => {
+        if (!(connection && publicKey && splToken)) { setCurrent(' '); return; }
+        let changed = false;
+
+        const run = async () => {
+            try {
+                // const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
+                const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
+                const senderAccount = await getAccount(connection, senderATA);
+                console.log(senderAccount.amount);
+                setCurrent("Votre solde : " + (SHOW_SYMBOL ? symbol : currency) + Number(senderAccount.amount) / Math.pow(10, decimals));
+            } catch (error: any) {
+                setCurrent("AUCUN SOLDE !");
+            }
+        };
+        let timeout = setTimeout(run, 0);
+
+        return () => {
+            changed = true;
+            clearTimeout(timeout);
+        };
+    }, [connection, publicKey, splToken, currency, symbol, decimals]);
+
     //TODO : Add translastion
     return (
         <div className={css.root}>
-            <div className={css.text}>Entrez le Montant en {SHOW_SYMBOL ? symbol : currency}</div>
-            <div className={css.value}>{value}</div>
+            <div className={css.bold}>{current}</div>
+            <div className={css.text}>Entrez le Montant à Payer :</div>
+            <div className={css.value}>{SHOW_SYMBOL ? symbol : currency} {value}</div>
             <div className={css.buttons}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
