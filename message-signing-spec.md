@@ -1,5 +1,7 @@
 # Solana Pay Message Signing Specification
 
+This spec is currently alpha and subject to change
+
 ## Summary
 A standard protocol to encode Solana Pay message-signing requests within URLs.
 
