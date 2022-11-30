@@ -368,7 +368,7 @@ The steps outlined above prevents:
 [1]: https://github.com/solana-labs/qr-code-styling
 [2]: https://spl.solana.com/memo
 [3]: https://github.com/solana-labs/solana/issues/19535
-[4]: https://github.com/solana-labs/solana-pay/tree/master/point-of-sale
+[4]: https://github.com/solana-labs/solana-pay/tree/master/examples/point-of-sale
 [5]: https://github.com/solana-labs/solana-pay/tree/master/core/example/payment-flow-merchant
 [6]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/simulateCheckout.ts
 [7]: https://github.com/solana-labs/solana-pay/blob/master/core/example/payment-flow-merchant/main.ts#L61
