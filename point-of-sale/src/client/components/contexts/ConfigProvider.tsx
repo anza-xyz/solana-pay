@@ -21,6 +21,7 @@ export interface ConfigProviderProps {
     currency: string;
     id?: number;
     connectWallet?: boolean;
+    reset?: () => void;
 }
 
 export const ConfigProvider: FC<ConfigProviderProps> = ({
@@ -40,6 +41,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     currency,
     id,
     connectWallet = false,
+    reset,
 }) => {
     return (
         <ConfigContext.Provider
@@ -59,6 +61,7 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
                 currency,
                 id,
                 connectWallet,
+                reset
             }}
         >
             {children}

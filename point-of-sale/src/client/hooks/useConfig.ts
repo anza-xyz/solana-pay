@@ -18,6 +18,7 @@ export interface ConfigContextState {
     currency: string;
     id?: number;
     connectWallet: boolean;
+    reset?: () => void;
 }
 
 export const ConfigContext = createContext<ConfigContextState>({} as ConfigContextState);

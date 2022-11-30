@@ -1,6 +1,5 @@
 import React, { FC, ReactNode, useCallback, useState } from 'react';
 import { ErrorContext } from '../../hooks/useError';
-import { PaymentStatus } from '../../hooks/usePayment';
 
 export interface ErrorProviderProps {
     children: ReactNode;

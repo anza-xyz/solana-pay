@@ -1,6 +1,6 @@
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
@@ -21,14 +21,20 @@ const NewPage: NextPage = () => {
     const { wallet, select, connect } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const generateText = 'Payer';
-    const router = useRouter();
-    const { baseURL } = useConfig();
+    const { reset } = useConfig();
 
     useEffect(
         () => {
             if (!wallet && !IS_MERCHANT_POS) {
-                let isMobile = /Mobi|Android/i.test(navigator.userAgent);
-                setTimeout(() => select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName), 100);
+                let isMobile = typeof window !== 'undefined' &&
+                    window.isSecureContext &&
+                    typeof document !== 'undefined' &&
+                    /mobi|android/i.test(navigator.userAgent);
+
+                setTimeout(() => {
+                    select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
+                    connect().catch(() => setTimeout(() => select(SolflareWalletName), 100));
+                }, 100);
             };
         }, [select, connect, wallet]);
 
@@ -37,7 +43,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.top}>
                 {!IS_MERCHANT_POS ? (
-                    <BackButton onClick={() => router.replace(baseURL)}>Changer de Marchand</BackButton>
+                    <BackButton onClick={reset}>Changer de Marchand</BackButton>
                 ) : null}
 
                 <FullscreenButton />
@@ -49,7 +55,7 @@ const NewPage: NextPage = () => {
                 <GenerateButton>{generateText}</GenerateButton>
                 <PoweredBy />
             </div>
-        </div>
+        </div >
     ) : (
         <div className={css.root}>
             <div className={css.main}>

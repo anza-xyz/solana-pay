@@ -2,10 +2,10 @@ import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
-import { clusterApiUrl, PublicKey } from '@solana/web3.js';
+import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
-import { FC, useMemo } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
@@ -19,6 +19,7 @@ import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
 import { MerchantCarousel } from '../sections/Carousel';
+import { useRouter } from "next/router";
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -65,6 +66,13 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [recipient, setRecipient] = useState(new PublicKey(0));
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
     const [merchants, setMerchants] = useState<MerchantInfo[]>();
+
+    const router = useRouter();
+    const reset = useCallback(() => {
+        router.replace(baseURL + '/new');
+        setLabel('');
+        setRecipient(new PublicKey(0));
+    }, [baseURL, router]);
 
     const { id, message, recipient: recipientParam, label: labelParam, maxValue: maxValueParam } = query;
     useEffect(() => {
@@ -130,6 +138,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                         currency={currency}
                                         id={id}
                                         connectWallet={connectWallet}
+                                        reset={reset}
                                     >
                                         <TransactionsProvider>
                                             <PaymentProvider>
