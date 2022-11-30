@@ -83,8 +83,8 @@ export const NumPad: FC = () => {
     return (
         <div className={css.root}>
             <div className={css.bold}>{current}</div>
-            <div className={css.text}>Entrez le Montant à Payer :</div>
-            <div className={css.value}>{value} {SHOW_SYMBOL ? symbol : currency}</div>
+            <div className={css.text}>À Payer :</div>
+            <div className={css.value}>{value}{SHOW_SYMBOL ? symbol : currency}</div>
             <div className={css.buttons}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
