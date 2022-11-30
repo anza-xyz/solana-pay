@@ -18,8 +18,7 @@ export const TransactionInfo: FC = () => {
             <div className={css.symbol}>{isPaidStatus ? date : null}</div>
             <div className={css.symbol}>{!isNewStatus ? label : "Retour à l'envoyeur !"}</div>
             <div className={!isNewStatus ? css.amount : css.amountHidden}>
-                {SHOW_SYMBOL ? symbol : null}
-                <Amount amount={amount} />
+                <Amount amount={amount} /> {SHOW_SYMBOL ? symbol : null}
             </div>
             {!SHOW_SYMBOL ? <div className={!isNewStatus ? css.symbol : css.symbolHidden}>{currency}</div> : null}
         </div>

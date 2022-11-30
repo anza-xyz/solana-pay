@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import React, { useEffect, useMemo } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
-import { IS_MERCHANT_POS, SHOW_SYMBOL } from '../../utils/env';
+import { IS_MERCHANT_POS } from '../../utils/env';
 import { BackButton } from '../buttons/BackButton';
 import { GenerateButton } from '../buttons/GenerateButton';
 import { Error } from '../sections/Error';

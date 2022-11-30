@@ -66,8 +66,7 @@ export const NumPad: FC = () => {
                 // const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
                 const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
                 const senderAccount = await getAccount(connection, senderATA);
-                console.log(senderAccount.amount);
-                setCurrent("Votre solde : " + (SHOW_SYMBOL ? symbol : currency) + Number(senderAccount.amount) / Math.pow(10, decimals));
+                setCurrent("Votre solde : " + Number(senderAccount.amount) / Math.pow(10, decimals) + ' ' + (SHOW_SYMBOL ? symbol : currency));
             } catch (error: any) {
                 setCurrent("AUCUN SOLDE !");
             }
@@ -80,12 +79,12 @@ export const NumPad: FC = () => {
         };
     }, [connection, publicKey, splToken, currency, symbol, decimals]);
 
-    //TODO : Add translastion
+    //TODO : Add translastion + symbol (left/right)
     return (
         <div className={css.root}>
             <div className={css.bold}>{current}</div>
             <div className={css.text}>Entrez le Montant à Payer :</div>
-            <div className={css.value}>{SHOW_SYMBOL ? symbol : currency} {value}</div>
+            <div className={css.value}>{value} {SHOW_SYMBOL ? symbol : currency}</div>
             <div className={css.buttons}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
