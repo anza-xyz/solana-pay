@@ -6,7 +6,7 @@
     "repository": "https://github.com/flodef/FiMs-Pay",
     "license": "Apache-2.0",
     "engines": {
-        "node": ">=16"
+        "node": "16"
     },
     "scripts": {
         "clean": "shx rm -rf .next",
@@ -46,7 +46,6 @@
         "@types/cors": "^2.8.12",
         "@types/eslint-plugin-prettier": "^3.1.0",
         "@types/express": "^4.17.14",
-        "@types/express-rate-limit": "^6.0.0",
         "@types/node": "^18.11.9",
         "@types/prettier": "^2.7.1",
         "@types/react": "^18.0.25",
