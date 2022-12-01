@@ -63,7 +63,6 @@ export const NumPad: FC = () => {
 
         const run = async () => {
             try {
-                // const response = await connection.getTokenAccountsByOwner(publicKey, { mint: splToken });
                 const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
                 const senderAccount = await getAccount(connection, senderATA);
                 setCurrent("Votre solde : " + Number(senderAccount.amount) / Math.pow(10, decimals) + ' ' + (SHOW_SYMBOL ? symbol : currency));

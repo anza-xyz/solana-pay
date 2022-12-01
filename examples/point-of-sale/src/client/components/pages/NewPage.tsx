@@ -13,30 +13,11 @@ import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
 import css from './NewPage.module.css';
 import { BackButton } from '../buttons/BackButton';
-import { useRouter } from 'next/router';
-import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
-import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 
 const NewPage: NextPage = () => {
-    const { wallet, select, connect } = useWallet();
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
     const generateText = 'Payer';
     const { reset } = useConfig();
-
-    useEffect(
-        () => {
-            if (!wallet && !IS_MERCHANT_POS) {
-                let isMobile = typeof window !== 'undefined' &&
-                    window.isSecureContext &&
-                    typeof document !== 'undefined' &&
-                    /mobi|android/i.test(navigator.userAgent);
-
-                setTimeout(() => {
-                    select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
-                    connect().catch(() => setTimeout(() => select(SolflareWalletName), 100));
-                }, 100);
-            };
-        }, [select, connect, wallet]);
 
     // TODO : Add translation
     return phone ? (

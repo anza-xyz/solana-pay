@@ -8,23 +8,28 @@ import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
 import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 
 export const ConnectionButton: FC = () => {
-    const { wallet, connect, disconnect, connected, select } = useWallet();
+    const { wallet, publicKey, connect, disconnect, connected, select } = useWallet();
 
     const handleClick = useCallback(async () => {
-        if (!wallet) {
-            let isMobile = typeof window !== 'undefined' &&
-                window.isSecureContext &&
-                typeof document !== 'undefined' &&
-                /mobi|android/i.test(navigator.userAgent);
+        if (!publicKey) {
+            const a = () => { try { connect().catch(() => setTimeout(() => select(SolflareWalletName), 100)); } catch { } };
+            if (!wallet) {
+                let isMobile = typeof window !== 'undefined' &&
+                    window.isSecureContext &&
+                    typeof document !== 'undefined' &&
+                    /mobi|android/i.test(navigator.userAgent);
 
-            setTimeout(() => {
-                select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
-                connect().catch(() => setTimeout(() => select(SolflareWalletName), 100));
-            }, 100);
+                setTimeout(() => {
+                    select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
+                    a();
+                }, 100);
+            } else {
+                a();
+            }
         } else {
             disconnect().catch(() => { });
         }
-    }, [wallet, connect, disconnect, select]);
+    }, [wallet, publicKey, connect, disconnect, select]);
 
     return !IS_MERCHANT_POS ? (
         <button className={css.button} type="button" onClick={handleClick}>
