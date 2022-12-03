@@ -8,9 +8,10 @@ import { useConfig } from '../../hooks/useConfig';
 
 export interface MerchantsProps {
     merchants: MerchantInfo[];
+    id?: number;
 }
 
-export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
+export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
     const { baseURL } = useConfig();
     const navigate = useNavigateWithQuery();
     const merchantList = useMemo(() => merchants, [merchants]);
@@ -23,6 +24,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
         url.searchParams.append('maxValue', maxValue.toString());
         navigate(url.toString());
     }, [baseURL, merchantList, navigate]);
+    const selectedItem = id && merchants.length > 0 ? parseInt(id.toString()) - merchants[0].index : 0;
 
     return (
         <Carousel
@@ -31,6 +33,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants }) => {
             showThumbs={false}
             statusFormatter={(c, t) => c + ' / ' + t}
             onClickItem={onClickItem}
+            selectedItem={selectedItem}
         >
             {merchants.map((merchant) => (
                 <Merchant key={merchant.index} index={merchant.index} company={merchant.company} />

@@ -65,36 +65,10 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [label, setLabel] = useState('');
     const [recipient, setRecipient] = useState(new PublicKey(0));
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
+    const [id, setId] = useState(0);
     const [merchants, setMerchants] = useState<MerchantInfo[]>();
 
-    const router = useRouter();
-    const reset = useCallback(() => {
-        router.replace(baseURL + '/new');
-        setLabel('');
-        setRecipient(new PublicKey(0));
-    }, [baseURL, router]);
-
-    const { id, message, recipient: recipientParam, label: labelParam, maxValue: maxValueParam } = query;
-    useEffect(() => {
-        if (recipientParam && labelParam) {
-            a(recipientParam as string, labelParam as string, maxValueParam as number);
-        } else if (id) {
-            fetch(`${baseURL}/api/findMerchant?id=${id}`)
-                .then((response) => response.json())
-                .then((data) => {
-                    const { address: recipient, company: label, maxValue } = data;
-                    a(recipient, label, maxValue);
-                });
-        } else {
-            fetch(`${baseURL}/api/fetchMerchants`)
-                .then((response) => response.json())
-                .then((data) => {
-                    setMerchants(data);
-                });
-        }
-    }, [baseURL, id, query, labelParam, maxValueParam, recipientParam]);
-
-    const a = (recipient: string, label: string, maxValue: number) => {
+    const setInfo = useCallback((recipient: string, label: string, maxValue: number) => {
         if (recipient && label) {
             try {
                 setRecipient(new PublicKey(recipient));
@@ -104,7 +78,36 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                 console.error(error);
             }
         }
-    };
+    }, []);
+
+    const { id: idParam, message, recipient: recipientParam, label: labelParam, maxValue: maxValueParam } = query;
+    useEffect(() => {
+        if (recipientParam && labelParam) {
+            setInfo(recipientParam as string, labelParam as string, maxValueParam as number);
+        } else if (idParam) {
+            fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    const { address: recipient, company: label, maxValue } = data;
+                    setInfo(recipient, label, maxValue);
+                });
+        } else {
+            fetch(`${baseURL}/api/fetchMerchants`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setMerchants(data);
+                });
+        }
+    }, [baseURL, idParam, query, labelParam, maxValueParam, recipientParam, setInfo]);
+
+    const router = useRouter();
+    const reset = useCallback(() => {
+        router.replace(baseURL + '/new');
+        setLabel('');
+        setRecipient(new PublicKey(0));
+        setMaxValue(MAX_VALUE);
+        setId(idParam || 0);
+    }, [baseURL, router, idParam]);
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
@@ -160,7 +163,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                             maxValue={maxValue}
                             currency={currency}
                         >
-                            <MerchantCarousel merchants={merchants} />
+                            <MerchantCarousel merchants={merchants} id={id} />
                         </ConfigProvider>
                     ) : (
                         <div className={css.logo}>
