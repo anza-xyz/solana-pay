@@ -31,9 +31,8 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 
 export const NumPad: FC = () => {
     const { symbol, currency, minDecimals, maxValue } = useConfig();
-    const { connection } = useConnection();
+    const { balance } = usePayment();
     const { publicKey } = useWallet();
-    const { splToken, decimals } = useConfig();
 
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + minDecimals + '})?$'), [minDecimals]);
 
@@ -55,36 +54,21 @@ export const NumPad: FC = () => {
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
-    //TODO
-    const [current, setCurrent] = useState(' ');
-    useEffect(() => {
-        if (!(connection && publicKey && splToken)) { setCurrent(' '); return; }
-        let changed = false;
-
-        const run = async () => {
-            try {
-                const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
-                const senderAccount = await getAccount(connection, senderATA);
-                setCurrent("Votre solde : " + Number(senderAccount.amount) / Math.pow(10, decimals) + ' ' + (SHOW_SYMBOL ? symbol : currency));
-            } catch (error: any) {
-                setCurrent("AUCUN SOLDE !");
-            }
-        };
-        let timeout = setTimeout(run, 0);
-
-        return () => {
-            changed = true;
-            clearTimeout(timeout);
-        };
-    }, [connection, publicKey, splToken, currency, symbol, decimals]);
-
     //TODO : Add translastion + symbol (left/right)
+    const balanceText = useMemo(() =>
+        balance ? balance >= 0 ?
+            "Votre Solde : " + balance + ' ' + (SHOW_SYMBOL ? symbol : currency) + (balance < parseFloat(value) ? " [INSUFFISANT]" : "") : "AUCUN SOLDE !" : "Chargement de votre Solde ..."
+        , [balance, currency, symbol, value]);
+
+    const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || balance < parseFloat(value)), [balance, value]);
+    const hasBalance = useMemo(() => balance && balance >= 0, [balance]);
+
     return (
         <div className={css.root}>
-            <div className={css.bold}>{current}</div>
-            <div className={css.text}>À Payer :</div>
-            <div className={css.value}>{value}{SHOW_SYMBOL ? symbol : currency}</div>
-            <div className={css.buttons}>
+            <div className={publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>{balanceText}</div>
+            <div className={hasBalance ? css.text : css.hidden}>À Payer :</div>
+            <div className={hasBalance ? css.value : css.hidden}>{value}{SHOW_SYMBOL ? symbol : currency}</div>
+            <div className={hasBalance ? css.buttons : css.hidden}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
                     <NumPadButton input={2} onInput={onInput} />

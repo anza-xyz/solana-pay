@@ -1,23 +1,28 @@
 .text {
     text-align: center;
-    margin-top: 8px;
-    margin-bottom: 8px;
+    margin-top: 18px;
     float: left;
 }
 
-.bold {
+.bold,
+.red {
     text-align: center;
     margin-top: 16px;
     margin-bottom: 16px;
     font-weight: bold;
 }
 
+.red {
+    color: red;
+}
+
 .value {
     text-align: center;
-    margin-bottom: 16px;
     font-size: 48px;
     font-weight: 700;
     line-height: 32px;
+    padding-top: 12px;
+    padding-bottom: 12px;
 }
 
 .row {
@@ -39,6 +44,11 @@
     justify-content: center;
     align-items: center;
     transition: background-color 100ms ease-in-out;
+}
+
+.hidden {
+    visibility: collapse;
+    height: 0px;
 }
 
 :global(html.light) .button {

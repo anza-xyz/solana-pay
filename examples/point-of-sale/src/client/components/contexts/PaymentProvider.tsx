@@ -8,6 +8,7 @@ import {
     validateTransfer,
     ValidateTransferError,
 } from '@solana/pay';
+import { getAccount, getAssociatedTokenAddress } from "@solana/spl-token";
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
@@ -19,6 +20,8 @@ import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
 import { IS_DEV, IS_MERCHANT_POS } from '../../utils/env';
 import { exitFullscreen, isFullscreen } from "../../utils/fullscreen";
+import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
+import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -26,10 +29,11 @@ export interface PaymentProviderProps {
 
 export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { connection } = useConnection();
-    const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
-    const { publicKey, sendTransaction } = useWallet();
+    const { link, recipient, splToken, decimals, label, message, requiredConfirmations, connectWallet } = useConfig();
+    const { publicKey, sendTransaction, connect, select, wallet } = useWallet();
     const { processError } = useError();
 
+    const [balance, setBalance] = useState<number>();
     const [amount, setAmount] = useState<BigNumber>();
     const [memo, setMemo] = useState<string>();
     const [reference, setReference] = useState<PublicKey>();
@@ -123,6 +127,44 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             }
         }
     }, [status, reference, navigate, changeStatus]);
+
+    const selectWallet = useCallback(() => {
+        const a = () => { try { connect().catch(() => setTimeout(() => select(SolflareWalletName), 100)); } catch { } };
+        if (!wallet) {
+            let isMobile = typeof window !== 'undefined' &&
+                window.isSecureContext &&
+                typeof document !== 'undefined' &&
+                /mobi|android/i.test(navigator.userAgent);
+
+            setTimeout(() => {
+                select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
+                a();
+            }, 100);
+        } else {
+            a();
+        }
+    }, [connect, select, wallet]);
+
+    useEffect(() => {
+        if (!(connection && publicKey && splToken)) { setBalance(undefined); return; }
+        let changed = false;
+
+        const run = async () => {
+            try {
+                const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
+                const senderAccount = await getAccount(connection, senderATA);
+                setBalance(Number(senderAccount.amount) / Math.pow(10, decimals));
+            } catch (error: any) {
+                setBalance(-1);
+            }
+        };
+        let timeout = setTimeout(run, 0);
+
+        return () => {
+            changed = true;
+            clearTimeout(timeout);
+        };
+    }, [connection, publicKey, splToken, decimals]);
 
     // If there's a connected wallet, use it to sign and send the transaction
     useEffect(() => {
@@ -286,6 +328,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 setAmount,
                 memo,
                 setMemo,
+                balance,
                 reference,
                 signature,
                 status,
@@ -294,6 +337,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
                 url,
                 reset,
                 generate,
+                selectWallet,
             }}
         >
             {children}

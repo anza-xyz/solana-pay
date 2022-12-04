@@ -21,6 +21,7 @@ export interface PaymentContextState {
     setAmount(amount: BigNumber | undefined): void;
     memo: string | undefined;
     setMemo(memo: string | undefined): void;
+    balance?: number;
     reference: PublicKey | undefined;
     signature: TransactionSignature | undefined;
     status: PaymentStatus;
@@ -29,6 +30,7 @@ export interface PaymentContextState {
     url: URL;
     reset(): void;
     generate(): void;
+    selectWallet(): void;
 }
 
 export const PaymentContext = createContext<PaymentContextState>({} as PaymentContextState);

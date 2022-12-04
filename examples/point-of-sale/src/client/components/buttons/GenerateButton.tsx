@@ -1,52 +1,49 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo } from 'react';
+import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
+import { FAUCET } from "../../utils/constants";
 import { IS_MERCHANT_POS } from "../../utils/env";
 import css from './GenerateButton.module.css';
-import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
-import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 
 export interface GenerateButtonProps {
     children: ReactNode;
 }
 
 export const GenerateButton: FC<GenerateButtonProps> = ({ children }) => {
-    const { amount, status, generate } = usePayment();
-    const { wallet, select, publicKey, connect, connecting } = useWallet();
+    const { amount, status, generate, balance, selectWallet } = usePayment();
+    const { publicKey, connecting } = useWallet();
 
+    const [needRefresh, setNeedRefresh] = useState(false);
+
+    const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || (amount && balance < parseFloat(amount.toString()))), [balance, amount]);
     const disabled = useMemo(() => {
-        return publicKey !== null && (!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error));
-    }, [amount, status, publicKey]);
+        return publicKey !== null && !balance && (!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error));
+    }, [amount, status, publicKey, balance]);
 
     const content = useMemo(() => {
-        return publicKey || IS_MERCHANT_POS ? children : (connecting) ? "Connexion ..." : 'Se connecter';
-    }, [children, publicKey, connecting]);
+        return !hasInsufficientBalance ? publicKey || IS_MERCHANT_POS ? children : connecting ? "Connexion ..." : 'Se connecter' : needRefresh ? "Recharger" : "S'approvisionner";
+    }, [children, publicKey, connecting, hasInsufficientBalance, needRefresh]);
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
         () => {
-            if (publicKey || IS_MERCHANT_POS) {
-                generate();
+            if (!hasInsufficientBalance) {
+                if (publicKey || IS_MERCHANT_POS) {
+                    generate();
+                } else if (!connecting) {
+                    selectWallet();
+                }
             } else {
-                const a = () => { try { connect().catch(() => setTimeout(() => select(SolflareWalletName), 100)); } catch { } };
-                if (!wallet) {
-                    let isMobile = typeof window !== 'undefined' &&
-                        window.isSecureContext &&
-                        typeof document !== 'undefined' &&
-                        /mobi|android/i.test(navigator.userAgent);
-
-                    setTimeout(() => {
-                        select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
-                        a();
-                    }, 100);
+                if (needRefresh) {
+                    setNeedRefresh(false);
+                    //TODO
                 } else {
-                    a();
+                    window.open(FAUCET, '_blank');
+                    setNeedRefresh(true);
                 }
             }
-        }, [generate, publicKey, select, connect, wallet]);
+        }, [generate, publicKey, selectWallet, hasInsufficientBalance, connecting, needRefresh]);
 
     return (
-        // <WalletMultiButton></WalletMultiButton>
         <button
             className={css.root}
             type="button"
