@@ -24,7 +24,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.top}>
                 {!IS_MERCHANT_POS ? (
-                    <BackButton onClick={reset}>Changer de Commerçant</BackButton>
+                    <BackButton onClick={reset}>Liste des Commerçants</BackButton>
                 ) : null}
 
                 <FullscreenButton />

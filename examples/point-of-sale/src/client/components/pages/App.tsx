@@ -6,7 +6,7 @@ import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useCallback, useMemo } from 'react';
-import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
+import { ABOUT, CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
@@ -20,6 +20,7 @@ import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
 import { MerchantCarousel } from '../sections/Carousel';
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -118,6 +119,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const minDecimals = currencyDetail[3];
     const symbol = currencyDetail[4];
 
+    // TODO : Translation
     return (
         <ErrorProvider>
             <ThemeProvider>
@@ -163,7 +165,9 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                             maxValue={maxValue}
                             currency={currency}
                         >
+                            <div className={css.title}>Liste des Commerçants</div>
                             <MerchantCarousel merchants={merchants} id={id} />
+                            <div className={css.about}><a href={ABOUT.toString()} target="_blank" rel="noreferrer">En savoir plus</a></div>
                         </ConfigProvider>
                     ) : (
                         <div className={css.logo}>
