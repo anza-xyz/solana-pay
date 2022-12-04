@@ -11,7 +11,8 @@ export const MAX_CONFIRMATIONS = 32;
 export const NON_BREAKING_SPACE = '\u00a0';
 
 export const ABOUT = new URL(process.env.NEXT_PUBLIC_ABOUT || 'https://solanapay.com/');
-export const FAUCET = process.env.NEXT_PUBLIC_IS_DEV ? 'https://spl-token-faucet.com' : process.env.NEXT_PUBLIC_FAUCET;
+export const FAUCET =
+    process.env.NEXT_PUBLIC_IS_DEV === 'true' ? 'https://spl-token-faucet.com' : process.env.NEXT_PUBLIC_FAUCET;
 
 // GenesysGo's devnet endpoint doesn't retain historical transactions
 export const DEVNET_ENDPOINT = clusterApiUrl('devnet');
