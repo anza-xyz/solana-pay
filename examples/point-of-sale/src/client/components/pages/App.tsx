@@ -167,7 +167,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                         >
                             <div className={css.title}>Liste des Commerçants</div>
                             <MerchantCarousel merchants={merchants} id={id} />
-                            <div className={css.about}><a href={ABOUT.toString()} target="_blank" rel="noreferrer">En savoir plus</a></div>
+                            <div className={css.about}><a className={css.link} href={ABOUT.toString()} target="_blank" rel="noreferrer">En savoir plus</a></div>
                         </ConfigProvider>
                     ) : (
                         <div className={css.logo}>

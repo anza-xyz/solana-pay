@@ -5,12 +5,20 @@
     align-items: center;
 }
 
-.about {
-    text-align: center;
-}
-
 .title {
     text-align: center;
     font-size: 24px;
     margin: 24px;
+}
+
+.about {
+    text-align: center;
+}
+
+:global(html.light) .link {
+    color: var(--theme-light-color);
+}
+
+:global(html.dark) .link {
+    color: var(--theme-dark-color);
 }
