@@ -1,5 +1,5 @@
 .button {
-    height: 48px;
+    height: 40px;
     padding: 16px;
     margin: 16px;
     border: 0;
@@ -9,4 +9,11 @@
     font-weight: 500;
     background: none;
     cursor: pointer;
+    visibility: visible;
+}
+
+.button[disabled] {
+    cursor: default;
+    opacity: 0.5;
+    visibility: hidden;
 }
