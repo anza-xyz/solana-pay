@@ -1,3 +1,5 @@
+import { getAccount, getAssociatedTokenAddress } from "@solana/spl-token";
+import { useConnection, useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
@@ -21,7 +23,9 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 };
 
 export const NumPad: FC = () => {
-    const { symbol, decimals } = useConfig();
+    const { symbol } = useConfig();
+    const maxValue = 100000;
+    const decimals = 2;
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
     const [value, setValue] = useState('0');
@@ -31,11 +35,11 @@ export const NumPad: FC = () => {
                 let newValue = (value + key).trim().replace(/^0{2,}/, '0');
                 if (newValue) {
                     newValue = /^[.,]/.test(newValue) ? `0${newValue}` : newValue.replace(/^0+(\d)/, '$1');
-                    if (regExp.test(newValue)) return newValue;
+                    if (regExp.test(newValue)) return parseFloat(newValue) <= maxValue ? newValue : maxValue.toString();
                 }
                 return value;
             }),
-        [regExp]
+        [regExp, maxValue]
     );
     const onBackspace = useCallback(() => setValue((value) => (value.length ? value.slice(0, -1) || '0' : value)), []);
 
