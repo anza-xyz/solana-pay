@@ -4,7 +4,7 @@ import { Carousel } from 'react-responsive-carousel';
 import { Merchant, MerchantInfo, MerchantProps } from './Merchant';
 import css from './Carousel.module.css';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
-import { useConfig } from '../../hooks/useConfig';
+import { createURLWithParams, createURLWithQuery } from "../../utils/createURLWithQuery";
 
 export interface MerchantsProps {
     merchants: MerchantInfo[];
@@ -12,18 +12,18 @@ export interface MerchantsProps {
 }
 
 export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
-    const { baseURL } = useConfig();
     const navigate = useNavigateWithQuery();
     const merchantList = useMemo(() => merchants, [merchants]);
     const onClickItem = useCallback((index: number, item: ReactNode) => {
         const { index: id, address: recipient, company: label, maxValue } = merchantList[index];
-        const url = new URL(`${baseURL}/new`);
-        url.searchParams.append('id', id.toString());
-        url.searchParams.append('recipient', recipient.toString());
-        url.searchParams.append('label', label.toString());
-        url.searchParams.append('maxValue', maxValue.toString());
+        const urlParams = new URLSearchParams();
+        urlParams.append('id', id.toString());
+        urlParams.append('recipient', recipient.toString());
+        urlParams.append('label', label.toString());
+        urlParams.append('maxValue', maxValue.toString());
+        const url = createURLWithParams("new", urlParams);
         navigate(url.toString());
-    }, [baseURL, merchantList, navigate]);
+    }, [merchantList, navigate]);
     const selectedItem = id && merchants.length > 0 ? parseInt(id.toString()) - merchants[0].index : 0;
 
     return (

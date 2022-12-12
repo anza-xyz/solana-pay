@@ -6,7 +6,6 @@ import { MAX_VALUE } from '../../utils/constants';
 
 export interface ConfigProviderProps {
     children: ReactNode;
-    baseURL: string;
     link?: URL;
     recipient: PublicKey;
     label: string;
@@ -26,7 +25,6 @@ export interface ConfigProviderProps {
 
 export const ConfigProvider: FC<ConfigProviderProps> = ({
     children,
-    baseURL,
     link,
     recipient,
     label,
@@ -46,7 +44,6 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     return (
         <ConfigContext.Provider
             value={{
-                baseURL,
                 link,
                 recipient,
                 label,

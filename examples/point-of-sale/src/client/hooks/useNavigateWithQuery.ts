@@ -12,8 +12,7 @@ export function useNavigateWithQuery() {
 
     return useCallback(
         (pathname: string, replace = false) => {
-            const origin = window.location.protocol + '//' + window.location.host;
-            const url = String(createURLWithQuery(pathname, origin, query));
+            const url = String(createURLWithQuery(pathname, query));
             if (replace) {
                 router.replace(url);
             } else {

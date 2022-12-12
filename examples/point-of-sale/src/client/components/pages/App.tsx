@@ -128,7 +128,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                             <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                                 <WalletModalProvider>
                                     <ConfigProvider
-                                        baseURL={baseURL}
                                         link={link}
                                         recipient={recipient}
                                         label={label}
@@ -155,7 +154,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                         </ConnectionProvider>
                     ) : merchants && merchants.length > 0 ? (
                         <ConfigProvider
-                            baseURL={baseURL}
                             recipient={recipient}
                             label={label}
                             symbol={symbol}
