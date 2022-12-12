@@ -69,7 +69,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                         <WalletProvider wallets={wallets} autoConnect={connectWallet}>
                             <WalletModalProvider>
                                 <ConfigProvider
-                                    baseURL={baseURL}
                                     link={link}
                                     recipient={recipient}
                                     label={label}
