@@ -6,7 +6,8 @@ import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
-import { DEVNET_ENDPOINT } from '../../utils/constants';
+import { DEVNET_ENDPOINT, CURRENCY_LIST } from '../../utils/constants';
+import { CURRENCY } from '../../utils/env';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
@@ -60,6 +61,12 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             console.error(error);
         }
     }
+    
+    const currencyDetail = CURRENCY_LIST[CURRENCY];
+    const icon = React.createElement(currencyDetail[1]);
+    const decimals = currencyDetail[2];
+    const minDecimals = currencyDetail[3];
+    const symbol = currencyDetail[4];
 
     return (
         <ThemeProvider>
@@ -74,10 +81,10 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     recipient={recipient}
                                     label={label}
                                     message={message}
-                                    symbol="SOL"
-                                    icon={<SOLIcon />}
-                                    decimals={9}
-                                    minDecimals={1}
+                                    symbol={symbol}
+                                    icon={icon}
+                                    decimals={decimals}
+                                    minDecimals={minDecimals}
                                     connectWallet={connectWallet}
                                 >
                                     <TransactionsProvider>
