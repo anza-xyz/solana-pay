@@ -18,6 +18,9 @@ export const DEVNET_DUMMY_MINT = new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSz
 
 export const MAINNET_USDC_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v');
 
+// Selected payment currency
+export const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || 'SOL';
+
 // Format
 // CURRENCY: [Mint address, icon tsx file, token decimals, max decimals to display, symbol]
 interface currencyType {
