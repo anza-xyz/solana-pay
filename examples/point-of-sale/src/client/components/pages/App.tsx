@@ -6,15 +6,13 @@ import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import { FC, useMemo } from 'react';
-import { DEVNET_ENDPOINT, CURRENCY_LIST } from '../../utils/constants';
-import { CURRENCY } from '../../utils/env';
+import { DEVNET_ENDPOINT, CURRENCY_LIST, CURRENCY } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { SOLIcon } from '../images/SOLIcon';
 import css from './App.module.css';
 
 interface AppProps extends NextAppProps {
