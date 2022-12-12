@@ -27,8 +27,9 @@ export const MAINNET_USDC_MINT = new PublicKey('EPjFWdd5AufqSSqeM2qN1xzybapC8G4w
 export const MAINNET_USDT_MINT = new PublicKey('Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB');
 export const MAINNET_EUR_MINT = new PublicKey('Pnsjp9dbenPeFZWqqPHDygzkCZ4Gr37G8mgdRK2KjQp');
 export const MAINNET_AGEUR_MINT = new PublicKey('CbNYA9n3927uXUukee2Hf4tm3xxkffJPPZvGazc2EAH1');
+
 // Format
-// CURRENCY: [Mint address, icon tsx file, number of decimals, number of decimals min, symbol]
+// CURRENCY: [Mint address, icon tsx file, token decimals, max decimals to display, symbol]
 interface currencyType {
     [key: string]: [PublicKey | undefined, React.FC<React.SVGProps<SVGSVGElement>>, Digits, Digits, string];
 }
@@ -41,4 +42,5 @@ export const CURRENCY_LIST: currencyType = {
     USDT: [MAINNET_USDT_MINT, USDTIcon, 6, 2, '$'],
 };
 
-export const MAX_VALUE = 10000;
+// Maximum value for a payment
+export const MAX_VALUE = 99999;

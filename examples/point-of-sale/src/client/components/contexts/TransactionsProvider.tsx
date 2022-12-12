@@ -45,7 +45,6 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
         (async () => {
             const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
-            //const associatedToken = null
             if (changed) return;
 
             setAssociatedToken(associatedToken);

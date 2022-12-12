@@ -44,7 +44,8 @@ export async function createTransfer(
     { recipient, amount, splToken, reference, memo }: CreateTransferFields,
     { commitment }: { commitment?: Commitment } = {}
 ): Promise<Transaction> {
-    // Check that the sender accounts exist
+    // Check that the sender is not the recipitent and that the sender accounts exist
+    if (sender === recipient) throw new CreateTransferError('sender is also recipient');
     const senderInfo = await connection.getAccountInfo(sender);
     if (!senderInfo) throw new CreateTransferError('sender not found');
 
