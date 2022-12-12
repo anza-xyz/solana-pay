@@ -24,7 +24,7 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 
 export const NumPad: FC = () => {
     const { symbol } = useConfig();
-    const maxValue = 100000;
+    const maxValue = 99999;     //TODO: Should be taken from constants
     const decimals = 2;
     const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + decimals + '})?$'), [decimals]);
 
