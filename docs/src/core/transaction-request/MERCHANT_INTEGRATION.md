@@ -213,6 +213,6 @@ We recommend handling a customer session in a secure environment. Building a sec
 <!-- References -->
 
 [1]: https://nextjs.org/docs/api-routes/introduction
-[2]: https://github.com/solana-labs/solana-pay/tree/link-request/point-of-sale
-[3]: https://github.com/solana-labs/solana-pay/blob/link-request/SPEC.md#link
+[2]: https://github.com/solana-labs/solana-pay/tree/master/point-of-sale
+[3]: https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#link
 [4]: https://github.com/solana-labs/solana-pay
