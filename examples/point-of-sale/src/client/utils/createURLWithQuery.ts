@@ -25,6 +25,7 @@ export function createURLWithParams(path: string | URL, query: URLSearchParams):
     return url;
 }
 
-function getBaseURL(path: string | URL) {
-    return new URL(path, window.location.protocol + '//' + window.location.host);
+export function getBaseURL(path?: string | URL) {
+    const base = window ? window.location.protocol + '//' + window.location.host : '';
+    return path ? new URL(path, base) : new URL(base);
 }
