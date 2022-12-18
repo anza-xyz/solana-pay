@@ -102,19 +102,32 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 
     const router = useRouter();
     const reset = useCallback(() => {
-        router.replace(baseURL + '/new');
-        setLabel('');
-        setRecipient(new PublicKey(0));
-        setMaxValue(MAX_VALUE);
-        setId(idParam || 0);
+        router.replace(baseURL + '/new').then(() => {
+            setId(idParam || 0);
+            setRecipient(new PublicKey(0));
+            setLabel('');
+            setMaxValue(MAX_VALUE);
+        });
     }, [baseURL, router, idParam]);
 
     const [language, setLanguage] = useState('en');
-    const run = useCallback(() => {
-        document.title = (label ? label + ' @ ' : '') + APP_TITLE;
-        setLanguage(navigator.language);
+    useEffect(() => {
+        let changed = false;
+
+        const run = () => {
+            if (document && navigator) {
+                document.title = (label ? label + ' @ ' : '') + APP_TITLE;
+                setLanguage(navigator.language);
+            }
+        };
+        run();
+        let timeout = setTimeout(run, 1000);
+
+        return () => {
+            changed = true;
+            clearTimeout(timeout);
+        };
     }, [label]);
-    setTimeout(run, 100);
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
