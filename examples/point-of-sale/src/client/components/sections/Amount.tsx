@@ -1,25 +1,32 @@
 import BigNumber from 'bignumber.js';
 import React, { FC, useMemo } from 'react';
+import { FormattedMessage } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { NON_BREAKING_SPACE } from '../../utils/constants';
 
 export interface AmountProps {
-    amount: BigNumber | undefined;
+    value: BigNumber | number | string | undefined;
     showZero?: boolean;
 }
 
-export const Amount: FC<AmountProps> = ({ amount, showZero }) => {
-    const { minDecimals } = useConfig();
+export const Amount: FC<AmountProps> = ({ value, showZero }) => {
+    const { minDecimals, maxDecimals, currencyPattern } = useConfig();
 
-    const value = useMemo(() => {
-        if (!amount) return NON_BREAKING_SPACE;
-        if (amount.isGreaterThan(0)) {
-            const decimals = amount.decimalPlaces() ?? 0
-            return amount.toFormat(decimals < minDecimals ? minDecimals : decimals);
+    const amount = useMemo(() => {
+        const num = value ? parseFloat(value.toString()) : NaN;
+        if (isNaN(num) || (num <= 0 && !showZero)) return NON_BREAKING_SPACE;
+        if (typeof value === 'string') return value;
+        const bignumber = new BigNumber(value ? value : 0);
+        let text;
+        if (bignumber.isGreaterThan(0)) {
+            const decimals = bignumber.decimalPlaces() ?? 0;
+            text = bignumber.toFormat(decimals < minDecimals ? minDecimals : decimals);
         } else {
-            return showZero ? '0' : NON_BREAKING_SPACE;
+            text = '0';
         }
-    }, [amount, minDecimals, showZero]);
 
-    return <span>{value}</span>;
+        return new Intl.NumberFormat(undefined, { maximumFractionDigits: maxDecimals }).format(parseFloat(text));
+    }, [value, minDecimals, maxDecimals, showZero]);
+
+    return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" defaultMessage={currencyPattern} values={{ value: amount }} /> : amount}</span>;
 };

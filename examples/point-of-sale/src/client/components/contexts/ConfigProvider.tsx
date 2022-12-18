@@ -15,9 +15,11 @@ export interface ConfigProviderProps {
     icon: ReactElement;
     decimals: Digits;
     minDecimals?: Digits;
+    maxDecimals?: Digits;
     maxValue: number;
     requiredConfirmations?: Confirmations;
     currency: string;
+    currencyPattern?: string;
     id?: number;
     connectWallet?: boolean;
     reset?: () => void;
@@ -34,9 +36,11 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     symbol,
     decimals,
     minDecimals = 0,
+    maxDecimals = 2,
     maxValue = MAX_VALUE,
     requiredConfirmations = 1,
     currency,
+    currencyPattern = '{value}',
     id,
     connectWallet = false,
     reset,
@@ -53,9 +57,11 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
                 icon,
                 decimals,
                 minDecimals,
+                maxDecimals,
                 maxValue,
                 requiredConfirmations,
                 currency,
+                currencyPattern,
                 id,
                 connectWallet,
                 reset

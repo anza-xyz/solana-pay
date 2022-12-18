@@ -2,6 +2,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
 import React, { useEffect, useMemo } from 'react';
+import { FormattedMessage } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import { IS_MERCHANT_POS } from '../../utils/env';
@@ -25,17 +26,16 @@ const PendingPage: NextPage = () => {
         }
     }, [connectWallet, publicKey, setVisible]);
 
-    // TODO : Add translation
     const text = useMemo(() => {
         switch (status) {
             case PaymentStatus.Pending:
-                return "Création de la transaction ...";
+                return <FormattedMessage id="createTransaction" />;
             case PaymentStatus.Creating:
-                return "Merci d'approuver la transaction !";
+                return <FormattedMessage id="approveTransaction" />;
             case PaymentStatus.Sent:
-                return 'Envoi de la transaction ...';
+                return <FormattedMessage id="sendTransaction" />;
             case PaymentStatus.Confirmed:
-                return 'Vérification en cours ...';
+                return <FormattedMessage id="verifyTransaction" />;
             default:
                 return null;
         }
@@ -44,7 +44,7 @@ const PendingPage: NextPage = () => {
     return (
         <div className={css.root}>
             <div className={css.header}>
-                <BackButton onClick={reset}>Annuler</BackButton>
+                <BackButton onClick={reset}><FormattedMessage id="cancel" /></BackButton>
                 {connectWallet && IS_MERCHANT_POS ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
@@ -54,8 +54,8 @@ const PendingPage: NextPage = () => {
                         <div className={css.code}>
                             <QRCode />
                         </div>
-                        <div className={css.scan}>Scan this code with your Solana Pay wallet</div>
-                        <div className={css.confirm}>You&apos;ll be asked to approve the transaction</div>
+                        <div className={css.scan}><FormattedMessage id="scanCode" /></div>
+                        <div className={css.confirm}><FormattedMessage id="approveTransaction" /></div>
                     </div>
                 ) : (
                     <div>
@@ -65,7 +65,7 @@ const PendingPage: NextPage = () => {
                         ) : (
                             <div>
                                 <Error />
-                                <GenerateButton>Réessayer</GenerateButton>
+                                <GenerateButton id="retry" />
                             </div>
                         )}
                     </div>

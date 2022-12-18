@@ -35,11 +35,11 @@ interface currencyType {
 }
 export const CURRENCY_LIST: currencyType = {
     SOL: [undefined, SOLIcon, 9, 1, 'SOL'],
-    EUR: [MAINNET_EUR_MINT, EURIcon, 9, 2, '€'],
-    agEUR: [MAINNET_AGEUR_MINT, agEURIcon, 8, 2, '€'],
-    USDC: [MAINNET_USDC_MINT, USDCIcon, 6, 2, '$'],
-    USDC_Dev: [DEVNET_DUMMY_MINT, USDCIcon, 6, 2, '$'],
-    USDT: [MAINNET_USDT_MINT, USDTIcon, 6, 2, '$'],
+    EUR: [MAINNET_EUR_MINT, EURIcon, 9, 2, 'EUR'],
+    agEUR: [MAINNET_AGEUR_MINT, agEURIcon, 8, 2, 'EUR'],
+    USDC: [MAINNET_USDC_MINT, USDCIcon, 6, 2, 'USD'],
+    USDC_Dev: [DEVNET_DUMMY_MINT, USDCIcon, 6, 2, 'USD'],
+    USDT: [MAINNET_USDT_MINT, USDTIcon, 6, 2, 'USD'],
 };
 
 // Maximum value for a payment

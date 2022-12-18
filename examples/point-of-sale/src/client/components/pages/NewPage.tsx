@@ -1,6 +1,6 @@
 import { useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
@@ -13,18 +13,18 @@ import { PoweredBy } from '../sections/PoweredBy';
 import { Summary } from '../sections/Summary';
 import css from './NewPage.module.css';
 import { BackButton } from '../buttons/BackButton';
+import { FormattedMessage } from "react-intl";
 
 const NewPage: NextPage = () => {
     const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
-    const generateText = 'Payer';
+    const generateId = useMemo(() => !IS_MERCHANT_POS ? 'pay' : 'generateCode', []);
     const { reset } = useConfig();
 
-    // TODO : Add translation
     return phone ? (
         <div className={css.root}>
             <div className={css.top}>
                 {!IS_MERCHANT_POS ? (
-                    <BackButton onClick={reset}>Liste des Commerçants</BackButton>
+                    <BackButton onClick={reset}><FormattedMessage id="merchants" /></BackButton>
                 ) : null}
 
                 <FullscreenButton />
@@ -33,7 +33,7 @@ const NewPage: NextPage = () => {
             </div>
             <div className={css.body}>
                 <NumPad />
-                <GenerateButton>{generateText}</GenerateButton>
+                <GenerateButton id={generateId} />
                 <PoweredBy />
             </div>
         </div >
@@ -51,7 +51,7 @@ const NewPage: NextPage = () => {
             <div className={css.side}>
                 <div className={css.summary}>
                     <Summary />
-                    <GenerateButton>{generateText}</GenerateButton>
+                    <GenerateButton id={generateId} />
                 </div>
                 <div className={css.bottom}>
                     <TransactionsLink />

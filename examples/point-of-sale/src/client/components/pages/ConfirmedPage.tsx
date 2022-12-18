@@ -1,5 +1,6 @@
 import { NextPage } from 'next';
 import React from 'react';
+import { FormattedMessage } from "react-intl";
 import { usePayment } from '../../hooks/usePayment';
 import { BackButton } from '../buttons/BackButton';
 import { TransactionsLink } from '../buttons/TransactionsLink';
@@ -11,11 +12,10 @@ import css from './ConfirmedPage.module.css';
 const ConfirmedPage: NextPage = () => {
     const { reset } = usePayment();
 
-    // TODO : Add translation
     return (
         <div className={css.root}>
             <div className={css.header}>
-                <BackButton onClick={reset}>Nouveau Paiement</BackButton>
+                <BackButton onClick={reset}><FormattedMessage id="newPayment" /></BackButton>
                 <TransactionsLink />
             </div>
             <div className={css.main}>

@@ -1,4 +1,5 @@
 import React, { FC, useMemo } from 'react';
+import { FormattedMessage } from "react-intl";
 import { useConfig } from "../../hooks/useConfig";
 import { useError } from '../../hooks/useError';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
@@ -9,33 +10,26 @@ export const Error: FC = () => {
     const { errorMessage } = useError();
     const { currency } = useConfig();
 
-    const text = useMemo(() => {
+    const id = useMemo(() => {
         if (status === PaymentStatus.Error && errorMessage) {
             const e = errorMessage.split(': ');
             switch (e[0]) {
                 case 'WalletSignTransactionError':
-                    return 'Vous avez refusé la transaction !';
                 case 'WalletSendTransactionError':
-                    return 'Vous avez trop tardé à approuver la transaction !';
                 case 'TokenAccountNotFoundError':
-                    return 'Vous devez ajouter la monnaie "' + currency + '" à votre porte-monnaie !';
+                    return e[0];
                 case 'CreateTransferError':
-                    return e[1] === 'insufficient funds'
-                        ? 'Le montant est supérieur à vos fonds !'
-                        : e[1] === 'recipient not found'
-                            ? "Le porte-monnaie de ce commerçant a besoin d'être initialisé !"
-                            : 'Erreur de transfert !';
+                    return e[1];
                 case 'Error':
                     return e[1].trim() === '429'
-                        ? 'Le réseau est momentanément saturé, merci de réessayer !'
-                        : 'Erreur inconnue : ' + errorMessage;
+                        ? 'NetworkBusyError' : 'UnknownError';
                 default:
-                    return 'Erreur inconnue : ' + errorMessage;
+                    return 'UnknownError';
             }
         } else {
             return null;
         }
-    }, [errorMessage, status, currency]);
+    }, [errorMessage, status]);
 
-    return <div className={css.error}>{text}</div>;
+    return <div className={css.error}>{id ? <FormattedMessage id={id} values={{ error: errorMessage, currency: currency }} /> : null}</div>;
 };

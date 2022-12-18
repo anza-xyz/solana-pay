@@ -106,7 +106,7 @@ async function createSystemInstruction(
 
     // Check that the recipient is valid native accounts
     const recipientInfo = await connection.getAccountInfo(recipient);
-    if (!recipientInfo) throw new CreateTransferError('sender not found');
+    if (!recipientInfo) throw new CreateTransferError('recipient not found');
     if (!recipientInfo.owner.equals(SystemProgram.programId)) throw new CreateTransferError('recipient owner invalid');
     if (recipientInfo.executable) throw new CreateTransferError('recipient executable');
 

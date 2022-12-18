@@ -1,28 +1,22 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
+import { FormattedMessage } from "react-intl";
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import { FAUCET } from "../../utils/constants";
 import { IS_MERCHANT_POS } from "../../utils/env";
 import css from './GenerateButton.module.css';
 
 export interface GenerateButtonProps {
-    children: ReactNode;
+    id: string;
 }
 
-export const GenerateButton: FC<GenerateButtonProps> = ({ children }) => {
+export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
     const { amount, status, generate, balance, selectWallet } = usePayment();
     const { publicKey, connecting } = useWallet();
 
     const [needRefresh, setNeedRefresh] = useState(false);
 
     const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || (amount && balance < parseFloat(amount.toString()))), [balance, amount]);
-    const disabled = useMemo(() => {
-        return publicKey !== null && !balance && (!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error));
-    }, [amount, status, publicKey, balance]);
-
-    const content = useMemo(() => {
-        return !hasInsufficientBalance ? publicKey || IS_MERCHANT_POS ? children : connecting ? "Connexion ..." : 'Se connecter' : needRefresh ? "Recharger" : "S'approvisionner";
-    }, [children, publicKey, connecting, hasInsufficientBalance, needRefresh]);
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
         () => {
@@ -48,9 +42,9 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ children }) => {
             className={css.root}
             type="button"
             onClick={handleClick}
-            disabled={disabled}
+            disabled={publicKey !== null && !connecting && (!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error))}
         >
-            {content}
+            <FormattedMessage id={!hasInsufficientBalance ? publicKey || IS_MERCHANT_POS ? id : connecting ? "connecting" : "connect" : needRefresh ? "reload" : "supply"} />
         </button>
     );
 };

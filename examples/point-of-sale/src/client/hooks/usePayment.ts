@@ -5,15 +5,15 @@ import { Confirmations } from '../types';
 
 // TODO : Add translation
 export enum PaymentStatus {
-    New = 'Nouveau',
-    Pending = 'En cours',
-    Creating = 'Création',
-    Sent = 'Envoyé',
-    Confirmed = 'Confirmé',
-    Valid = 'Valide',
-    Invalid = 'Invalide',
-    Finalized = 'Terminé',
-    Error = 'Erreur',
+    New = 'New',
+    Pending = 'Pending',
+    Creating = 'Creating',
+    Sent = 'Sent',
+    Confirmed = 'Confirmed',
+    Valid = 'Valid',
+    Invalid = 'Invalid',
+    Finalized = 'Finalized',
+    Error = 'Error',
 }
 
 export interface PaymentContextState {

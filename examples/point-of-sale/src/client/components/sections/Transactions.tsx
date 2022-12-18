@@ -21,8 +21,8 @@ export const Transactions: FC = () => {
     );
 };
 
-const Transaction: FC<{ transaction: Transaction }> = ({ transaction }) => {
-    const { icon, symbol } = useConfig();
+const Transaction: FC<{ transaction: Transaction; }> = ({ transaction }) => {
+    const { icon } = useConfig();
 
     const amount = useMemo(() => new BigNumber(transaction.amount), [transaction.amount]);
     const signature = useMemo(
@@ -45,8 +45,7 @@ const Transaction: FC<{ transaction: Transaction }> = ({ transaction }) => {
             <div className={css.icon}>{icon}</div>
             <div className={css.left}>
                 <div className={css.amount}>
-                    <Amount amount={amount} showZero />
-                    {NON_BREAKING_SPACE + symbol}
+                    <Amount value={amount} showZero />
                 </div>
                 <div className={css.signature}>{signature}</div>
             </div>

@@ -1,13 +1,14 @@
-import { getAccount, getAssociatedTokenAddress } from "@solana/spl-token";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
+import { useWallet } from "@solana/wallet-adapter-react";
 import BigNumber from 'bignumber.js';
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FormattedMessage, FormattedNumber } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
-import { IS_MERCHANT_POS, SHOW_SYMBOL } from '../../utils/env';
+import { IS_MERCHANT_POS } from '../../utils/env';
 import { isFullscreen, requestFullscreen } from "../../utils/fullscreen";
 import { BackspaceIcon } from '../images/BackspaceIcon';
+import { Amount } from "./Amount";
 import css from './NumPad.module.css';
 
 interface NumPadInputButton {
@@ -30,7 +31,7 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 };
 
 export const NumPad: FC = () => {
-    const { symbol, currency, minDecimals, maxValue } = useConfig();
+    const { minDecimals, maxValue } = useConfig();
     const { balance } = usePayment();
     const { publicKey } = useWallet();
 
@@ -54,20 +55,24 @@ export const NumPad: FC = () => {
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
-    //TODO : Add translastion + symbol (left/right)
-    const balanceText = useMemo(() =>
-        balance ? balance >= 0 ?
-            "Votre Solde : " + balance + ' ' + (SHOW_SYMBOL ? symbol : currency) + (balance < parseFloat(value) ? " [INSUFFISANT]" : "") : "AUCUN SOLDE !" : "Chargement de votre Solde ..."
-        , [balance, currency, symbol, value]);
-
     const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || balance < parseFloat(value)), [balance, value]);
     const hasBalance = useMemo(() => balance && balance >= 0, [balance]);
 
     return (
         <div className={css.root}>
-            <div className={publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>{balanceText}</div>
-            <div className={hasBalance ? css.text : css.hidden}>À Payer :</div>
-            <div className={hasBalance ? css.value : css.hidden}>{value}{SHOW_SYMBOL ? symbol : currency}</div>
+            <div className={publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>
+                {balance ? balance >= 0 ?
+                    <div>
+                        <FormattedMessage id="yourBalance" />
+                        <Amount value={balance} />
+                        {balance < parseFloat(value) ? <FormattedMessage id="insufficient" /> : null}
+                    </div>
+                    : <FormattedMessage id="emptyBalance" /> : <FormattedMessage id="balanceLoading" />}
+            </div>
+            <div className={hasBalance ? css.text : css.hidden}><FormattedMessage id="toPay" /></div>
+            <div className={hasBalance ? css.value : css.hidden}>
+                <Amount value={value} showZero />
+            </div>
             <div className={hasBalance ? css.buttons : css.hidden}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
