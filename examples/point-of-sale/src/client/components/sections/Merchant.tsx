@@ -1,7 +1,5 @@
 import Image from 'next/image';
-import React, { FC, useCallback, useMemo } from 'react';
-import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
-import { PaymentStatus, usePayment } from '../../hooks/usePayment';
+import React, { FC } from 'react';
 import { MERCHANT_IMAGE_PATH } from '../../utils/env';
 import css from './Merchant.module.css';
 

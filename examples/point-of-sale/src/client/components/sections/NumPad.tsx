@@ -5,7 +5,7 @@ import { FormattedMessage, FormattedNumber } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { usePayment } from '../../hooks/usePayment';
 import { Digits } from '../../types';
-import { IS_MERCHANT_POS } from '../../utils/env';
+import { IS_CUSTOMER_POS } from '../../utils/env';
 import { isFullscreen, requestFullscreen } from "../../utils/fullscreen";
 import { BackspaceIcon } from '../images/BackspaceIcon';
 import { Amount } from "./Amount";
@@ -18,7 +18,7 @@ interface NumPadInputButton {
 
 const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
     const onClick = useCallback(() => {
-        if (!IS_MERCHANT_POS && !isFullscreen()) {
+        if (IS_CUSTOMER_POS && !isFullscreen()) {
             requestFullscreen();
         }
         onInput(input);

@@ -2,7 +2,7 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
 import React, { useEffect, useMemo } from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { IS_MERCHANT_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
+import { IS_CUSTOMER_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
 import { FullscreenButton } from '../buttons/FullscreenButton';
 import { GenerateButton } from '../buttons/GenerateButton';
@@ -16,14 +16,14 @@ import { BackButton } from '../buttons/BackButton';
 import { FormattedMessage } from "react-intl";
 
 const NewPage: NextPage = () => {
-    const phone = useMediaQuery({ query: '(max-width: 767px)' }) || !IS_MERCHANT_POS;
-    const generateId = useMemo(() => !IS_MERCHANT_POS ? 'pay' : 'generateCode', []);
     const { reset } = useConfig();
+    const phone = useMediaQuery({ query: '(max-width: 767px)' }) || IS_CUSTOMER_POS;
+    const generateId = IS_CUSTOMER_POS ? 'pay' : 'generateCode';
 
     return phone ? (
         <div className={css.root}>
             <div className={css.top}>
-                {!IS_MERCHANT_POS ? (
+                {IS_CUSTOMER_POS ? (
                     <BackButton onClick={reset}><FormattedMessage id="merchants" /></BackButton>
                 ) : null}
 

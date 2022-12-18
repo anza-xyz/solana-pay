@@ -1,10 +1,10 @@
-import React, { FC, ReactNode, useCallback, useMemo } from 'react';
+import React, { FC, ReactNode, useCallback } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
-import { Merchant, MerchantInfo, MerchantProps } from './Merchant';
+import { Merchant, MerchantInfo } from './Merchant';
 import css from './Carousel.module.css';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
-import { createURLWithParams, createURLWithQuery } from "../../utils/createURLWithQuery";
+import { createURLWithParams } from "../../utils/createURLWithQuery";
 
 export interface MerchantsProps {
     merchants: MerchantInfo[];
@@ -13,9 +13,8 @@ export interface MerchantsProps {
 
 export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
     const navigate = useNavigateWithQuery();
-    const merchantList = useMemo(() => merchants, [merchants]);
     const onClickItem = useCallback((index: number, item: ReactNode) => {
-        const { index: id, address: recipient, company: label, maxValue } = merchantList[index];
+        const { index: id, address: recipient, company: label, maxValue } = merchants[index];
         const urlParams = new URLSearchParams();
         urlParams.append('id', id.toString());
         urlParams.append('recipient', recipient.toString());
@@ -23,7 +22,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
         urlParams.append('maxValue', maxValue.toString());
         const url = createURLWithParams("new", urlParams);
         navigate(url.toString());
-    }, [merchantList, navigate]);
+    }, [merchants, navigate]);
     const selectedItem = id && merchants.length > 0 ? parseInt(id.toString()) - merchants[0].index : 0;
 
     return (

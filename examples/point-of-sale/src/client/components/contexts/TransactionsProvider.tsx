@@ -16,7 +16,7 @@ import { Transaction, TransactionsContext } from '../../hooks/useTransactions';
 import { Confirmations } from '../../types';
 import { arraysEqual } from '../../utils/arraysEqual';
 import { MAX_CONFIRMATIONS } from '../../utils/constants';
-import { IS_MERCHANT_POS } from '../../utils/env';
+import { IS_CUSTOMER_POS } from '../../utils/env';
 
 export interface TransactionsProviderProps {
     children: ReactNode;
@@ -58,7 +58,7 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {
-        if (!IS_MERCHANT_POS) return;
+        if (IS_CUSTOMER_POS) return;
         let changed = false;
 
         const run = async () => {

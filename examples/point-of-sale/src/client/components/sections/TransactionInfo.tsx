@@ -17,9 +17,13 @@ export const TransactionInfo: FC = () => {
             <div className={css.symbol}>
                 {isPaidStatus ?
                     <div>
-                        <FormattedDate value={new Date()} />&nbsp;
-                        <FormattedMessage id="at" />&nbsp;
-                        <FormattedTime value={new Date()} />
+                        <FormattedDate value={new Date()} year="numeric"
+                            month="short"
+                            day="numeric"
+                            hour="numeric"
+                            minute="numeric"
+                            second="numeric"
+                        />
                     </div>
                     : null}
             </div>

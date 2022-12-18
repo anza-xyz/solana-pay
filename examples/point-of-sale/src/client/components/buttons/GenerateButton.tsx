@@ -1,9 +1,8 @@
 import { useWallet } from "@solana/wallet-adapter-react";
-import React, { FC, MouseEventHandler, ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { FC, MouseEventHandler, useCallback, useMemo, useState } from 'react';
 import { FormattedMessage } from "react-intl";
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
-import { FAUCET } from "../../utils/constants";
-import { IS_MERCHANT_POS } from "../../utils/env";
+import { FAUCET, IS_CUSTOMER_POS } from "../../utils/env";
 import css from './GenerateButton.module.css';
 
 export interface GenerateButtonProps {
@@ -21,7 +20,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
     const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
         () => {
             if (!hasInsufficientBalance) {
-                if (publicKey || IS_MERCHANT_POS) {
+                if (publicKey || !IS_CUSTOMER_POS) {
                     generate();
                 } else if (!connecting) {
                     selectWallet();
@@ -29,7 +28,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
             } else {
                 if (needRefresh) {
                     setNeedRefresh(false);
-                    //TODO
+                    //TODO : Refresh account
                 } else {
                     window.open(FAUCET, '_blank');
                     setNeedRefresh(true);
@@ -44,7 +43,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
             onClick={handleClick}
             disabled={publicKey !== null && !connecting && (!amount || amount.isLessThanOrEqualTo(0) || (status !== PaymentStatus.New && status !== PaymentStatus.Error))}
         >
-            <FormattedMessage id={!hasInsufficientBalance ? publicKey || IS_MERCHANT_POS ? id : connecting ? "connecting" : "connect" : needRefresh ? "reload" : "supply"} />
+            <FormattedMessage id={!hasInsufficientBalance ? publicKey || !IS_CUSTOMER_POS ? id : connecting ? "connecting" : "connect" : needRefresh ? "reload" : "supply"} />
         </button>
     );
 };

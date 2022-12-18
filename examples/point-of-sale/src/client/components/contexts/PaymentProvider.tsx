@@ -18,10 +18,11 @@ import { useError } from '../../hooks/useError';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
 import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
-import { IS_DEV, IS_MERCHANT_POS } from '../../utils/env';
+import { IS_DEV, IS_CUSTOMER_POS, DEFAULT_WALLET, AUTO_CONNECT } from '../../utils/env';
 import { exitFullscreen, isFullscreen } from "../../utils/fullscreen";
 import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
 import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
+import { WalletName } from "@solana/wallet-adapter-base";
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -122,22 +123,24 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             setReference(Keypair.generate().publicKey);
             changeStatus(PaymentStatus.Pending);
             navigate('/pending');
-            if (!IS_MERCHANT_POS && isFullscreen()) {
+            if (IS_CUSTOMER_POS && isFullscreen()) {
                 exitFullscreen();
             }
         }
     }, [status, reference, navigate, changeStatus]);
 
     const selectWallet = useCallback(() => {
-        const a = () => { try { connect().catch(() => setTimeout(() => select(SolflareWalletName), 100)); } catch { } };
+        const defaultWallet = DEFAULT_WALLET as WalletName;
+        const a = AUTO_CONNECT ? () => { try { connect().catch(() => setTimeout(() => select(defaultWallet), 100)); } catch { } } : () => { };
         if (!wallet) {
-            let isMobile = typeof window !== 'undefined' &&
+            const isMobile = typeof window !== 'undefined' &&
                 window.isSecureContext &&
                 typeof document !== 'undefined' &&
                 /mobi|android/i.test(navigator.userAgent);
+            const walletName = isMobile ? SolanaMobileWalletAdapterWalletName : defaultWallet;
 
             setTimeout(() => {
-                select(isMobile ? SolanaMobileWalletAdapterWalletName : SolflareWalletName);
+                select(walletName);
                 a();
             }, 100);
         } else {
@@ -204,7 +207,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
             } catch (error) {
                 // If the transaction is declined or fails, try again
                 sendError(error as object);
-                if (IS_MERCHANT_POS) {
+                if (!IS_CUSTOMER_POS) {
                     timeout = setTimeout(run, 5000);
                 }
             }
@@ -221,8 +224,8 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     useEffect(() => {
         if (
             !(
-                ((IS_MERCHANT_POS && status === PaymentStatus.Pending) ||
-                    (!IS_MERCHANT_POS && status === PaymentStatus.Sent)) &&
+                ((!IS_CUSTOMER_POS && status === PaymentStatus.Pending) ||
+                    (IS_CUSTOMER_POS && status === PaymentStatus.Sent)) &&
                 reference &&
                 !signature
             )

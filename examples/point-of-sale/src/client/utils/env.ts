@@ -1,6 +1,13 @@
 export const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || 'SOL';
-export const IS_MERCHANT_POS = JSON.parse(process.env.NEXT_PUBLIC_IS_MERCHANT_POS as string);
-export const SHOW_SYMBOL = JSON.parse(process.env.NEXT_PUBLIC_SHOW_SYMBOL as string);
-export const IS_DEV = JSON.parse(process.env.NEXT_PUBLIC_IS_DEV as string);
-export const USE_SSL = JSON.parse(process.env.NEXT_PUBLIC_USE_SSL as string);
+export const IS_CUSTOMER_POS = JSON.parse(process.env.NEXT_PUBLIC_IS_CUSTOMER_POS as string) || false;
+export const SHOW_SYMBOL = JSON.parse(process.env.NEXT_PUBLIC_SHOW_SYMBOL as string) || false;
+export const IS_DEV = JSON.parse(process.env.NEXT_PUBLIC_IS_DEV as string) || false;
+export const USE_HTTP = JSON.parse(process.env.NEXT_PUBLIC_USE_HTTP as string) || false;
+export const USE_LINK = JSON.parse(process.env.NEXT_PUBLIC_USE_LINK as string) || false;
+export const USE_WEB_WALLET = JSON.parse(process.env.NEXT_PUBLIC_USE_WEB_WALLET as string) || false;
+export const AUTO_CONNECT = JSON.parse(process.env.NEXT_PUBLIC_AUTO_CONNECT as string) || false;
+export const DEFAULT_WALLET = process.env.NEXT_PUBLIC_DEFAULT_WALLET || 'Solflare';
+export const APP_TITLE = process.env.NEXT_PUBLIC_APP_TITLE || 'Solana Pay';
 export const MERCHANT_IMAGE_PATH = process.env.NEXT_PUBLIC_MERCHANT_IMAGE_PATH || '../Img/Merchant/';
+export const FAUCET = (!IS_DEV ? process.env.NEXT_PUBLIC_FAUCET : null) || 'https://spl-token-faucet.com';
+export const ABOUT = process.env.NEXT_PUBLIC_ABOUT || 'https://solanapay.com/';

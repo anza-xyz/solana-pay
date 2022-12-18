@@ -5,7 +5,7 @@ import React, { useEffect, useMemo } from 'react';
 import { FormattedMessage } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
-import { IS_MERCHANT_POS } from '../../utils/env';
+import { IS_CUSTOMER_POS } from '../../utils/env';
 import { BackButton } from '../buttons/BackButton';
 import { GenerateButton } from '../buttons/GenerateButton';
 import { Error } from '../sections/Error';
@@ -26,16 +26,16 @@ const PendingPage: NextPage = () => {
         }
     }, [connectWallet, publicKey, setVisible]);
 
-    const text = useMemo(() => {
+    const id = useMemo(() => {
         switch (status) {
             case PaymentStatus.Pending:
-                return <FormattedMessage id="createTransaction" />;
+                return "createTransaction";
             case PaymentStatus.Creating:
-                return <FormattedMessage id="approveTransaction" />;
+                return "approveTransaction";
             case PaymentStatus.Sent:
-                return <FormattedMessage id="sendTransaction" />;
+                return "sendTransaction";
             case PaymentStatus.Confirmed:
-                return <FormattedMessage id="verifyTransaction" />;
+                return "verifyTransaction";
             default:
                 return null;
         }
@@ -45,11 +45,11 @@ const PendingPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.header}>
                 <BackButton onClick={reset}><FormattedMessage id="cancel" /></BackButton>
-                {connectWallet && IS_MERCHANT_POS ? <WalletMultiButton /> : null}
+                {connectWallet && !IS_CUSTOMER_POS ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
                 <TransactionInfo />
-                {IS_MERCHANT_POS ? (
+                {!IS_CUSTOMER_POS ? (
                     <div>
                         <div className={css.code}>
                             <QRCode />
@@ -61,7 +61,7 @@ const PendingPage: NextPage = () => {
                     <div>
                         <div className={css.scan}></div>
                         {status !== PaymentStatus.Error ? (
-                            <div className={css.confirm}>{text}</div>
+                            <div className={css.confirm}>{id ? <FormattedMessage id="{id}" /> : null}</div>
                         ) : (
                             <div>
                                 <Error />

@@ -1,19 +1,19 @@
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { GlowWalletAdapter, PhantomWalletAdapter, SolflareWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import React, { useState, useEffect, FC, useCallback, useMemo } from 'react';
-import { ABOUT, CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
+import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { CURRENCY, IS_DEV, IS_MERCHANT_POS, SHOW_SYMBOL, USE_SSL } from '../../utils/env';
+import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET } from '../../utils/env';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
@@ -39,26 +39,26 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     query,
     pageProps,
 }) => {
-    const baseURL = (USE_SSL ? 'https' : 'http') + `://${host}`;
+    const baseURL = (USE_HTTP ? 'http' : 'https') + `://${host}`;
 
-    // If you're testing without a mobile wallet, set this to true to allow a browser wallet to be used.
-    const connectWallet = !IS_MERCHANT_POS || false;
-    // If you're testing without a mobile wallet, set this to Devnet or Mainnet to configure some browser wallets.
+    // If you're testing without a mobile wallet, set USE_WEB_WALLET environment setting to true to allow a browser wallet to be used.
+    const connectWallet = USE_WEB_WALLET;
     const network = IS_DEV ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
 
     const wallets = useMemo(
         () =>
             connectWallet
                 ? [
-                    new SolflareWalletAdapter({ network }),
+                    new GlowWalletAdapter({ network }),
+                    new PhantomWalletAdapter(),
+                    new SolflareWalletAdapter({ network })
                 ]
                 : [],
         [connectWallet, network]
     );
 
-    // Toggle comments on these lines to use transaction requests instead of transfer requests.
-    const link = undefined;
-    // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
+    // Set USE_LINK environment setting to use transaction requests instead of transfer requests.
+    const link = useMemo(() => USE_LINK ? new URL(`${baseURL}/api/`) : undefined, [baseURL]);
 
     const [label, setLabel] = useState('');
     const [recipient, setRecipient] = useState(new PublicKey(0));
@@ -82,19 +82,21 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     useEffect(() => {
         if (recipientParam && labelParam) {
             setInfo(recipientParam as string, labelParam as string, maxValueParam as number);
-        } else if (idParam) {
-            fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
-                .then(response => response.json())
-                .then(data => {
-                    const { address: recipient, company: label, maxValue } = data;
-                    setInfo(recipient, label, maxValue);
-                });
-        } else {
-            fetch(`${baseURL}/api/fetchMerchants`)
-                .then(response => response.json())
-                .then(data => {
-                    setMerchants(data);
-                });
+        } else if (IS_CUSTOMER_POS) {
+            if (idParam) {
+                fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const { address: recipient, company: label, maxValue } = data;
+                        setInfo(recipient, label, maxValue);
+                    });
+            } else {
+                fetch(`${baseURL}/api/fetchMerchants`)
+                    .then(response => response.json())
+                    .then(data => {
+                        setMerchants(data);
+                    });
+            }
         }
     }, [baseURL, idParam, query, labelParam, maxValueParam, recipientParam, setInfo]);
 
@@ -107,6 +109,12 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         setId(idParam || 0);
     }, [baseURL, router, idParam]);
 
+    const [language, setLanguage] = useState('en');
+    useEffect(() => {
+        document.title = (label ? label + ' @ ' : '') + APP_TITLE;
+        setLanguage(navigator.language);
+    }, [label]);
+
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
     const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
@@ -115,12 +123,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const decimals = currencyDetail[2];
     const minDecimals = currencyDetail[3];
     const symbol = currencyDetail[4];
-
-    const [language, setLanguage] = useState('en');
-    useEffect(() => {
-        document.title = (label ? label + ' @ ' : '') + 'FiMs Pay';
-        setLanguage(navigator.language);
-    }, [label]);
 
     const basePattern = '{value}';
     const [currencyPattern, setCurrencyPattern] = useState(basePattern);
@@ -148,7 +150,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         setCurrencyPattern(isCurrencyFirst ? displayCurrency + currencySpace + basePattern : basePattern + currencySpace + displayCurrency);
     }, [currency, currencyPattern, symbol, language]);
 
-    // TODO : Translation
+    // TODO : Translation should go in a JSON file
     const messages = {
         'en': {
             "merchants": "List of Merchants",
@@ -319,7 +321,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 <div className={css.title}><FormattedMessage id="merchants" /></div>
                                 <MerchantCarousel merchants={merchants} id={id} />
                                 <div className={css.about}>
-                                    <a className={css.link} href={ABOUT.toString()} target="_blank" rel="noreferrer">
+                                    <a className={css.link} href={ABOUT} target="_blank" rel="noreferrer">
                                         <FormattedMessage id="about" />
                                     </a>
                                 </div>
@@ -345,7 +347,7 @@ App.getInitialProps = async (appContext) => {
     const label = query.label || undefined;
     const message = query.message || undefined;
     const maxValue = query.maxValue || MAX_VALUE;
-    const host = req?.headers.host || 'localhost:' + (USE_SSL ? '3001' : '3000');
+    const host = req?.headers.host || 'localhost:' + (USE_HTTP ? '3000' : '3001');
 
     return {
         ...props,

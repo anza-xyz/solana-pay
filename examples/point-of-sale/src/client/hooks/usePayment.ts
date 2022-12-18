@@ -3,7 +3,6 @@ import BigNumber from 'bignumber.js';
 import { createContext, useContext } from 'react';
 import { Confirmations } from '../types';
 
-// TODO : Add translation
 export enum PaymentStatus {
     New = 'New',
     Pending = 'Pending',
