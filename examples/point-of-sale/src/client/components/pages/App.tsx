@@ -110,10 +110,11 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     }, [baseURL, router, idParam]);
 
     const [language, setLanguage] = useState('en');
-    useEffect(() => {
+    const run = useCallback(() => {
         document.title = (label ? label + ' @ ' : '') + APP_TITLE;
         setLanguage(navigator.language);
     }, [label]);
+    setTimeout(run, 100);
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
