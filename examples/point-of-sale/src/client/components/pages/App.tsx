@@ -13,7 +13,7 @@ import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET } from '../../utils/env';
+import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, LANGUAGE } from '../../utils/env';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
@@ -32,6 +32,128 @@ interface AppProps extends NextAppProps {
         maxValue?: number;
     };
 }
+
+// TODO : Translation should go in a JSON file
+const translation = {
+    'en': {
+        "merchants": "List of Merchants",
+        "about": "Learn more...",
+        "newPayment": "New Payment",
+        "cancel": "Cancel",
+        "retry": "Retry",
+        "back": "Back",
+        "total": "Total",
+        "balance": "Balance",
+        "createTransaction": "Creating transaction...",
+        "approveTransaction": "Please approve the transaction!",
+        "sendTransaction": "Sending transaction...",
+        "verifyTransaction": "Verifying...",
+        "scanCode": "Scan this code with your Solana Pay wallet",
+        "reinit": "Resetting...",
+        "toPay": "To Pay:",
+        "poweredBy": "Powered By",
+        "balanceLoading": "Loading your Balance...",
+        "emptyBalance": "NO BALANCE!",
+        "insufficient": " [INSUFFICIENT]",
+        "yourBalance": "Your Balance: ",
+        "New": "New",
+        "Pending": "In progress",
+        "Creating": "Creating",
+        "Sent": "Sent",
+        "Confirmed": "Confirmed",
+        "Valid": "Valid",
+        "Invalid": "Invalid",
+        "Finalized": "Finished",
+        "Error": "Error",
+        "connecting": "Connecting...",
+        "connect": "Connect",
+        "reload": "Reload",
+        "supply": "Supply",
+        "pay": "Pay",
+        "at": "at",
+        "generateCode": "Generate payment code",
+        "WalletSignTransactionError": "You declined the transaction!",
+        "WalletSendTransactionError": "You took too long to approve the transaction!",
+        "TokenAccountNotFoundError": "You need to add \"{currency}\" to your wallet!",
+        "insufficient SOL funds to pay for transaction fee": "You lack SOL to pay transaction fees!",
+        "sender is also recipient": "You are both payer and paid at the same time",
+        "sender not found": "The currency \"{currency}\" in your wallet could not be found!",
+        "sender owner invalid": "Your wallet is invalid!",
+        "sender executable": "Your wallet is an executable / program!",
+        "recipient not found": "The currency \"{currency}\" in this merchant's wallet could not be found!",
+        "recipient owner invalid": "This merchant's wallet is invalid!",
+        "recipient executable": "This merchant's wallet is an executable/program!",
+        "amount decimals invalid": "The number of decimals of the amount is invalid!",
+        "mint not initialized": "The currency \"{currency}\" needs to be initialized!",
+        "sender not initialized": "Your wallet needs to be initialized!",
+        "sender frozen": "Your wallet is frozen, probably due to fraud!",
+        "recipient not initialized": "This merchant's wallet needs to be initialized!",
+        "recipient frozen": "This merchant's wallet is frozen, possibly due to fraud!",
+        "insufficient funds": "The amount is more than your funds!",
+        "CreateTransferError": "Transfer error!",
+        "NetworkBusyError": "The network is temporarily busy, please try again!",
+        "UnknownError": "Unknown error: {error}",
+    },
+    'fr': {
+        "merchants": "Liste des Commerçants",
+        "about": "En savoir plus...",
+        "newPayment": "Nouveau Paiement",
+        "cancel": "Annuler",
+        "retry": "Réessayer",
+        "back": "Retour",
+        "total": "Total",
+        "balance": "Solde",
+        "createTransaction": "Création de la transaction ...",
+        "approveTransaction": "Merci d'approuver la transaction !",
+        "sendTransaction": "Envoi de la transaction ...",
+        "verifyTransaction": "Vérification en cours ...",
+        "scanCode": "Scannez ce code avec votre porte-monnaie Solana Pay",
+        "reinit": "Réinitialisation ...",
+        "toPay": "À Payer :",
+        "poweredBy": "Propulsé par ",
+        "balanceLoading": "Chargement de votre Solde ...",
+        "emptyBalance": "AUCUN SOLDE !",
+        "insufficient": " [INSUFFISANT]",
+        "yourBalance": "Votre Solde : ",
+        "New": "Nouveau",
+        "Pending": "En cours",
+        "Creating": "Création",
+        "Sent": "Envoyé",
+        "Confirmed": "Confirmé",
+        "Valid": "Valide",
+        "Invalid": "Invalide",
+        "Finalized": "Terminé",
+        "Error": "Erreur",
+        "connecting": "Connexion ...",
+        "connect": "Se connecter",
+        "reload": "Recharger",
+        "supply": "S'approvisionner",
+        "pay": "Payer",
+        "at": "à",
+        "generateCode": "Générer code de paiement",
+        "WalletSignTransactionError": "Vous avez refusé la transaction !",
+        "WalletSendTransactionError": "Vous avez trop tardé à approuver la transaction !",
+        "TokenAccountNotFoundError": "Vous devez ajouter la monnaie \"{currency}\" à votre porte-monnaie !",
+        "insufficient SOL funds to pay for transaction fee": "Vous manquez de SOL pour payer les frais de transaction !",
+        "sender is also recipient": "Vous êtes en même temps payeur et payé",
+        "sender not found": "La monnaie \"{currency}\" dans votre porte-monnaie est introuvable !",
+        "sender owner invalid": "Votre porte-monnaie est invalide !",
+        "sender executable": "Votre porte-monnaie est un exécutable / programme !",
+        "recipient not found": "La monnaie \"{currency}\" dans le porte-monnaie de ce commerçant est introuvable !",
+        "recipient owner invalid": "Le porte-monnaie de ce commerçant est invalide !",
+        "recipient executable": "Le porte-monnaie de ce commerçant est un exécutable / programme !",
+        "amount decimals invalid": "Le nombre de décimales du montant est invalide !",
+        "mint not initialized": "La monnaie \"{currency}\" a besoin d'être initialisé !",
+        "sender not initialized": "Votre porte-monnaie a besoin d'être initialisé !",
+        "sender frozen": "Votre porte-monnaie est gelé, probablement dû à une fraude !",
+        "recipient not initialized": "Le porte-monnaie de ce commerçant a besoin d'être initialisé !",
+        "recipient frozen": "Le porte-monnaie de ce commerçant est gelé, probablement dû à une fraude !",
+        "insufficient funds": "Le montant est supérieur à vos fonds !",
+        "CreateTransferError": "Erreur de transfert !",
+        "NetworkBusyError": "Le réseau est momentanément saturé, merci de réessayer !",
+        "UnknownError": "Erreur inconnue : {error}",
+    }
+};
 
 const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<AppInitialProps>; } = ({
     Component,
@@ -82,21 +204,19 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     useEffect(() => {
         if (recipientParam && labelParam) {
             setInfo(recipientParam as string, labelParam as string, maxValueParam as number);
+        } else if (idParam) {
+            fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
+                .then(response => response.json())
+                .then(data => {
+                    const { address: recipient, company: label, maxValue } = data;
+                    setInfo(recipient, label, maxValue);
+                });
         } else if (IS_CUSTOMER_POS) {
-            if (idParam) {
-                fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const { address: recipient, company: label, maxValue } = data;
-                        setInfo(recipient, label, maxValue);
-                    });
-            } else {
-                fetch(`${baseURL}/api/fetchMerchants`)
-                    .then(response => response.json())
-                    .then(data => {
-                        setMerchants(data);
-                    });
-            }
+            fetch(`${baseURL}/api/fetchMerchants`)
+                .then(response => response.json())
+                .then(data => {
+                    setMerchants(data);
+                });
         }
     }, [baseURL, idParam, query, labelParam, maxValueParam, recipientParam, setInfo]);
 
@@ -110,14 +230,20 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         });
     }, [baseURL, router, idParam]);
 
-    const [language, setLanguage] = useState('en');
+    const [language, setLanguage] = useState(LANGUAGE);
+    // const [messages, setMessages] = useState(translation[language as keyof typeof translation]);
     useEffect(() => {
         let changed = false;
 
         const run = () => {
             if (document && navigator) {
                 document.title = (label ? label + ' @ ' : '') + APP_TITLE;
-                setLanguage(navigator.language);
+                const lang = navigator.language;
+                const mes = translation[lang as keyof typeof translation] ?? translation[lang.slice(0, 2) as keyof typeof translation];
+                if (mes) {
+                    setLanguage(lang);
+                    // setMessages(mes);
+                }
             }
         };
         run();
@@ -127,7 +253,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             changed = true;
             clearTimeout(timeout);
         };
-    }, [label]);
+    }, [label, language]);
 
     const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
@@ -163,132 +289,10 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         displayCurrency = "<span>" + displayCurrency + "</span>";
 
         setCurrencyPattern(isCurrencyFirst ? displayCurrency + currencySpace + basePattern : basePattern + currencySpace + displayCurrency);
-    }, [currency, currencyPattern, symbol, language]);
-
-    // TODO : Translation should go in a JSON file
-    const messages = {
-        'en': {
-            "merchants": "List of Merchants",
-            "about": "Learn more...",
-            "newPayment": "New Payment",
-            "cancel": "Cancel",
-            "retry": "Retry",
-            "back": "Back",
-            "total": "Total",
-            "balance": "Balance",
-            "createTransaction": "Creating transaction...",
-            "approveTransaction": "Please approve the transaction!",
-            "sendTransaction": "Sending transaction...",
-            "verifyTransaction": "Verifying...",
-            "scanCode": "Scan this code with your Solana Pay wallet",
-            "reinit": "Resetting...",
-            "toPay": "To Pay:",
-            "poweredBy": "Powered By",
-            "balanceLoading": "Loading your Balance...",
-            "emptyBalance": "NO BALANCE!",
-            "insufficient": " [INSUFFICIENT]",
-            "yourBalance": "Your Balance: ",
-            "New": "New",
-            "Pending": "In progress",
-            "Creating": "Creating",
-            "Sent": "Sent",
-            "Confirmed": "Confirmed",
-            "Valid": "Valid",
-            "Invalid": "Invalid",
-            "Finalized": "Finished",
-            "Error": "Error",
-            "connecting": "Connecting...",
-            "connect": "Connect",
-            "reload": "Reload",
-            "supply": "Supply",
-            "pay": "Pay",
-            "at": "at",
-            "generateCode": "Generate payment code",
-            "WalletSignTransactionError": "You declined the transaction!",
-            "WalletSendTransactionError": "You took too long to approve the transaction!",
-            "TokenAccountNotFoundError": "You need to add \"{currency}\" to your wallet!",
-            "insufficient SOL funds to pay for transaction fee": "You lack SOL to pay transaction fees!",
-            "sender is also recipient": "You are both payer and paid at the same time",
-            "sender not found": "The currency \"{currency}\" in your wallet could not be found!",
-            "sender owner invalid": "Your wallet is invalid!",
-            "sender executable": "Your wallet is an executable / program!",
-            "recipient not found": "The currency \"{currency}\" in this merchant's wallet could not be found!",
-            "recipient owner invalid": "This merchant's wallet is invalid!",
-            "recipient executable": "This merchant's wallet is an executable/program!",
-            "amount decimals invalid": "The number of decimals of the amount is invalid!",
-            "mint not initialized": "The currency \"{currency}\" needs to be initialized!",
-            "sender not initialized": "Your wallet needs to be initialized!",
-            "sender frozen": "Your wallet is frozen, probably due to fraud!",
-            "recipient not initialized": "This merchant's wallet needs to be initialized!",
-            "recipient frozen": "This merchant's wallet is frozen, possibly due to fraud!",
-            "insufficient funds": "The amount is more than your funds!",
-            "CreateTransferError": "Transfer error!",
-            "NetworkBusyError": "The network is temporarily busy, please try again!",
-            "UnknownError": "Unknown error: {error}",
-        },
-        'fr': {
-            "merchants": "Liste des Commerçants",
-            "about": "En savoir plus...",
-            "newPayment": "Nouveau Paiement",
-            "cancel": "Annuler",
-            "retry": "Réessayer",
-            "back": "Retour",
-            "total": "Total",
-            "balance": "Solde",
-            "createTransaction": "Création de la transaction ...",
-            "approveTransaction": "Merci d'approuver la transaction !",
-            "sendTransaction": "Envoi de la transaction ...",
-            "verifyTransaction": "Vérification en cours ...",
-            "scanCode": "Scannez ce code avec votre porte-monnaie Solana Pay",
-            "reinit": "Réinitialisation ...",
-            "toPay": "À Payer :",
-            "poweredBy": "Propulsé par ",
-            "balanceLoading": "Chargement de votre Solde ...",
-            "emptyBalance": "AUCUN SOLDE !",
-            "insufficient": " [INSUFFISANT]",
-            "yourBalance": "Votre Solde : ",
-            "New": "Nouveau",
-            "Pending": "En cours",
-            "Creating": "Création",
-            "Sent": "Envoyé",
-            "Confirmed": "Confirmé",
-            "Valid": "Valide",
-            "Invalid": "Invalide",
-            "Finalized": "Terminé",
-            "Error": "Erreur",
-            "connecting": "Connexion ...",
-            "connect": "Se connecter",
-            "reload": "Recharger",
-            "supply": "S'approvisionner",
-            "pay": "Payer",
-            "at": "à",
-            "generateCode": "Générer code de paiement",
-            "WalletSignTransactionError": "Vous avez refusé la transaction !",
-            "WalletSendTransactionError": "Vous avez trop tardé à approuver la transaction !",
-            "TokenAccountNotFoundError": "Vous devez ajouter la monnaie \"{currency}\" à votre porte-monnaie !",
-            "insufficient SOL funds to pay for transaction fee": "Vous manquez de SOL pour payer les frais de transaction !",
-            "sender is also recipient": "Vous êtes en même temps payeur et payé",
-            "sender not found": "La monnaie \"{currency}\" dans votre porte-monnaie est introuvable !",
-            "sender owner invalid": "Votre porte-monnaie est invalide !",
-            "sender executable": "Votre porte-monnaie est un exécutable / programme !",
-            "recipient not found": "La monnaie \"{currency}\" dans le porte-monnaie de ce commerçant est introuvable !",
-            "recipient owner invalid": "Le porte-monnaie de ce commerçant est invalide !",
-            "recipient executable": "Le porte-monnaie de ce commerçant est un exécutable / programme !",
-            "amount decimals invalid": "Le nombre de décimales du montant est invalide !",
-            "mint not initialized": "La monnaie \"{currency}\" a besoin d'être initialisé !",
-            "sender not initialized": "Votre porte-monnaie a besoin d'être initialisé !",
-            "sender frozen": "Votre porte-monnaie est gelé, probablement dû à une fraude !",
-            "recipient not initialized": "Le porte-monnaie de ce commerçant a besoin d'être initialisé !",
-            "recipient frozen": "Le porte-monnaie de ce commerçant est gelé, probablement dû à une fraude !",
-            "insufficient funds": "Le montant est supérieur à vos fonds !",
-            "CreateTransferError": "Erreur de transfert !",
-            "NetworkBusyError": "Le réseau est momentanément saturé, merci de réessayer !",
-            "UnknownError": "Erreur inconnue : {error}",
-        }
-    };
+    }, [currency, symbol, language]);
 
     return (
-        <IntlProvider locale={language} messages={messages[language as keyof typeof messages]} defaultLocale="en">
+        <IntlProvider locale={language} messages={translation[language as keyof typeof translation]} defaultLocale={LANGUAGE}>
             <ErrorProvider>
                 <ThemeProvider>
                     <FullscreenProvider>
