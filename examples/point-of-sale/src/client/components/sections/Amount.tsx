@@ -18,16 +18,13 @@ export const Amount: FC<AmountProps> = ({ value, showZero }) => {
         if (isNaN(num) || (num <= 0 && !showZero)) return NON_BREAKING_SPACE;
         if (typeof value === 'string') return value;
         const bignumber = new BigNumber(value ? value : 0);
-        let text;
         if (bignumber.isGreaterThan(0)) {
             const decimals = bignumber.decimalPlaces() ?? 0;
-            text = bignumber.toFormat(decimals < minDecimals ? minDecimals : decimals);
+            return bignumber.toFormat(decimals < minDecimals ? minDecimals : decimals);
         } else {
-            text = '0';
+            return '0';
         }
-
-        return new Intl.NumberFormat(undefined, { maximumFractionDigits: maxDecimals }).format(parseFloat(text));
-    }, [value, minDecimals, maxDecimals, showZero]);
+    }, [value, minDecimals, showZero]);
 
     return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" defaultMessage={currencyPattern} values={{
         span: chunks => <span className={css.currency}>{chunks}</span>,

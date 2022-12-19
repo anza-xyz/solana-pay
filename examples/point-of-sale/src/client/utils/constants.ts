@@ -39,4 +39,4 @@ export const CURRENCY_LIST: currencyType = {
 };
 
 // Maximum value for a payment
-export const MAX_VALUE = 99999;
+export const MAX_VALUE = 99999.99;
