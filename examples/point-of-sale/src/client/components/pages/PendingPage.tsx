@@ -61,7 +61,7 @@ const PendingPage: NextPage = () => {
                     <div>
                         <div className={css.scan}></div>
                         {status !== PaymentStatus.Error ? (
-                            <div className={css.confirm}>{id ? <FormattedMessage id="{id}" /> : null}</div>
+                            <div className={css.confirm}>{id ? <FormattedMessage id={id} /> : null}</div>
                         ) : (
                             <div>
                                 <Error />
