@@ -1,11 +1,11 @@
 export const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || 'SOL';
-export const IS_CUSTOMER_POS = process.env.NEXT_PUBLIC_IS_CUSTOMER_POS || false;
-export const SHOW_SYMBOL = process.env.NEXT_PUBLIC_SHOW_SYMBOL || false;
-export const IS_DEV = process.env.NEXT_PUBLIC_IS_DEV || false;
-export const USE_HTTP = process.env.NEXT_PUBLIC_USE_HTTP || false;
-export const USE_LINK = process.env.NEXT_PUBLIC_USE_LINK || false;
-export const USE_WEB_WALLET = process.env.NEXT_PUBLIC_USE_WEB_WALLET || false;
-export const AUTO_CONNECT = process.env.NEXT_PUBLIC_AUTO_CONNECT || false;
+export const IS_CUSTOMER_POS = process.env.NEXT_PUBLIC_IS_CUSTOMER_POS === 'true' || false;
+export const SHOW_SYMBOL = process.env.NEXT_PUBLIC_SHOW_SYMBOL === 'true' || false;
+export const IS_DEV = process.env.NEXT_PUBLIC_IS_DEV === 'true' || false;
+export const USE_HTTP = process.env.NEXT_PUBLIC_USE_HTTP === 'true' || false;
+export const USE_LINK = process.env.NEXT_PUBLIC_USE_LINK === 'true' || false;
+export const USE_WEB_WALLET = process.env.NEXT_PUBLIC_USE_WEB_WALLET === 'true' || false;
+export const AUTO_CONNECT = process.env.NEXT_PUBLIC_AUTO_CONNECT === 'true' || false;
 export const DEFAULT_WALLET = process.env.NEXT_PUBLIC_DEFAULT_WALLET || 'Solflare';
 export const APP_TITLE = process.env.NEXT_PUBLIC_APP_TITLE || 'Solana Pay';
 export const MERCHANT_IMAGE_PATH = process.env.NEXT_PUBLIC_MERCHANT_IMAGE_PATH || '../Img/Merchant/';
