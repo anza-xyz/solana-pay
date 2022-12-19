@@ -14,7 +14,7 @@ export const NON_BREAKING_SPACE = '\u00a0';
 export const DEVNET_ENDPOINT = clusterApiUrl('devnet');
 
 // Use Phantom's mainnet endpoint instead of GenesysGo (auth issue) or default (ratelimits)
-export const MAINNET_ENDPOINT = process.env.NEXT_PUBLIC_CLUSTER_ENDPOINT || 'https://solana-mainnet.phantom.tech';
+export const MAINNET_ENDPOINT = process.env.NEXT_PUBLIC_CLUSTER_ENDPOINT || 'https://solana-mainnet.rpc.extrnode.com';
 
 // Mint DUMMY tokens on devnet @ https://spl-token-faucet.com
 export const DEVNET_DUMMY_MINT = new PublicKey('Gh9ZwEmdLJ8DscKNTkTqPbNwLNNBjuSzaG9Vp2KGtKJr');
