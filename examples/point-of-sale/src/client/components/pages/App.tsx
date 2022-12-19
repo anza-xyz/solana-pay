@@ -160,6 +160,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         } else {
             displayCurrency = currency;
         }
+        displayCurrency = "<span>" + displayCurrency + "</span>";
 
         setCurrencyPattern(isCurrencyFirst ? displayCurrency + currencySpace + basePattern : basePattern + currencySpace + displayCurrency);
     }, [currency, currencyPattern, symbol, language]);

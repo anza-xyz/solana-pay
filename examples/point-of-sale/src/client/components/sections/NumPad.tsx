@@ -31,11 +31,11 @@ const NumPadButton: FC<NumPadInputButton> = ({ input, onInput }) => {
 };
 
 export const NumPad: FC = () => {
-    const { minDecimals, maxValue } = useConfig();
+    const { maxDecimals, maxValue } = useConfig();
     const { balance } = usePayment();
     const { publicKey } = useWallet();
 
-    const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + minDecimals + '})?$'), [minDecimals]);
+    const regExp = useMemo(() => new RegExp('^\\d*([.,]\\d{0,' + maxDecimals + '})?$'), [maxDecimals]);
 
     const [value, setValue] = useState('0');
     const onInput = useCallback(
@@ -69,11 +69,11 @@ export const NumPad: FC = () => {
                     </div>
                     : <FormattedMessage id="emptyBalance" /> : <FormattedMessage id="balanceLoading" />}
             </div>
-            <div className={hasBalance ? css.text : css.hidden}><FormattedMessage id="toPay" /></div>
-            <div className={hasBalance ? css.value : css.hidden}>
+            <div className={!IS_CUSTOMER_POS || hasBalance ? css.text : css.hidden}><FormattedMessage id="toPay" /></div>
+            <div className={!IS_CUSTOMER_POS || hasBalance ? css.value : css.hidden}>
                 <Amount value={value} showZero />
             </div>
-            <div className={hasBalance ? css.buttons : css.hidden}>
+            <div className={!IS_CUSTOMER_POS || hasBalance ? css.buttons : css.hidden}>
                 <div className={css.row}>
                     <NumPadButton input={1} onInput={onInput} />
                     <NumPadButton input={2} onInput={onInput} />

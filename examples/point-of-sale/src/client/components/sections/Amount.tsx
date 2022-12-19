@@ -3,6 +3,7 @@ import React, { FC, useMemo } from 'react';
 import { FormattedMessage } from "react-intl";
 import { useConfig } from '../../hooks/useConfig';
 import { NON_BREAKING_SPACE } from '../../utils/constants';
+import css from './Amount.module.css';
 
 export interface AmountProps {
     value: BigNumber | number | string | undefined;
@@ -28,5 +29,8 @@ export const Amount: FC<AmountProps> = ({ value, showZero }) => {
         return new Intl.NumberFormat(undefined, { maximumFractionDigits: maxDecimals }).format(parseFloat(text));
     }, [value, minDecimals, maxDecimals, showZero]);
 
-    return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" defaultMessage={currencyPattern} values={{ value: amount }} /> : amount}</span>;
+    return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" defaultMessage={currencyPattern} values={{
+        span: chunks => <span className={css.currency}>{chunks}</span>,
+        value: amount
+    }} /> : amount}</span>;
 };

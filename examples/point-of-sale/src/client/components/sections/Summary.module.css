@@ -31,13 +31,8 @@
     text-align: right;
 }
 
-.symbol {
-    font-size: 14px;
-    line-height: 32px;
-}
-
 .amount {
-    line-height: 32px;
+    margin-top: 32px;
     font-size: 32px;
     font-weight: 700;
 }

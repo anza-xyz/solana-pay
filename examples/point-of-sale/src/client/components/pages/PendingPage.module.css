@@ -41,10 +41,14 @@
 .scan {
     font-weight: 700;
     line-height: 24px;
+    display: flex;
+    justify-content: center;
 }
 
 .confirm {
     line-height: 24px;
+    display: flex;
+    justify-content: center;
 }
 
 .footer {
