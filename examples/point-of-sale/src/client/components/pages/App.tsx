@@ -231,7 +231,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     }, [baseURL, router, idParam]);
 
     const [language, setLanguage] = useState(LANGUAGE);
-    // const [messages, setMessages] = useState(translation[language as keyof typeof translation]);
+    const [messages, setMessages] = useState(translation[language as keyof typeof translation]);
     useEffect(() => {
         let changed = false;
 
@@ -242,7 +242,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                 const mes = translation[lang as keyof typeof translation] ?? translation[lang.slice(0, 2) as keyof typeof translation];
                 if (mes) {
                     setLanguage(lang);
-                    // setMessages(mes);
+                    setMessages(mes);
                 }
             }
         };
@@ -292,7 +292,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     }, [currency, symbol, language]);
 
     return (
-        <IntlProvider locale={language} messages={translation[language as keyof typeof translation]} defaultLocale={LANGUAGE}>
+        <IntlProvider locale={language} messages={messages} defaultLocale={LANGUAGE}>
             <ErrorProvider>
                 <ThemeProvider>
                     <FullscreenProvider>
