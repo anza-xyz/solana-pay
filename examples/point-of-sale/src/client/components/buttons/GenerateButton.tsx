@@ -15,7 +15,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
 
     const [needRefresh, setNeedRefresh] = useState(false);
 
-    const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || (amount && balance < parseFloat(amount.toString()))), [balance, amount]);
+    const hasInsufficientBalance = useMemo(() => IS_CUSTOMER_POS && balance && (balance <= 0 || (amount && balance < parseFloat(amount.toString()))), [balance, amount]);
     const isInvalidAmount = useMemo(() => !amount || amount.isLessThanOrEqualTo(0), [amount]);
 
     const handleClick: MouseEventHandler<HTMLButtonElement> = useCallback(
@@ -42,7 +42,7 @@ export const GenerateButton: FC<GenerateButtonProps> = ({ id }) => {
             className={css.root}
             type="button"
             onClick={handleClick}
-            disabled={(!IS_CUSTOMER_POS && isInvalidAmount) || (IS_CUSTOMER_POS && publicKey !== null && !connecting && (isInvalidAmount || (status !== PaymentStatus.New && status !== PaymentStatus.Error)))}
+            disabled={(!IS_CUSTOMER_POS && isInvalidAmount) || (IS_CUSTOMER_POS && publicKey !== null && !connecting && !hasInsufficientBalance && (isInvalidAmount || (status !== PaymentStatus.New && status !== PaymentStatus.Error)))}
         >
             <FormattedMessage id={!hasInsufficientBalance ? publicKey || !IS_CUSTOMER_POS ? id : connecting ? "connecting" : "connect" : needRefresh ? "reload" : "supply"} />
         </button>
