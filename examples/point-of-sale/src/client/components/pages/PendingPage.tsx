@@ -36,7 +36,7 @@ const PendingPage: NextPage = () => {
             </div>
             <div className={css.main}>
                 <TransactionInfo />
-                {!IS_CUSTOMER_POS ? (
+                {!IS_CUSTOMER_POS ? id ? (
                     <div>
                         <div className={css.code}>
                             <QRCode />
@@ -44,7 +44,7 @@ const PendingPage: NextPage = () => {
                         <div className={css.scan}><FormattedMessage id="scanCode" /></div>
                         <div className={css.confirm}><FormattedMessage id="approveTransaction" /></div>
                     </div>
-                ) : (
+                ) : null : (
                     <div>
                         <div className={css.scan}></div>
                         {status !== PaymentStatus.Error ? (
