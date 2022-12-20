@@ -13,7 +13,7 @@ import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, LANGUAGE } from '../../utils/env';
+import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, LANGUAGE, SHOW_MERCHANT_LIST } from '../../utils/env';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
@@ -211,7 +211,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                     const { address: recipient, company: label, maxValue } = data;
                     setInfo(recipient, label, maxValue);
                 });
-        } else if (IS_CUSTOMER_POS) {
+        } else if (SHOW_MERCHANT_LIST) {
             fetch(`${baseURL}/api/fetchMerchants`)
                 .then(response => response.json())
                 .then(data => {

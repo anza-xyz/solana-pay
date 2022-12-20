@@ -1,6 +1,7 @@
 export const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || 'SOL';
 export const IS_CUSTOMER_POS = process.env.NEXT_PUBLIC_IS_CUSTOMER_POS === 'true' || false;
 export const SHOW_SYMBOL = process.env.NEXT_PUBLIC_SHOW_SYMBOL === 'true' || false;
+export const SHOW_MERCHANT_LIST = process.env.NEXT_PUBLIC_SHOW_MERCHANT_LIST === 'true' || false;
 export const IS_DEV = process.env.NEXT_PUBLIC_IS_DEV === 'true' || false;
 export const USE_HTTP = process.env.NEXT_PUBLIC_USE_HTTP === 'true' || false;
 export const USE_LINK = process.env.NEXT_PUBLIC_USE_LINK === 'true' || false;
