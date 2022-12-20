@@ -19,7 +19,6 @@ export interface ConfigProviderProps {
     maxValue: number;
     requiredConfirmations?: Confirmations;
     currency: string;
-    currencyPattern?: string;
     id?: number;
     connectWallet?: boolean;
     reset?: () => void;
@@ -40,7 +39,6 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
     maxValue = MAX_VALUE,
     requiredConfirmations = 1,
     currency,
-    currencyPattern = '{value}',
     id,
     connectWallet = false,
     reset,
@@ -61,7 +59,6 @@ export const ConfigProvider: FC<ConfigProviderProps> = ({
                 maxValue,
                 requiredConfirmations,
                 currency,
-                currencyPattern,
                 id,
                 connectWallet,
                 reset

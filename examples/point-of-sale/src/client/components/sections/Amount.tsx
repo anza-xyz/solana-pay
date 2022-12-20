@@ -11,7 +11,7 @@ export interface AmountProps {
 }
 
 export const Amount: FC<AmountProps> = ({ value, showZero }) => {
-    const { minDecimals, maxDecimals, currencyPattern } = useConfig();
+    const { minDecimals } = useConfig();
 
     const amount = useMemo(() => {
         const num = value ? parseFloat(value.toString()) : NaN;
@@ -26,7 +26,7 @@ export const Amount: FC<AmountProps> = ({ value, showZero }) => {
         }
     }, [value, minDecimals, showZero]);
 
-    return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" defaultMessage={currencyPattern} values={{
+    return <span>{amount !== NON_BREAKING_SPACE ? <FormattedMessage id="currencyPattern" values={{
         span: chunks => <span className={css.currency}>{chunks}</span>,
         value: amount
     }} /> : amount}</span>;

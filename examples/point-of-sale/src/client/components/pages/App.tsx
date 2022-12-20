@@ -71,6 +71,7 @@ const translation = {
         "supply": "Supply",
         "pay": "Pay",
         "at": "at",
+        "currencyPattern": "{value}",
         "generateCode": "Generate payment code",
         "WalletSignTransactionError": "You declined the transaction!",
         "WalletSendTransactionError": "You took too long to approve the transaction!",
@@ -130,6 +131,7 @@ const translation = {
         "supply": "S'approvisionner",
         "pay": "Payer",
         "at": "à",
+        "currencyPattern": "{value}",
         "generateCode": "Générer code de paiement",
         "WalletSignTransactionError": "Vous avez refusé la transaction !",
         "WalletSendTransactionError": "Vous avez trop tardé à approuver la transaction !",
@@ -264,10 +266,9 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const minDecimals = currencyDetail[3];
     const symbol = currencyDetail[4];
 
-    const basePattern = '{value}';
-    const [currencyPattern, setCurrencyPattern] = useState(basePattern);
     const [maxDecimals, setMaxDecimals] = useState<Digits>(2);
     useEffect(() => {
+        const basePattern = '{value}';
         const text = Number(1).toLocaleString(language, { style: "currency", currency: "EUR" });
         const onlyDecimal = text.replaceAll('1', '');
         const empty = onlyDecimal.replaceAll('0', '');
@@ -288,8 +289,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         }
         displayCurrency = "<span>" + displayCurrency + "</span>";
 
-        setCurrencyPattern(isCurrencyFirst ? displayCurrency + currencySpace + basePattern : basePattern + currencySpace + displayCurrency);
-    }, [currency, symbol, language]);
+        messages.currencyPattern = isCurrencyFirst ? displayCurrency + currencySpace + basePattern : basePattern + currencySpace + displayCurrency;
+    }, [currency, symbol, language, messages]);
 
     return (
         <IntlProvider locale={language} messages={messages} defaultLocale={LANGUAGE}>
@@ -313,7 +314,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                             maxDecimals={maxDecimals}
                                             maxValue={maxValue}
                                             currency={currency}
-                                            currencyPattern={currencyPattern}
                                             id={id}
                                             connectWallet={connectWallet}
                                             reset={reset}
