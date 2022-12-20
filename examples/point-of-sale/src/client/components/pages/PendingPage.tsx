@@ -1,9 +1,6 @@
-import { useWallet } from '@solana/wallet-adapter-react';
-import { useWalletModal, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { NextPage } from 'next';
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { FormattedMessage } from "react-intl";
-import { useConfig } from '../../hooks/useConfig';
 import { PaymentStatus, usePayment } from '../../hooks/usePayment';
 import { IS_CUSTOMER_POS } from '../../utils/env';
 import { BackButton } from '../buttons/BackButton';
@@ -15,16 +12,7 @@ import { TransactionInfo } from '../sections/TransactionInfo';
 import css from './PendingPage.module.css';
 
 const PendingPage: NextPage = () => {
-    const { connectWallet } = useConfig();
     const { reset, status } = usePayment();
-    const { publicKey } = useWallet();
-    const { setVisible } = useWalletModal();
-
-    useEffect(() => {
-        if (connectWallet && !publicKey) {
-            setVisible(true);
-        }
-    }, [connectWallet, publicKey, setVisible]);
 
     const id = useMemo(() => {
         switch (status) {
@@ -45,7 +33,6 @@ const PendingPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.header}>
                 <BackButton onClick={reset}><FormattedMessage id="cancel" /></BackButton>
-                {connectWallet && !IS_CUSTOMER_POS ? <WalletMultiButton /> : null}
             </div>
             <div className={css.main}>
                 <TransactionInfo />
