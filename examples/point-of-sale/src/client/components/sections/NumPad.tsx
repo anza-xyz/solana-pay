@@ -60,7 +60,7 @@ export const NumPad: FC = () => {
 
     return (
         <div className={css.root}>
-            <div className={publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>
+            <div className={IS_CUSTOMER_POS && publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>
                 {balance ? balance >= 0 ?
                     <div>
                         <FormattedMessage id="yourBalance" />
