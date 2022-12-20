@@ -5,6 +5,7 @@ interface GetResponse {
     index: number;
     address: string;
     company: string;
+    currency: string;
     maxValue: number;
 }
 

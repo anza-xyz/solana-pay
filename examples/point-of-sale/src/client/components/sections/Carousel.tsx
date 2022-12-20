@@ -14,11 +14,12 @@ export interface MerchantsProps {
 export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
     const navigate = useNavigateWithQuery();
     const onClickItem = useCallback((index: number, item: ReactNode) => {
-        const { index: id, address: recipient, company: label, maxValue } = merchants[index];
+        const { index: id, address: recipient, company: label, currency, maxValue } = merchants[index];
         const urlParams = new URLSearchParams();
         urlParams.append('id', id.toString());
         urlParams.append('recipient', recipient.toString());
         urlParams.append('label', label.toString());
+        urlParams.append('currency', currency.toString());
         urlParams.append('maxValue', maxValue.toString());
         const url = createURLWithParams("new", urlParams);
         navigate(url.toString());

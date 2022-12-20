@@ -4,6 +4,7 @@ import merchants from '../../server/data/merchant.json';
 interface GetResponse {
     address: string;
     company: string;
+    currency: string;
     maxValue: number;
 }
 
@@ -16,8 +17,8 @@ const findMerchant: NextApiHandler<GetResponse | undefined> = async (request, re
 
         const merchant = merchants.find((merchant) => merchant.index === id);
         if (merchant) {
-            const { address, company, maxValue } = merchant;
-            response.status(200).json({ address, company, maxValue });
+            const { address, company, currency, maxValue } = merchant;
+            response.status(200).json({ address, company, currency, maxValue });
         } else {
             // 204 = successfully processed the request, not returning any content
             response.status(204).send(undefined);

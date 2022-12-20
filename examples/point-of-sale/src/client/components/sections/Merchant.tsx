@@ -7,6 +7,7 @@ export interface MerchantInfo {
     index: number;
     address: string;
     company: string;
+    currency: string;
     maxValue: number;
 }
 

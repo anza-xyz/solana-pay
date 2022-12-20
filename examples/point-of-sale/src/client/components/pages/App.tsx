@@ -29,6 +29,7 @@ interface AppProps extends NextAppProps {
         recipient?: string;
         label?: string;
         message?: string;
+        currency?: string;
         maxValue?: number;
     };
 }
@@ -186,15 +187,17 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
 
     const [label, setLabel] = useState('');
     const [recipient, setRecipient] = useState(new PublicKey(0));
+    const [currency, setCurrency] = useState(CURRENCY);
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
     const [id, setId] = useState(0);
     const [merchants, setMerchants] = useState<MerchantInfo[]>();
 
-    const setInfo = useCallback((recipient: string, label: string, maxValue: number) => {
+    const setInfo = useCallback((recipient: string, label: string, currency: string, maxValue: number) => {
         if (recipient && label) {
             try {
                 setRecipient(new PublicKey(recipient));
                 setLabel(label);
+                setCurrency(currency ?? CURRENCY);
                 setMaxValue(maxValue ?? MAX_VALUE);
             } catch (error) {
                 console.error(error);
@@ -202,16 +205,16 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         }
     }, []);
 
-    const { id: idParam, message, recipient: recipientParam, label: labelParam, maxValue: maxValueParam } = query;
+    const { id: idParam, message, recipient: recipientParam, label: labelParam, currency: currencyParam, maxValue: maxValueParam } = query;
     useEffect(() => {
         if (recipientParam && labelParam) {
-            setInfo(recipientParam as string, labelParam as string, maxValueParam as number);
+            setInfo(recipientParam as string, labelParam as string, currencyParam as string, maxValueParam as number);
         } else if (idParam) {
             fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
                 .then(response => response.json())
                 .then(data => {
-                    const { address: recipient, company: label, maxValue } = data;
-                    setInfo(recipient, label, maxValue);
+                    const { address: recipient, company: label, currency, maxValue } = data;
+                    setInfo(recipient, label, currency, maxValue);
                 });
         } else if (SHOW_MERCHANT_LIST) {
             fetch(`${baseURL}/api/fetchMerchants`)
@@ -220,7 +223,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                     setMerchants(data);
                 });
         }
-    }, [baseURL, idParam, query, labelParam, maxValueParam, recipientParam, setInfo]);
+    }, [baseURL, idParam, query, labelParam, currencyParam, maxValueParam, recipientParam, setInfo]);
 
     const router = useRouter();
     const reset = useCallback(() => {
@@ -228,6 +231,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             setId(idParam || 0);
             setRecipient(new PublicKey(0));
             setLabel('');
+            setCurrency(CURRENCY);
             setMaxValue(MAX_VALUE);
         });
     }, [baseURL, router, idParam]);
@@ -257,7 +261,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         };
     }, [label, language]);
 
-    const currency = CURRENCY;
     const currencyDetail = CURRENCY_LIST[currency];
     const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
     const splToken = currencyDetail[0];
@@ -312,8 +315,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                             decimals={decimals}
                                             minDecimals={minDecimals}
                                             maxDecimals={maxDecimals}
-                                            maxValue={maxValue}
                                             currency={currency}
+                                            maxValue={maxValue}
                                             id={id}
                                             connectWallet={connectWallet}
                                             reset={reset}
@@ -334,8 +337,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 symbol={symbol}
                                 icon={icon}
                                 decimals={decimals}
-                                maxValue={maxValue}
                                 currency={currency}
+                                maxValue={maxValue}
                             >
                                 <div className={css.title}><FormattedMessage id="merchants" /></div>
                                 <MerchantCarousel merchants={merchants} id={id} />
@@ -365,12 +368,13 @@ App.getInitialProps = async (appContext) => {
     const recipient = query.recipient || undefined;
     const label = query.label || undefined;
     const message = query.message || undefined;
+    const currency = query.currency || CURRENCY;
     const maxValue = query.maxValue || MAX_VALUE;
     const host = req?.headers.host || 'localhost:' + (USE_HTTP ? '3000' : '3001');
 
     return {
         ...props,
-        query: { id, recipient, label, message, maxValue },
+        query: { id, recipient, label, message, currency, maxValue },
         host,
     };
 };

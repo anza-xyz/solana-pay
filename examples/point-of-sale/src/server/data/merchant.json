@@ -3,24 +3,28 @@
         "index": 2,
         "address": "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb",
         "company": "Le pain d'Annette",
+        "currency": "EUR",
         "maxValue": 300
     },
     {
         "index": 3,
         "address": "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx",
         "company": "Nature & bulles",
+        "currency": "EUR",
         "maxValue": 300
     },
     {
         "index": 4,
         "address": "HLpmKp6zYGSSibbqho6QAyURmJHorvdtha7iGumfXdWc",
         "company": "Bloopsy Couture",
+        "currency": "EUR,USD",
         "maxValue": 300
     },
     {
         "index": 5,
         "address": "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg",
         "company": "Garage Nicolas",
+        "currency": "EUR",
         "maxValue": 3000
     }
 ]
