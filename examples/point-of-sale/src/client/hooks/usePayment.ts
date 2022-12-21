@@ -4,15 +4,16 @@ import { createContext, useContext } from 'react';
 import { Confirmations } from '../types';
 
 export enum PaymentStatus {
-    New = 'New',
-    Pending = 'Pending',
-    Creating = 'Creating',
-    Sent = 'Sent',
-    Confirmed = 'Confirmed',
-    Valid = 'Valid',
-    Invalid = 'Invalid',
-    Finalized = 'Finalized',
-    Error = 'Error',
+    New = 'new',
+    Pending = 'pending',
+    Creating = 'creating',
+    Sent = 'sent',
+    Processed = "processed",
+    Confirmed = 'confirmed',
+    Valid = 'valid',
+    Invalid = 'invalid',
+    Finalized = 'finalized',
+    Error = 'error',
 }
 
 export interface PaymentContextState {
