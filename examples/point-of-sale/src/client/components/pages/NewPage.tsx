@@ -1,8 +1,7 @@
-import { useWallet } from '@solana/wallet-adapter-react';
 import { NextPage } from 'next';
-import React, { useEffect, useMemo } from 'react';
+import React from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { IS_CUSTOMER_POS, MERCHANT_IMAGE_PATH } from '../../utils/env';
+import { IS_CUSTOMER_POS, SHOW_MERCHANT_LIST } from '../../utils/env';
 import { useConfig } from '../../hooks/useConfig';
 import { FullscreenButton } from '../buttons/FullscreenButton';
 import { GenerateButton } from '../buttons/GenerateButton';
@@ -24,7 +23,7 @@ const NewPage: NextPage = () => {
         <div className={css.root}>
             <div className={css.top}>
                 {IS_CUSTOMER_POS ? (
-                    <BackButton onClick={reset}><FormattedMessage id="merchants" /></BackButton>
+                    <BackButton onClick={reset}><FormattedMessage id={SHOW_MERCHANT_LIST ? "merchants" : "back"} /></BackButton>
                 ) : null}
 
                 <FullscreenButton />

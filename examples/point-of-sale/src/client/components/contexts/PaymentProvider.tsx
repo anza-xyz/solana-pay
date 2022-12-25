@@ -20,9 +20,9 @@ import { PaymentContext, PaymentStatus } from '../../hooks/usePayment';
 import { Confirmations } from '../../types';
 import { IS_DEV, IS_CUSTOMER_POS, DEFAULT_WALLET, AUTO_CONNECT } from '../../utils/env';
 import { exitFullscreen, isFullscreen } from "../../utils/fullscreen";
-import { SolflareWalletName } from "@solana/wallet-adapter-wallets";
 import { SolanaMobileWalletAdapterWalletName } from '@solana-mobile/wallet-adapter-mobile';
 import { WalletName } from "@solana/wallet-adapter-base";
+import { isMobile } from "../../utils/isMobile";
 
 export interface PaymentProviderProps {
     children: ReactNode;
@@ -132,12 +132,9 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const selectWallet = useCallback(() => {
         const defaultWallet = DEFAULT_WALLET as WalletName;
         const a = AUTO_CONNECT ? () => { try { connect().catch(() => setTimeout(() => select(defaultWallet), 100)); } catch { } } : () => { };
+        // const a = () => { try { connect().catch(() => setTimeout(() => select(defaultWallet), 100)); } catch { } };
         if (!wallet) {
-            const isMobile = typeof window !== 'undefined' &&
-                window.isSecureContext &&
-                typeof document !== 'undefined' &&
-                /mobi|android/i.test(navigator.userAgent);
-            const walletName = isMobile ? SolanaMobileWalletAdapterWalletName : defaultWallet;
+            const walletName = isMobile() ? SolanaMobileWalletAdapterWalletName : defaultWallet;
 
             setTimeout(() => {
                 select(walletName);

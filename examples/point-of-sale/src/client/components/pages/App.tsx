@@ -21,6 +21,7 @@ import { MerchantCarousel } from '../sections/Carousel';
 import { useRouter } from "next/router";
 import { IntlProvider, FormattedMessage } from 'react-intl';
 import { Digits } from "../../types";
+import { isMobile } from "../../utils/isMobile";
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -43,7 +44,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const baseURL = (USE_HTTP ? 'http' : 'https') + `://${host}`;
 
     // If you're testing without a mobile wallet, set USE_WEB_WALLET environment setting to true to allow a browser wallet to be used.
-    const connectWallet = USE_WEB_WALLET;
+    const connectWallet = !isMobile() || USE_WEB_WALLET;
     const network = IS_DEV ? WalletAdapterNetwork.Devnet : WalletAdapterNetwork.Mainnet;
 
     const wallets = useMemo(
