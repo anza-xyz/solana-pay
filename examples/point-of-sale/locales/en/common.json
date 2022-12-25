@@ -1,6 +1,7 @@
 {
     "merchants": "List of Merchants",
     "about": "Learn more...",
+    "merchantLogo": "Merchant's Logo",
     "newPayment": "New Payment",
     "cancel": "Cancel",
     "retry": "Retry",

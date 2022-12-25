@@ -9,9 +9,10 @@ import { createURLWithParams } from "../../utils/createURLWithQuery";
 export interface MerchantsProps {
     merchants: MerchantInfo[];
     id?: number;
+    alt: string;
 }
 
-export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
+export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id, alt }) => {
     const navigate = useNavigateWithQuery();
     const onClickItem = useCallback((index: number, item: ReactNode) => {
         const { index: id, address: recipient, company: label, currency, maxValue } = merchants[index];
@@ -36,7 +37,7 @@ export const MerchantCarousel: FC<MerchantsProps> = ({ merchants, id }) => {
             selectedItem={selectedItem}
         >
             {merchants.map((merchant) => (
-                <Merchant key={merchant.index} index={merchant.index} company={merchant.company} />
+                <Merchant key={merchant.index} index={merchant.index} company={merchant.company} alt={alt} />
             ))}
         </Carousel>
     );

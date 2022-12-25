@@ -1,6 +1,7 @@
 {
     "merchants": "商人のリスト",
     "about": "詳細...",
+    "merchantLogo": "商人のロゴ",
     "newPayment": "新しい支払い",
     "cancel": "キャンセル",
     "retry": "再試行",

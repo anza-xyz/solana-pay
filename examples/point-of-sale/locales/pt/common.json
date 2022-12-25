@@ -1,6 +1,7 @@
 {
     "merchants": "Lista de Comerciantes",
     "about": "Saiba mais...",
+    "merchantLogo": "Logotipo do Comerciante",
     "newPayment": "Novo Pagamento",
     "cancel": "Cancelar",
     "retry": "Repetir",

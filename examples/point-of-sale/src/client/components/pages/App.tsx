@@ -221,7 +221,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 maxValue={maxValue}
                             >
                                 <div className={css.title}><FormattedMessage id="merchants" /></div>
-                                <MerchantCarousel merchants={merchants} id={id} />
+                                <MerchantCarousel merchants={merchants} id={id} alt={messages.merchantLogo} />
                                 <div className={css.about}>
                                     <a className={css.link} href={ABOUT} target="_blank" rel="noreferrer">
                                         <FormattedMessage id="about" />

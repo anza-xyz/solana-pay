@@ -10,6 +10,6 @@ export const AUTO_CONNECT = process.env.NEXT_PUBLIC_AUTO_CONNECT === 'true' || f
 export const DEFAULT_WALLET = process.env.NEXT_PUBLIC_DEFAULT_WALLET || 'Solflare';
 export const APP_TITLE = process.env.NEXT_PUBLIC_APP_TITLE || 'Solana Pay';
 export const LANGUAGE = process.env.NEXT_PUBLIC_LANGUAGE || 'en';
-export const MERCHANT_IMAGE_PATH = process.env.NEXT_PUBLIC_MERCHANT_IMAGE_PATH || '/../Img/Merchant/';
+export const MERCHANT_IMAGE_PATH = process.env.NEXT_PUBLIC_MERCHANT_IMAGE_PATH || '/Img/Merchant/';
 export const FAUCET = (!IS_DEV ? process.env.NEXT_PUBLIC_FAUCET : null) || 'https://spl-token-faucet.com';
 export const ABOUT = process.env.NEXT_PUBLIC_ABOUT || 'https://solanapay.com/';

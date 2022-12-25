@@ -14,15 +14,16 @@ export interface MerchantInfo {
 export interface MerchantProps {
     index: number;
     company: string;
+    alt: string;
 }
 
-export const Merchant: FC<MerchantProps> = ({ index, company }) => {
+export const Merchant: FC<MerchantProps> = ({ index, company, alt }) => {
     const merchantImageSrc = MERCHANT_IMAGE_PATH + index + '.png';
 
     return (
         <div className={css.body}>
             <div className={css.row}>
-                <Image className={css.image} src={merchantImageSrc} alt="Merchant Logo" height={250} width={250} priority={true} />
+                <Image className={css.image} src={merchantImageSrc} alt={alt} height={250} width={250} priority={true} />
             </div>
             <div className={css.row}>
                 <div className={css.label}>{company}</div>
