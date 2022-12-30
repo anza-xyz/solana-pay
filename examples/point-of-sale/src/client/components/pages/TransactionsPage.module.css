@@ -4,14 +4,16 @@
     flex-direction: column;
 }
 
-.header {
-}
-
-.main {
+.main,
+.mainHidden {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.mainHidden {
+    visibility: hidden;
 }
 
 @media (min-width: 768px) {
