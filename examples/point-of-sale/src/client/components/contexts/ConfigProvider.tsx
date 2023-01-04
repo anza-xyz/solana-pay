@@ -2,7 +2,7 @@ import { PublicKey } from '@solana/web3.js';
 import React, { FC, ReactElement, ReactNode } from 'react';
 import { ConfigContext } from '../../hooks/useConfig';
 import { Confirmations, Digits } from '../../types';
-import { MAX_VALUE } from '../../utils/constants';
+import { MAX_VALUE } from '../../utils/env';
 
 export interface ConfigProviderProps {
     children: ReactNode;
