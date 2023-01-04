@@ -21,20 +21,22 @@ const NewPage: NextPage = () => {
 
     return phone ? (
         <div className={css.root}>
-            <div className={css.top}>
-                {IS_CUSTOMER_POS ? (
-                    <BackButton onClick={reset}><FormattedMessage id={SHOW_MERCHANT_LIST ? "merchants" : "back"} /></BackButton>
-                ) : null}
+            <div className={css.main}>
+                <div className={css.top}>
+                    {IS_CUSTOMER_POS ? (
+                        <BackButton onClick={reset}><FormattedMessage id={SHOW_MERCHANT_LIST ? "merchants" : "back"} /></BackButton>
+                    ) : null}
 
-                <FullscreenButton />
-                <TransactionsLink />
-                <ConnectionButton />
-            </div>
-            <div className={css.body}>
-                <NumPad />
-                <GenerateButton id={generateId} />
+                    <FullscreenButton />
+                    <TransactionsLink />
+                    <ConnectionButton />
+                </div>
+                <div className={css.body}>
+                    <NumPad />
+                    <GenerateButton id={generateId} />
+                </div>
                 <PoweredBy />
-            </div>
+            </div >
         </div >
     ) : (
         <div className={css.root}>

@@ -15,16 +15,16 @@ const ConfirmedPage: NextPage = () => {
     return (
         <div className={css.root}>
             <div className={css.header}>
-                <BackButton onClick={reset}><FormattedMessage id="newPayment" /></BackButton>
+                <BackButton onClick={reset}>
+                    <FormattedMessage id="newPayment" />
+                </BackButton>
                 <TransactionsLink />
             </div>
             <div className={css.main}>
                 <TransactionInfo />
                 <Progress />
             </div>
-            <div className={css.footer}>
-                <PoweredBy />
-            </div>
+            <PoweredBy />
         </div>
     );
 };

@@ -58,9 +58,7 @@ const PendingPage: NextPage = () => {
                     </div>
                 )}
             </div>
-            <div className={css.footer}>
-                <PoweredBy />
-            </div>
+            <PoweredBy />
         </div>
     );
 };
