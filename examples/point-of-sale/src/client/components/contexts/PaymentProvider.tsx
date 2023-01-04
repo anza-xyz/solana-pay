@@ -114,7 +114,7 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
         sendError(undefined);
         setTimeout(
             () => navigate('/new', true),
-            status !== PaymentStatus.Finalized ? 1000 : 3000
+            status !== PaymentStatus.Finalized ? 0 : 3000
         );
     }, [navigate, status, changeStatus, sendError]);
 
