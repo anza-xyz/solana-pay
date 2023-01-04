@@ -6,14 +6,14 @@ import { PublicKey } from '@solana/web3.js';
 import { AppContext, AppProps as NextAppProps, default as NextApp } from 'next/app';
 import { AppInitialProps } from 'next/dist/shared/lib/utils';
 import React, { useState, useEffect, FC, useCallback, useMemo, useRef } from 'react';
-import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT, MAX_VALUE } from '../../utils/constants';
+import { CURRENCY_LIST, DEVNET_ENDPOINT, MAINNET_ENDPOINT } from '../../utils/constants';
 import { ConfigProvider } from '../contexts/ConfigProvider';
 import { FullscreenProvider } from '../contexts/FullscreenProvider';
 import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { ABOUT, APP_TITLE, CURRENCY, IS_CUSTOMER_POS, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, LANGUAGE, SHOW_MERCHANT_LIST } from '../../utils/env';
+import { ABOUT, APP_TITLE, CURRENCY, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, DEFAULT_LANGUAGE, SHOW_MERCHANT_LIST, MAX_VALUE } from '../../utils/env';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
@@ -74,8 +74,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             try {
                 setRecipient(new PublicKey(recipient));
                 setLabel(label);
-                setCurrency(currency ?? CURRENCY);
-                setMaxValue(maxValue ?? MAX_VALUE);
+                setCurrency((!IS_DEV ? currency : null) ?? CURRENCY);
+                setMaxValue((!IS_DEV ? maxValue : null) ?? MAX_VALUE);
             } catch (error) {
                 console.error(error);
             }
@@ -113,8 +113,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         });
     }, [baseURL, router, idParam]);
 
-    const [language, setLanguage] = useState(LANGUAGE);
-    // const [isLangInit, setIsLangInit] = useState(false);
+    const [language, setLanguage] = useState(DEFAULT_LANGUAGE);
     const [messages, setMessages] = useState<Record<string, string>>({});
     const isLangInit = useRef(false);
 
@@ -128,7 +127,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                     .then(data => {
                         setMessages(data);
                         setLanguage(newLang);
-                        console.log(data);
                     });
             }
         }
@@ -176,7 +174,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     }, [currency, symbol, language, messages]);
 
     return (messages.about ?
-        <IntlProvider locale={language} messages={messages} defaultLocale={LANGUAGE}>
+        <IntlProvider locale={language} messages={messages} defaultLocale={DEFAULT_LANGUAGE}>
             <ErrorProvider>
                 <ThemeProvider>
                     <FullscreenProvider>

@@ -1,7 +1,7 @@
 import { NextApiHandler } from 'next';
 import fsPromises from 'fs/promises';
 import path from "path";
-import { LANGUAGE } from "../../client/utils/env";
+import { DEFAULT_LANGUAGE } from "../../client/utils/env";
 
 interface GetResponse {
     message: string;
@@ -31,7 +31,7 @@ const fetchMessages: NextApiHandler<GetResponse[] | undefined> = async (request,
             return JSON.parse(buffer.toString());
         };
 
-        const localeArray = [locale, locale.slice(0, 2), LANGUAGE];
+        const localeArray = [locale, locale.slice(0, 2), DEFAULT_LANGUAGE];
         let i = 0;
         let isFileFound = false;
         while (!isFileFound && i < localeArray.length) {

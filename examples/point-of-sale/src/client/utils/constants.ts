@@ -37,6 +37,3 @@ export const CURRENCY_LIST: currencyType = {
     USDC_Dev: [DEVNET_DUMMY_MINT, USDCIcon, 6, 2, 'USD'],
     USDT: [MAINNET_USDT_MINT, USDTIcon, 6, 2, 'USD'],
 };
-
-// Maximum value for a payment
-export const MAX_VALUE = 99999.99;
