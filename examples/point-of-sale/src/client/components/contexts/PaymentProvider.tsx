@@ -145,14 +145,21 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     }, [connect, select, wallet]);
 
     useEffect(() => {
-        if (!(connection && publicKey && splToken)) { setBalance(undefined); return; }
+        if (!(connection && publicKey)) { setBalance(undefined); return; }
         let changed = false;
 
         const run = async () => {
             try {
-                const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
-                const senderAccount = await getAccount(connection, senderATA);
-                setBalance(Number(senderAccount.amount) / Math.pow(10, decimals));
+                let amount = 0;
+                if (splToken) {
+                    const senderATA = await getAssociatedTokenAddress(splToken, publicKey);
+                    const senderAccount = await getAccount(connection, senderATA);
+                    amount = Number(senderAccount.amount);
+                } else {
+                    const senderInfo = await connection.getAccountInfo(publicKey);
+                    amount = senderInfo ? senderInfo.lamports : 0;
+                }
+                setBalance(amount / Math.pow(10, decimals));
             } catch (error: any) {
                 setBalance(-1);
             }

@@ -55,13 +55,13 @@ export const NumPad: FC = () => {
     const { setAmount } = usePayment();
     useEffect(() => setAmount(value ? new BigNumber(value) : undefined), [setAmount, value]);
 
-    const hasInsufficientBalance = useMemo(() => balance && (balance <= 0 || balance < parseFloat(value)), [balance, value]);
-    const hasBalance = useMemo(() => balance && balance >= 0, [balance]);
+    const hasInsufficientBalance = useMemo(() => balance !== undefined && (balance <= 0 || balance < parseFloat(value)), [balance, value]);
+    const hasBalance = useMemo(() => balance !== undefined && balance >= 0, [balance]);
 
     return (
         <div className={css.root}>
             <div className={IS_CUSTOMER_POS && publicKey ? !hasInsufficientBalance ? css.bold : css.red : css.hidden}>
-                {balance ? balance >= 0 ?
+                {balance !== undefined ? balance > 0 ?
                     <div>
                         <FormattedMessage id="yourBalance" />
                         <Amount value={balance} />
