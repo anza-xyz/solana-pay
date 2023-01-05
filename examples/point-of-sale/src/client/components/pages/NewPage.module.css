@@ -46,6 +46,10 @@
         display: flex;
         justify-content: space-between;
     }
+
+    .main {
+        display: contents;
+    }
 }
 
 @media (min-width: 768px) {
