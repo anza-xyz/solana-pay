@@ -137,8 +137,8 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         }
     }, [label]);
 
-    const currencyDetail = CURRENCY_LIST[currency];
     const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
+    const currencyDetail = CURRENCY_LIST[currency] ?? CURRENCY_LIST[CURRENCY] ?? CURRENCY_LIST["SOL"];
     const splToken = currencyDetail[0];
     const icon = React.createElement(currencyDetail[1]);
     const decimals = currencyDetail[2];
