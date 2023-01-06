@@ -132,9 +132,14 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         }
     }, [baseURL]);
     useEffect(() => {
-        if (document) {
-            document.title = (label ? label + ' @ ' : '') + APP_TITLE;
-        }
+        const title = (label ? label + ' @ ' : '') + APP_TITLE;
+        const a = () => {
+            if (document && document.title !== title) {
+                clearInterval(interval);
+                document.title = title;
+            }
+        };
+        const interval = setInterval(a, 100);
     }, [label]);
 
     const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
