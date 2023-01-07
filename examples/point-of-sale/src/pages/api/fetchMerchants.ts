@@ -1,16 +1,8 @@
 import { NextApiHandler } from 'next';
+import { MerchantInfo } from "../../client/components/sections/Merchant";
 import merchants from '../../server/data/merchant.json';
 
-interface GetResponse {
-    index: number;
-    address: string;
-    company: string;
-    currency: string;
-    maxValue: number;
-    location: string;
-}
-
-const fetchMerchants: NextApiHandler<GetResponse[] | undefined> = async (request, response) => {
+const fetchMerchants: NextApiHandler<MerchantInfo[] | undefined> = async (request, response) => {
     // If get request
     if (request.method === 'GET') {
         if (merchants.values.length <= 1) throw new Error('incomplete data');

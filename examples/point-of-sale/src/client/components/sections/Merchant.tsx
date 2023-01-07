@@ -9,6 +9,7 @@ export interface MerchantInfo {
     company: string;
     currency: string;
     maxValue: number;
+    location: string;
 }
 
 export interface MerchantProps {

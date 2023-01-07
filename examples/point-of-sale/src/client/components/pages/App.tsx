@@ -32,6 +32,7 @@ interface AppProps extends NextAppProps {
         message?: string;
         currency?: string;
         maxValue?: number;
+        location?: string;
     };
 }
 
@@ -66,32 +67,34 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [recipient, setRecipient] = useState(new PublicKey(0));
     const [currency, setCurrency] = useState(CURRENCY);
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
+    const [location, setLocation] = useState('');
     const [id, setId] = useState(0);
     const [merchants, setMerchants] = useState<MerchantInfo[]>();
 
-    const setInfo = useCallback((recipient: string, label: string, currency: string, maxValue: number) => {
+    const setInfo = useCallback((recipient: string, label: string, currency: string, maxValue: number, location: string) => {
         if (recipient && label) {
             try {
                 setRecipient(new PublicKey(recipient));
                 setLabel(label);
                 setCurrency((!IS_DEV ? currency : null) ?? CURRENCY);
                 setMaxValue((!IS_DEV ? maxValue : null) ?? MAX_VALUE);
+                setLocation(location);
             } catch (error) {
                 console.error(error);
             }
         }
     }, []);
 
-    const { id: idParam, message, recipient: recipientParam, label: labelParam, currency: currencyParam, maxValue: maxValueParam } = query;
+    const { id: idParam, message, recipient: recipientParam, label: labelParam, currency: currencyParam, maxValue: maxValueParam, location: locationParam } = query;
     useEffect(() => {
         if (recipientParam && labelParam) {
-            setInfo(recipientParam as string, labelParam as string, currencyParam as string, maxValueParam as number);
+            setInfo(recipientParam as string, labelParam as string, currencyParam as string, maxValueParam as number, locationParam as string);
         } else if (idParam) {
             fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
                 .then(response => response.json())
                 .then(data => {
-                    const { address: recipient, company: label, currency, maxValue } = data;
-                    setInfo(recipient, label, currency, maxValue);
+                    const { address: recipient, company: label, currency, maxValue, location } = data;
+                    setInfo(recipient, label, currency, maxValue, location);
                 });
         } else if (SHOW_MERCHANT_LIST) {
             fetch(`${baseURL}/api/fetchMerchants`)
@@ -100,7 +103,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                     setMerchants(data);
                 });
         }
-    }, [baseURL, idParam, query, labelParam, currencyParam, maxValueParam, recipientParam, setInfo]);
+    }, [baseURL, idParam, query, labelParam, currencyParam, maxValueParam, recipientParam, locationParam, setInfo]);
 
     const router = useRouter();
     const reset = useCallback(() => {
@@ -110,6 +113,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             setLabel('');
             setCurrency(CURRENCY);
             setMaxValue(MAX_VALUE);
+            setLocation('');
         });
     }, [baseURL, router, idParam]);
 
@@ -139,7 +143,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                 document.title = title;
             }
         };
-        const interval = setInterval(a, 100);
+        const interval = setInterval(a, 500);
     }, [label]);
 
     const endpoint = IS_DEV ? DEVNET_ENDPOINT : MAINNET_ENDPOINT;
@@ -253,6 +257,7 @@ App.getInitialProps = async (appContext) => {
     const message = query.message || undefined;
     const currency = query.currency || CURRENCY;
     const maxValue = query.maxValue || MAX_VALUE;
+    const location = query.location || undefined;
     const host = req?.headers.host || 'localhost:' + (USE_HTTP ? '3000' : '3001');
 
     return {
