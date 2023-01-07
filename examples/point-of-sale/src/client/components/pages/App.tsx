@@ -135,14 +135,25 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
             }
         }
     }, [baseURL]);
+
+    const titleCount = useRef(0);
     useEffect(() => {
         const title = (label ? label + ' @ ' : '') + APP_TITLE;
+        titleCount.current = 0;
         const a = () => {
-            if (document && document.title !== title) {
-                clearInterval(interval);
-                document.title = title;
+            if (document) {
+                if (document.title !== title) {
+                    document.title = title;
+                } else {
+                    ++titleCount.current;
+                }
+
+                if (titleCount.current >= 5) {
+                    clearInterval(interval);
+                }
             }
         };
+        a();
         const interval = setInterval(a, 500);
     }, [label]);
 
