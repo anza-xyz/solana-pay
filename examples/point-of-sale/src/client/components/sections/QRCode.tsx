@@ -19,11 +19,17 @@ export const QRCode: FC = () => {
     const options = useMemo(() => createQROptions(url, size, 'transparent', '#2a2a2a'), [url, size]);
 
     const qr = useMemo(() => new QRCodeStyling(), []);
-    useEffect(() => qr.update(options), [qr, options]);
+    const isQRUpdated = useRef(false);
+    useEffect(() => {
+        if (!isQRUpdated.current) {
+            isQRUpdated.current = true;
+            qr.update(options);
+        }
+    }, [qr, options]);
 
     const ref = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        if (ref.current) {
+        if (ref.current && !qr._container) {
             qr.append(ref.current);
         }
     }, [ref, qr]);
