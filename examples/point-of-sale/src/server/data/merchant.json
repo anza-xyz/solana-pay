@@ -1,30 +1,9 @@
-[
-    {
-        "index": 2,
-        "address": "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb",
-        "company": "Le pain d'Annette",
-        "currency": "EUR",
-        "maxValue": 300
-    },
-    {
-        "index": 3,
-        "address": "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx",
-        "company": "Nature & bulles",
-        "currency": "EUR",
-        "maxValue": 300
-    },
-    {
-        "index": 4,
-        "address": "HLpmKp6zYGSSibbqho6QAyURmJHorvdtha7iGumfXdWc",
-        "company": "Bloopsy Couture",
-        "currency": "EUR",
-        "maxValue": 300
-    },
-    {
-        "index": 5,
-        "address": "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg",
-        "company": "Garage Nicolas",
-        "currency": "EUR",
-        "maxValue": 3000
-    }
-]
+{
+    "values": [
+        ["index", "address", "company", "currency", "maxValue", "location"],
+        [2, "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb", "Le pain d'Annette", "EUR", 300, "ST-NIC"],
+        [3, "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx", "Nature & bulles", "EUR", 300, "ST-NIC"],
+        [4, "HLpmKp6zYGSSibbqho6QAyURmJHorvdtha7iGumfXdWc", "Bloopsy Couture", "EUR", 300, "ST-NIC"],
+        [5, "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg", "Garage Nicolas", "EUR", 3000, "ST-NIC"]
+    ]
+}
