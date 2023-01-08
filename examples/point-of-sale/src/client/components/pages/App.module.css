@@ -1,3 +1,12 @@
+.root {
+    min-height: 100vh;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .logo {
     min-height: 100vh;
     display: flex;
@@ -5,14 +14,46 @@
     align-items: center;
 }
 
-.title {
+.top {
     text-align: center;
     font-size: 24px;
-    margin: 24px;
+    padding: 24px;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    z-index: 1;
 }
 
-.about {
+:global(html.light) .top {
+    background: var(--theme-light-background);
+}
+
+:global(html.dark) .top {
+    background: var(--theme-dark-background);
+}
+
+.bottom {
     text-align: center;
+    padding: 24px;
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+:global(html.light) .bottom {
+    background: var(--theme-light-background);
+}
+
+:global(html.dark) .bottom {
+    background: var(--theme-dark-background);
+}
+
+.location {
+    text-align: center;
+    font-size: 20px;
+    margin: 24px;
 }
 
 :global(html.light) .link {

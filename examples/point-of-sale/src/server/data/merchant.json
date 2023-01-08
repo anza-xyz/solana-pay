@@ -1,9 +1,9 @@
 {
     "values": [
         ["index", "address", "company", "currency", "maxValue", "location"],
-        [2, "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb", "Le pain d'Annette", "EUR", 300, "ST-NIC"],
-        [3, "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx", "Nature & bulles", "EUR", 300, "ST-NIC"],
-        [4, "HLpmKp6zYGSSibbqho6QAyURmJHorvdtha7iGumfXdWc", "Bloopsy Couture", "EUR", 300, "ST-NIC"],
-        [5, "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg", "Garage Nicolas", "EUR", 3000, "ST-NIC"]
+        [2, "GZLPJYkR3diD8c8vpgb7sXHEH9sG1R9sWa3yPwaL9Peb", "Le pain d'Annette", "EUR", 300, "Saint-Nic"],
+        [3, "88r4F8tmgzxyxSoQFz5cWwTMAqtM8xB8pABfL4ikcJyx", "Nature & bulles", "EUR", 300, "Saint-Nic"],
+        [4, "HLpmKp6zYGSSibbqho6QAyURmJHorvdtha7iGumfXdWc", "Bloopsy Couture", "EUR", 300, "Saint-Nic"],
+        [5, "FZ2XhTrvYqcytTzRUT54GyYjtNXF2L3cQZ9qEaTKe8Hg", "Garage Nicolas", "EUR", 3000, "Saint-Nic"]
     ]
 }

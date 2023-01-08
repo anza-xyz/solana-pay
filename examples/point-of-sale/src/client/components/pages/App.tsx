@@ -69,7 +69,6 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     const [maxValue, setMaxValue] = useState(MAX_VALUE);
     const [location, setLocation] = useState('');
     const [id, setId] = useState(0);
-    const [merchants, setMerchants] = useState<MerchantInfo[]>();
 
     const setInfo = useCallback((recipient: string, label: string, currency: string, maxValue: number, location: string) => {
         if (recipient && label) {
@@ -85,6 +84,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         }
     }, []);
 
+    const [merchants, setMerchants] = useState<{ [key: string]: MerchantInfo[]; }>();
     const { id: idParam, message, recipient: recipientParam, label: labelParam, currency: currencyParam, maxValue: maxValueParam, location: locationParam } = query;
     useEffect(() => {
         if (recipientParam && labelParam) {
@@ -99,8 +99,21 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
         } else if (SHOW_MERCHANT_LIST) {
             fetch(`${baseURL}/api/fetchMerchants`)
                 .then(response => response.json())
-                .then(data => {
-                    setMerchants(data);
+                .then((data: MerchantInfo[]) => {
+                    if (data && data.length > 0) {
+                        const result = data.reduce<{ [key: string]: MerchantInfo[]; }>((resultArray, item) => {
+                            const location = item.location;
+                            if (!resultArray[location]) {
+                                resultArray[location] = [];
+                            }
+                            resultArray[location].push(item);
+
+                            return resultArray;
+                        }, {});
+                        setMerchants(result);
+                    } else {
+                        setMerchants({});
+                    }
                 });
         }
     }, [baseURL, idParam, query, labelParam, currencyParam, maxValueParam, recipientParam, locationParam, setInfo]);
@@ -228,24 +241,23 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                     </WalletModalProvider>
                                 </WalletProvider>
                             </ConnectionProvider>
-                        ) : merchants && merchants.length > 0 ? (
-                            <ConfigProvider
-                                recipient={recipient}
-                                label={label}
-                                symbol={symbol}
-                                icon={icon}
-                                decimals={decimals}
-                                currency={currency}
-                                maxValue={maxValue}
-                            >
-                                <div className={css.title}><FormattedMessage id="merchants" /></div>
-                                <MerchantCarousel merchants={merchants} id={id} alt={messages.merchantLogo} />
-                                <div className={css.about}>
+                        ) : merchants && Object.keys(merchants).length > 0 ? (
+                            <div className={css.root}>
+                                <div className={css.top}><FormattedMessage id="merchants" /></div>
+                                <div>
+                                    {Object.entries(merchants).map(([location, merchant]) => (
+                                        <div key={location}>
+                                            <div className={css.location}>{location}</div>
+                                            <MerchantCarousel merchants={merchant} id={id} alt={messages.merchantLogo} />
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className={css.bottom}>
                                     <a className={css.link} href={ABOUT} target="_blank" rel="noreferrer">
                                         <FormattedMessage id="about" />
                                     </a>
                                 </div>
-                            </ConfigProvider>
+                            </div>
                         ) : (
                             <div className={css.logo}>
                                 <SolanaPayLogo width={240} height={88} />
