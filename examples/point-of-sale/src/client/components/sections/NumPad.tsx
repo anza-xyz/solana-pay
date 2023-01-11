@@ -75,9 +75,9 @@ export const NumPad: FC = () => {
             </div>
             <div className={!IS_CUSTOMER_POS || hasBalance ? css.buttons : css.hidden}>
                 <div className={css.row}>
-                    <NumPadButton input={1} onInput={onInput} />
-                    <NumPadButton input={2} onInput={onInput} />
-                    <NumPadButton input={3} onInput={onInput} />
+                    <NumPadButton input={7} onInput={onInput} />
+                    <NumPadButton input={8} onInput={onInput} />
+                    <NumPadButton input={9} onInput={onInput} />
                 </div>
                 <div className={css.row}>
                     <NumPadButton input={4} onInput={onInput} />
@@ -85,9 +85,9 @@ export const NumPad: FC = () => {
                     <NumPadButton input={6} onInput={onInput} />
                 </div>
                 <div className={css.row}>
-                    <NumPadButton input={7} onInput={onInput} />
-                    <NumPadButton input={8} onInput={onInput} />
-                    <NumPadButton input={9} onInput={onInput} />
+                    <NumPadButton input={1} onInput={onInput} />
+                    <NumPadButton input={2} onInput={onInput} />
+                    <NumPadButton input={3} onInput={onInput} />
                 </div>
                 <div className={css.row}>
                     <NumPadButton input="." onInput={onInput} />
