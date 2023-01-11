@@ -13,7 +13,7 @@ import { PaymentProvider } from '../contexts/PaymentProvider';
 import { ThemeProvider } from '../contexts/ThemeProvider';
 import { TransactionsProvider } from '../contexts/TransactionsProvider';
 import { SolanaPayLogo } from '../images/SolanaPayLogo';
-import { ABOUT, APP_TITLE, CURRENCY, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, DEFAULT_LANGUAGE, SHOW_MERCHANT_LIST, MAX_VALUE } from '../../utils/env';
+import { ABOUT, APP_TITLE, CURRENCY, IS_DEV, SHOW_SYMBOL, USE_HTTP, USE_LINK, USE_WEB_WALLET, DEFAULT_LANGUAGE, SHOW_MERCHANT_LIST, MAX_VALUE, GOOGLE_SPREADSHEET_ID, GOOGLE_API_KEY } from '../../utils/env';
 import css from './App.module.css';
 import { ErrorProvider } from '../contexts/ErrorProvider';
 import { MerchantInfo } from '../sections/Merchant';
@@ -22,6 +22,7 @@ import { useRouter } from "next/router";
 import { IntlProvider, FormattedMessage } from 'react-intl';
 import { Digits } from "../../types";
 import { isMobile } from "../../utils/isMobile";
+import { convertMerchantData } from "../../utils/convertData";
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -89,32 +90,40 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     useEffect(() => {
         if (recipientParam && labelParam) {
             setInfo(recipientParam as string, labelParam as string, currencyParam as string, maxValueParam as number, locationParam as string);
-        } else if (idParam) {
-            fetch(`${baseURL}/api/findMerchant?id=${idParam}`)
-                .then(response => response.json())
-                .then(data => {
-                    const { address: recipient, company: label, currency, maxValue, location } = data;
-                    setInfo(recipient, label, currency, maxValue, location);
-                });
-        } else if (SHOW_MERCHANT_LIST) {
-            fetch(`${baseURL}/api/fetchMerchants`)
-                .then(response => response.json())
-                .then((data: MerchantInfo[]) => {
-                    if (data && data.length > 0) {
-                        const result = data.reduce<{ [key: string]: MerchantInfo[]; }>((resultArray, item) => {
-                            const location = item.location;
-                            if (!resultArray[location]) {
-                                resultArray[location] = [];
-                            }
-                            resultArray[location].push(item);
+        } else {
+            const dataURL = GOOGLE_SPREADSHEET_ID && GOOGLE_API_KEY ?
+                "https://sheets.googleapis.com/v4/spreadsheets/" + GOOGLE_SPREADSHEET_ID + "/values/merchant!A%3AZ?valueRenderOption=UNFORMATTED_VALUE&key=" + GOOGLE_API_KEY : `${baseURL}/api/fetchMerchants`;
 
-                            return resultArray;
-                        }, {});
-                        setMerchants(result);
-                    } else {
-                        setMerchants({});
-                    }
-                });
+            if (idParam) {
+                fetch(dataURL)
+                    .then(convertMerchantData)
+                    .then(data => {
+                        const merchant = data.find(merchant => merchant.index === idParam);
+                        if (merchant) {
+                            const { address: recipient, company: label, currency, maxValue, location } = merchant;
+                            setInfo(recipient, label, currency, maxValue, location);
+                        }
+                    });
+            } else if (SHOW_MERCHANT_LIST) {
+                fetch(dataURL)
+                    .then(convertMerchantData)
+                    .then(data => {
+                        if (data && data.length > 0) {
+                            const result = data.reduce<{ [key: string]: MerchantInfo[]; }>((resultArray, item) => {
+                                const location = item.location;
+                                if (!resultArray[location]) {
+                                    resultArray[location] = [];
+                                }
+                                resultArray[location].push(item);
+
+                                return resultArray;
+                            }, {});
+                            setMerchants(result);
+                        } else {
+                            setMerchants({});
+                        }
+                    });
+            }
         }
     }, [baseURL, idParam, query, labelParam, currencyParam, maxValueParam, recipientParam, locationParam, setInfo]);
 

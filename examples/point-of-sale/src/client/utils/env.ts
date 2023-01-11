@@ -14,3 +14,5 @@ export const DEFAULT_LANGUAGE = process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE || 'en'
 export const MERCHANT_IMAGE_PATH = process.env.NEXT_PUBLIC_MERCHANT_IMAGE_PATH || '/Img/Merchant/';
 export const FAUCET = (!IS_DEV ? process.env.NEXT_PUBLIC_FAUCET : null) || 'https://spl-token-faucet.com';
 export const ABOUT = process.env.NEXT_PUBLIC_ABOUT || 'https://solanapay.com/';
+export const GOOGLE_SPREADSHEET_ID = process.env.NEXT_PUBLIC_GOOGLE_SPREADSHEET_ID;
+export const GOOGLE_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
