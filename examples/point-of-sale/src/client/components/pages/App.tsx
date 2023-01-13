@@ -23,6 +23,7 @@ import { IntlProvider, FormattedMessage } from 'react-intl';
 import { Digits } from "../../types";
 import { isMobile } from "../../utils/isMobile";
 import { convertMerchantData } from "../../utils/convertData";
+import { MerchantInfoDialog } from "../sections/MerchantInfoDialog";
 
 interface AppProps extends NextAppProps {
     host: string;
@@ -98,7 +99,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                 fetch(dataURL)
                     .then(convertMerchantData)
                     .then(data => {
-                        const merchant = data.find(merchant => merchant.index === idParam);
+                        const merchant = data.find(merchant => merchant.index === Number(idParam));
                         if (merchant) {
                             const { address: recipient, company: label, currency, maxValue, location } = merchant;
                             setInfo(recipient, label, currency, maxValue, location);
@@ -268,8 +269,11 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
                                 </div>
                             </div>
                         ) : (
-                            <div className={css.logo}>
-                                <SolanaPayLogo width={240} height={88} />
+                            <div className={css.root}>
+                                <div className={css.logo}>
+                                    <SolanaPayLogo width={240} height={88} />
+                                </div>
+                                <MerchantInfoDialog />
                             </div>
                         )}
                     </FullscreenProvider>

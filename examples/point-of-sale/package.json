@@ -19,6 +19,11 @@
         "proxy": "local-ssl-proxy --source 3001 --target 3000"
     },
     "dependencies": {
+        "@radix-ui/colors": "^0.1.8",
+        "@radix-ui/react-dialog": "^1.0.2",
+        "@radix-ui/react-icons": "^1.1.1",
+        "@radix-ui/react-navigation-menu": "^1.1.1",
+        "@radix-ui/react-popover": "^1.0.2",
         "@solana/pay": "^0.2.4",
         "@solana/spl-token": "^0.3.7",
         "@solana/wallet-adapter-base": "^0.9.20",
@@ -29,6 +34,7 @@
         "bignumber.js": "^9.1.1",
         "bs58": "^5.0.0",
         "cache-manager": "^5.1.4",
+        "classnames": "^2.3.2",
         "clsx": "^1.2.1",
         "color-interpolate": "^1.0.5",
         "cors": "^2.8.5",
@@ -56,7 +62,7 @@
         "eslint-config-next": "^13.1.1",
         "eslint-config-prettier": "^8.6.0",
         "eslint-plugin-prettier": "^4.2.1",
-        "local-ssl-proxy": "^1.3.0",
+        "local-ssl-proxy": "^1.2.3",
         "next": "^13.1.1",
         "postcss-flexbugs-fixes": "^5.0.2",
         "postcss-nesting": "^10.2.0",

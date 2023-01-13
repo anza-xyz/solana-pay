@@ -72,3 +72,11 @@ select {
         scroll-behavior: auto !important;
     }
 }
+
+/* reset */
+button,
+fieldset,
+input,
+p {
+    all: unset;
+}
