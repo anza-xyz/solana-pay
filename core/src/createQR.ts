@@ -19,8 +19,8 @@ import QRCodeStyling from '@solana/qr-code-styling';
  * @param background - Background color, which should be light for device compatibility.
  * @param color - Foreground color, which should be dark for device compatibility.
  */
-export function createQR(url: string | URL, size = 512, background = 'white', color = 'black'): QRCodeStyling {
-    return new QRCodeStyling(createQROptions(url, size, background, color));
+export function createQR(url: string | URL, size = 512, background = 'white', color = 'black', gradient?: Gradient): QRCodeStyling {
+    return new QRCodeStyling(createQROptions(url, size, background, color, gradient));
 }
 
 function createQROptions(url: string | URL, size = 512, background = 'white', color = 'black', gradient?: Gradient): Options {
