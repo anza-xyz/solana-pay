@@ -48,7 +48,7 @@ const App: FC<AppProps> & { getInitialProps(appContext: AppContext): Promise<App
     );
 
     // Toggle comments on these lines to use transaction requests instead of transfer requests.
-    const link = undefined;
+       const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
     // const link = useMemo(() => new URL(`${baseURL}/api/`), [baseURL]);
 
     let recipient: PublicKey | undefined = undefined;
