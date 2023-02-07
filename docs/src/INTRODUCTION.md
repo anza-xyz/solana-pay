@@ -39,7 +39,7 @@ Solana Pay is an open standard to facilitate commerce on Solana. We are looking 
 
 ### Hackathon Projects
 
-The [Solana Summer Camp Hackathon](https://solana.com/summercamp) is happening right now. There's with a dedicated Payments track, presented by Visa.
+The [Solana Grizzlython Hackathon](https://solana.com/grizzlython) is happening right now. There's a dedicated Payments track, presented by Stripe.
 
 Here are some [Solana Pay hackathon ideas](https://www.figma.com/community/file/1070574785723157359) to get started thinking about how you can build the future of payments.
 
