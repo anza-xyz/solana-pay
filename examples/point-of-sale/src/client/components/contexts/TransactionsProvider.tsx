@@ -31,28 +31,26 @@ export const TransactionsProvider: FC<TransactionsProviderProps> = ({ children, 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [loading, setLoading] = useState(false);
 
-    const getTokenAddress =
-        // Get the ATA for the recipient and token
-        useEffect(() => {
-            if (!splToken) {
-                return;
-            }
+    // Get the ATA for the recipient and token
+    useEffect(() => {
+        if (!splToken) {
+            return;
+        }
 
-            let changed = false;
+        let changed = false;
 
-            (async () => {
-                const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
-                //const associatedToken = null
-                if (changed) return;
+        (async () => {
+            const associatedToken = await getAssociatedTokenAddress(splToken, recipient);
+            if (changed) return;
 
-                setAssociatedToken(associatedToken);
-            })();
+            setAssociatedToken(associatedToken);
+        })();
 
-            return () => {
-                changed = true;
-                setAssociatedToken(undefined);
-            };
-        }, [splToken, recipient]);
+        return () => {
+            changed = true;
+            setAssociatedToken(undefined);
+        };
+    }, [splToken, recipient]);
 
     // Poll for signatures referencing the associated token account
     useEffect(() => {
