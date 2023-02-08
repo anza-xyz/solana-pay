@@ -69,7 +69,7 @@ export async function validateTransfer(
         reference = [reference];
     }
 
-    // Deserialize the transaction and make a copy of the instructions we're going to mutate it.
+    // Deserialize the transaction and make a copy of the instructions we're going to validate.
     const transaction = Transaction.populate(message, signatures);
     const instructions = transaction.instructions.slice();
 
