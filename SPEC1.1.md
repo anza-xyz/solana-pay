@@ -29,7 +29,7 @@ solana:<recipient>
       &label=<label>
       &message=<message>
       &memo=<memo>
-      &success-redirect=<success-redirect>
+      &redirect=<redirect>
 ```
 
 The request is non-interactive because the parameters in the URL are used by a wallet to directly compose a transaction.
@@ -79,11 +79,12 @@ The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 
 If the field is provided, the wallet must include a `MemoProgram` instruction as the second to last instruction of the transaction, immediately before the SOL or SPL Token transfer instruction, to avoid ambiguity with other instructions in the transaction.
 
-### Success Redirect
+### Redirect
+A single `redirect` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS or `solana:` URL.
 
-A single `success-redirect` field is allowed as an optional query parameter. The value must be a conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS or solana URL.
+The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. If it is a HTTPS URL then the wallet should display the decoded value to the user. 
 
-The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. If it is a HTTPS URL then the wallet should display the decoded value to the user. If the transaction is completed successfully and it is a HTTPS URL then the wallet should redirect the user to the URL. If the transaction is completed successfully and it is a solana URL then the wallet should treat it as a new Solana Pay request. If the transaction is not completed successfully then the wallet should not use the URL.
+Redirect URLs should only be followed if the transaction is successful. A transaction should be considered successful if the user approves it and the broadcast transaction has a Confirmed or Finalized status. If the redirect is a HTTPS URL then the wallet should open the URL using any browser. This may be a browser included in the wallet. If it is a `solana:` URL then the wallet should treat it as a new Solana Pay request.
 
 ### Examples
 
@@ -102,9 +103,9 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael
 ```
 
-##### URL describing a transfer request for 1 SOL with a success redirect
+##### URL describing a transfer request for 1 SOL with a redirect
 ```
-solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId12345&success-redirect=https://example.com
+solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId12345&redirect=https%3A%2F%2Fexample.com
 ```
 
 ## Specification: Transaction Request
@@ -199,15 +200,17 @@ The `<message>` value must be a UTF-8 string that describes the nature of the tr
 
 For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
-The application may also include an optional `successRedirect` field in the response body:
+The application may also include an optional `redirect` field in the response body:
 
 ```json
-{"successRedirect":"<success-redirect>","transaction":"<transaction>"}
+{"redirect":"<redirect>","transaction":"<transaction>"}
 ```
 
-The `success-redirect` field must be a conditionally [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS or solana URL.
+The `redirect` field must be an absolute HTTPS or `solana:` URL.
 
-The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. If it is a HTTPS URL then the wallet should display the decoded value to the user. If the transaction is completed successfully and it is a HTTPS URL then the wallet should redirect the user to the URL. If the transaction is completed successfully and it is a solana URL then the wallet should treat it as a new Solana Pay request. If the transaction is not completed successfully then the wallet should not use the URL.
+If it is a HTTPS URL then the wallet should display the decoded value to the user. 
+
+Redirect URLs should only be followed if the transaction is successful. A transaction should be considered successful if the user approves it and the broadcast transaction has a Confirmed or Finalized [Commitment Status](https://docs.solana.com/cluster/commitments). If the redirect is a HTTPS URL then the wallet should open the URL using any browser. This may be a browser included in the wallet. If it is a `solana:` URL then the wallet should treat it as a new Solana Pay request.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
@@ -274,7 +277,8 @@ Content-Type: application/json
 Content-Length: 298
 Content-Encoding: gzip
 
-{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
+{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA",
+"redirect": "https://example.com"}
 ```
 
 ## Extensions
