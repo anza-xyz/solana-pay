@@ -90,6 +90,15 @@ The `<message>` value must be a UTF-8 encoded string that describes the nature o
 
 For example, this might be the name of the application with which the user is interacting or context about how the sign-message request is being used. The wallet must display at least the first 80 characters of the message field to the user if it is included in the response.
 
+The application may also include an optional `redirect` field in the response body:
+```json
+{"redirect":"<redirect>", "message":"<message>","data":"<data>","state":"<state>"}
+```
+
+The `redirect` field must be an absolute HTTPS or solana URL.
+
+If it is a HTTPS URL then the wallet should display the decoded value to the user. 
+
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
 #### PUT Request
@@ -114,6 +123,8 @@ The wallet should display the domain of the URL as the request is being made. If
 #### PUT Response
 
 The wallet must handle HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) and [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) errors in accordance with the [error handling](#error-handling) specification. [Redirect responses](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages) must be handled appropriately. The application must respond with these, or with an HTTP `OK` response. An HTTP `OK` response indicates that signature verification was successful.
+
+If signature verification was successful and there was a `redirect` field in the POST response, then the decoded redirect URL should be followed. If the redirect is a HTTPS URL then the wallet should open the URL using any available browser. This may be a browser included in the wallet. If it is a `solana:` URL then the wallet should treat it as a new Solana Pay request.
 
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
