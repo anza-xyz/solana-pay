@@ -12,7 +12,7 @@ A standard URL protocol for requesting native SOL transfers, SPL Token transfers
 
 These URLs may be encoded in QR codes or NFC tags, or sent between users and applications to request payment and compose transactions.
 
-Applications should ensure that a transaction has been confirmed and is valid before they release goods or services being sold, or grant access to objects or events. 
+Applications should ensure that a transaction has been confirmed and is valid before they release goods or services being sold, or grant access to objects or events.
 
 Mobile wallets should register to handle the URL scheme to provide a seamless yet secure experience when Solana Pay URLs are encountered in the environment.
 
@@ -29,6 +29,7 @@ solana:<recipient>
       &label=<label>
       &message=<message>
       &memo=<memo>
+      &redirect=<redirect>
 ```
 
 The request is non-interactive because the parameters in the URL are used by a wallet to directly compose a transaction.
@@ -78,6 +79,13 @@ The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaSc
 
 If the field is provided, the wallet must include a `MemoProgram` instruction as the second to last instruction of the transaction, immediately before the SOL or SPL Token transfer instruction, to avoid ambiguity with other instructions in the transaction.
 
+### Redirect
+A single `redirect` field is allowed as an optional query parameter. The value must be a [URL-encoded](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) absolute HTTPS or `solana:` URL.
+
+The wallet must [URL-decode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) the value. If it is a HTTPS URL then the wallet should display the decoded value to the user. 
+
+Redirect URLs should only be followed if the transaction is successful. A transaction should be considered successful if the user approves it and the broadcast transaction has a Confirmed or Finalized status. If the redirect is a HTTPS URL then the wallet should open the URL using any browser. This may be a browser included in the wallet. If it is a `solana:` URL then the wallet should treat it as a new Solana Pay request.
+
 ### Examples
 
 ##### URL describing a transfer request for 1 SOL.
@@ -93,6 +101,11 @@ solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=0.01&spl-token=EPjFWdd
 ##### URL describing a transfer request for SOL. The user must be prompted for the amount.
 ```
 solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN&label=Michael
+```
+
+##### URL describing a transfer request for 1 SOL with a redirect
+```
+solana:mvines9iiHiQTysrwkJjGf2gb9Ex9jXJX8ns3qwf2kN?amount=1&label=Michael&message=Thanks%20for%20all%20the%20fish&memo=OrderId12345&redirect=https%3A%2F%2Fexample.com
 ```
 
 ## Specification: Transaction Request
@@ -187,10 +200,22 @@ The `<message>` value must be a UTF-8 string that describes the nature of the tr
 
 For example, this might be the name of an item being purchased, a discount applied to the purchase, or a thank you note. The wallet should display the value to the user.
 
+The application may also include an optional `redirect` field in the response body:
+
+```json
+{"redirect":"<redirect>","transaction":"<transaction>"}
+```
+
+The `redirect` field must be an absolute HTTPS or `solana:` URL.
+
+If it is a HTTPS URL then the wallet should display the decoded value to the user. 
+
+Redirect URLs should only be followed if the transaction is successful. A transaction should be considered successful if the user approves it and the broadcast transaction has a Confirmed or Finalized [Commitment Status](https://docs.solana.com/cluster/commitments). If the redirect is a HTTPS URL then the wallet should open the URL using any browser. This may be a browser included in the wallet. If it is a `solana:` URL then the wallet should treat it as a new Solana Pay request.
+
 The wallet and application should allow additional fields in the request body and response body, which may be added by future specification.
 
 #### Error Handling
-If the application responds with an HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error in response to the POST or PUT operations, the wallet must consider the entire transaction request as failed. 
+If the application responds with an HTTP [client](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#client_error_responses) or [server](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#server_error_responses) error in response to the POST or PUT operations, the wallet must consider the entire transaction request as failed.
 
 Client and server errors may optionally be accompanied by a JSON body containing a UTF-8 string `message` field describing the nature of the error:
 ```json
@@ -252,7 +277,8 @@ Content-Type: application/json
 Content-Length: 298
 Content-Encoding: gzip
 
-{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA"}
+{"message":"Thanks for all the fish","transaction":"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAECC4JMKqNplIXybGb/GhK1ofdVWeuEjXnQor7gi0Y2hMcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQECAAAMAgAAAAAAAAAAAAAA",
+"redirect": "https://example.com"}
 ```
 
 ## Extensions
