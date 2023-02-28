@@ -36,15 +36,29 @@ export interface TransferRequestURLFields {
 }
 
 /**
+ * Fields of a Solana Pay message sign request URL.
+ */
+export interface MessageSignRequestURLFields {
+    /** `link` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/message-signing-spec.md#link). */
+    link: URL;
+}
+
+/**
  * Encode a Solana Pay URL.
  *
  * @param fields Fields to encode in the URL.
  */
-export function encodeURL(fields: TransactionRequestURLFields | TransferRequestURLFields): URL {
-    return 'link' in fields ? encodeTransactionRequestURL(fields) : encodeTransferRequestURL(fields);
+export function encodeURL(
+    fields: TransactionRequestURLFields | TransferRequestURLFields | MessageSignRequestURLFields
+): URL {
+    return 'link' in fields ? encodeTransactionOrMessageSignRequestURL(fields) : encodeTransferRequestURL(fields);
 }
 
-function encodeTransactionRequestURL({ link, label, message }: TransactionRequestURLFields): URL {
+function encodeTransactionOrMessageSignRequestURL({
+    link,
+    label,
+    message,
+}: TransactionRequestURLFields | (MessageSignRequestURLFields & { label: undefined; message: undefined })): URL {
     // Remove trailing slashes
     const pathname = link.search
         ? encodeURIComponent(String(link).replace(/\/\?/, '?'))
