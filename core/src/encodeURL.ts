@@ -1,5 +1,5 @@
 import { SOLANA_PROTOCOL } from './constants.js';
-import type { Amount, Label, Memo, Message, Recipient, References, SPLToken } from './types.js';
+import type { Amount, Label, Memo, Message, Recipient, References, SPLToken, Redirect } from './types.js';
 
 /**
  * Fields of a Solana Pay transaction request URL.
@@ -31,6 +31,8 @@ export interface TransferRequestURLFields {
     message?: Message;
     /** `memo` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#memo). */
     memo?: Memo;
+    /** `redirect` in the [Solana Pay spec](https://github.com/solana-labs/solana-pay/blob/master/SPEC1.1.md#redirect). */
+    redirect?: Redirect;
 }
 
 /**
@@ -68,6 +70,7 @@ function encodeTransferRequestURL({
     label,
     message,
     memo,
+    redirect,
 }: TransferRequestURLFields): URL {
     const pathname = recipient.toBase58();
     const url = new URL(SOLANA_PROTOCOL + pathname);
@@ -100,6 +103,10 @@ function encodeTransferRequestURL({
 
     if (memo) {
         url.searchParams.append('memo', memo);
+    }
+
+    if (redirect) {
+        url.searchParams.append('redirect', redirect.toString());
     }
 
     return url;
