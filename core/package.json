@@ -1,6 +1,6 @@
 {
     "name": "@solana/pay",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "author": "Solana Maintainers <maintainers@solana.foundation>",
     "repository": "https://github.com/solana-labs/solana-pay",
     "license": "Apache-2.0",
@@ -45,7 +45,7 @@
         "deploy:docs": "npm run docs && gh-pages --dist token/js --dotfiles"
     },
     "dependencies": {
-        "@solana/qr-code-styling": "^1.6.0-beta.0",
+        "@solana/qr-code-styling": "^1.6.0",
         "@solana/spl-token": "^0.3.5",
         "@solana/web3.js": "^1.61.0",
         "bignumber.js": "^9.1.0",
