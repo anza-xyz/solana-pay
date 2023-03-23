@@ -115,7 +115,7 @@ When you're done, it should look like this:
 
 ## Using Transaction Requests
 
-[Transaction Requests](../SPEC.md#specification-transaction-request) are a new feature in Solana Pay.
+[Transaction Requests](https://github.com/solana-labs/solana-pay/blob/master/SPEC.md#specification-transaction-request) are a new feature in Solana Pay.
 
 In the [`client/components/pages/App.tsx`](https://github.com/solana-labs/solana-pay/blob/master/examples/point-of-sale/src/client/components/pages/App.tsx) file, toggle these lines:
 
