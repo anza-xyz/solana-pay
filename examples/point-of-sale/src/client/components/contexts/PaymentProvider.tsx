@@ -11,6 +11,7 @@ import {
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { ConfirmedSignatureInfo, Keypair, PublicKey, Transaction, TransactionSignature } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
+import { useRouter } from 'next/router';
 import React, { FC, ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { useConfig } from '../../hooks/useConfig';
 import { useNavigateWithQuery } from '../../hooks/useNavigateWithQuery';
@@ -26,7 +27,22 @@ export const PaymentProvider: FC<PaymentProviderProps> = ({ children }) => {
     const { link, recipient, splToken, label, message, requiredConfirmations, connectWallet } = useConfig();
     const { publicKey, sendTransaction } = useWallet();
 
-    const [amount, setAmount] = useState<BigNumber>();
+    const router = useRouter();
+
+    const [amount, setAmount] = useState<BigNumber | undefined>(() => {
+        // Use the amount query param as initial value if set
+        const { amount } = router.query;
+        if (!amount) return undefined;
+
+        const asBigNumber = Array.isArray(amount) ? new BigNumber(amount[0]) : new BigNumber(amount);
+        if (asBigNumber.isNaN() || !asBigNumber.isFinite() || asBigNumber.isLessThanOrEqualTo(0)) {
+            console.error('Invalid amount', amount);
+            return undefined;
+        }
+
+        return asBigNumber;
+    });
+
     const [memo, setMemo] = useState<string>();
     const [reference, setReference] = useState<PublicKey>();
     const [signature, setSignature] = useState<TransactionSignature>();
