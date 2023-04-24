@@ -15,7 +15,7 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 - **Glow †** ([iOS](https://apps.apple.com/app/id1599584512), [Android](https://play.google.com/store/apps/details?id=com.luma.wallet.prod))
 - **Decaf Wallet †** ([iOS](https://apps.apple.com/nz/app/decaf-wallet/id1616564038), [Android](https://play.google.com/store/apps/details?id=so.decaf.wallet))
 - Slope ([iOS](https://apps.apple.com/us/app/slope-wallet/id1574624530), [Android](https://play.google.com/store/apps/details?id=com.wd.wallet&hl=en_US&gl=US))
-- Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
+- Espresso Cash ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
 - Kitepay ([Android](https://play.google.com/store/apps/details?id=org.kitepay.app))
 
 
