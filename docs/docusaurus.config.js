@@ -82,7 +82,7 @@ const config = {
                         items: [
                             {
                                 label: 'Discord',
-                                href: 'https://discord.com/invite/solana',
+                                href: 'https://solana.com/discord',
                             },
                             {
                                 label: 'Twitter',
