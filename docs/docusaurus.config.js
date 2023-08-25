@@ -81,8 +81,8 @@ const config = {
                         title: 'Community',
                         items: [
                             {
-                                label: 'Discord',
-                                href: 'https://discord.com/invite/solana',
+                                label: 'Stack Exchange',
+                                href: 'https://solana.stackexchange.com',
                             },
                             {
                                 label: 'Twitter',
