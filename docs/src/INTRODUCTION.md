@@ -15,15 +15,14 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 
 ## Supporting Wallets
 
-- **Phantom †** ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977), [Android](https://play.google.com/store/apps/details?id=app.phantom&hl=en_US&gl=US))
-- **Solflare †** ([iOS](https://apps.apple.com/us/app/solflare/id1580902717), [Android](https://play.google.com/store/apps/details?id=com.solflare.mobile))
-- **Glow †** ([iOS](https://apps.apple.com/app/id1599584512))
-- Slope ([iOS](https://apps.apple.com/us/app/slope-wallet/id1574624530), [Android](https://play.google.com/store/apps/details?id=com.wd.wallet&hl=en_US&gl=US))
-- Crypto Please ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
-- Kitepay ([Android](https://play.google.com/store/apps/details?id=org.kitepay.app))
-
-
-**†** Includes support for [Transaction Requests](SPEC.md#specification-transaction-request)
+- **Phantom** ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977), [Android](https://play.google.com/store/apps/details?id=app.phantom&hl=en_US&gl=US))
+- **Solflare** ([iOS](https://apps.apple.com/us/app/solflare/id1580902717), [Android](https://play.google.com/store/apps/details?id=com.solflare.mobile))
+- **Glow** ([iOS](https://apps.apple.com/app/id1599584512), [Android](https://play.google.com/store/apps/details?id=com.luma.wallet.prod))
+- **Decaf Wallet** ([iOS](https://apps.apple.com/nz/app/decaf-wallet/id1616564038), [Android](https://play.google.com/store/apps/details?id=so.decaf.wallet))
+- **Espresso Cash** ([iOS](https://apps.apple.com/us/app/crypto-please/id1559625715), [Android](https://play.google.com/store/apps/details?id=com.pleasecrypto.flutter))
+- **Ottr** ([iOS](https://apps.apple.com/us/app/ottr-finance/id1628669270), [Android](https://play.google.com/store/apps/details?id=finance.ottr.android))
+- **Ultimate** ([iOS](https://apps.apple.com/us/app/ultimate-crypto-defi-wallet/id1629053410), [Android](https://play.google.com/store/apps/details?id=fi.unstoppable.ultimate.android))
+- **Tiplink** ([Web](https://tiplink.io))
 
 ## How to use Solana Pay
 
