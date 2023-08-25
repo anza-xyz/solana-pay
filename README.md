@@ -10,6 +10,7 @@ The Solana blockchain confirms transactions in less than a second and costs on a
 
 ## Supporting Wallets
 
+- **Ottr †** ([iOS](https://apps.apple.com/us/app/ottr-finance/id1628669270), [Android](https://play.google.com/store/apps/details?id=finance.ottr.android))
 - **Phantom †** ([iOS](https://apps.apple.com/us/app/phantom-solana-wallet/id1598432977), [Android](https://play.google.com/store/apps/details?id=app.phantom&hl=en_US&gl=US))
 - **Solflare †** ([iOS](https://apps.apple.com/us/app/solflare/id1580902717), [Android](https://play.google.com/store/apps/details?id=com.solflare.mobile))
 - **Glow †** ([iOS](https://apps.apple.com/app/id1599584512), [Android](https://play.google.com/store/apps/details?id=com.luma.wallet.prod))
