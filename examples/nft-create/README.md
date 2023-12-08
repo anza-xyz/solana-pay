@@ -107,14 +107,44 @@ Both are an identical transaction. The browser wallets tend to have better error
 
 ### Making localhost:3000 internet accessible
 
-When you scan the QR code it encodes the full URL of the checkout API, eg. `http://localhost:3000/api/checkout`. Without fiddling with networking on the phone, this can't be resolved by a mobile wallet.
+To enable your local development environment to be accessed from the internet—for example, to allow a mobile wallet to resolve and connect to your `localhost` server—you can use secure tunneling tools like Tunnelmole or ngrok.
 
-One easy way to handle this is to use [ngrok](https://ngrok.com). Once you sign up (free) and download their CLI you can run `ngrok http 3000`.
+#### Using Tunnelmole
 
-You'll see an output with a message like:
+[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool that allows you to create a Public URL that forwards traffic to your local machine via a secure tunnel.
+
+To use Tunnelmole, install it first with the following command for Linux, Mac, and Windows Subsystem for Linux (WSL):
+
+```
+curl -O https://install.tunnelmole.com/z3469/install && sudo bash install
+```
+
+If you're using Windows without WSL, you can [Download tmole.exe](https://tunnelmole.com/downloads/tmole.exe) and place it in your [PATH](https://www.wikihow.com/Change-the-PATH-Environment-Variable-on-Windows).
+
+Once installed, start the Tunnelmole service for the desired local port (e.g., 3000):
+
+```
+➜  ~ tmole 3000
+http://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:3000
+https://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:3000
+```
+
+This will provide you with a Public URL that you can use to make your `localhost:3000` accessible from any device. For instance, it will allow a QR code to encode a URL like `https://bvdo5f-ip-49-183-170-144.tunnelmole.net/api/checkout` which will be resolvable by mobile wallets.
+
+#### Using ngrok (Closed Source)
+
+Alternatively, you can use [ngrok](https://ngrok.com), a popular closed source tunneling tool. After signing up (free) and downloading their CLI, run the following command:
+
+```
+ngrok http 3000
+```
+
+ngrok will present an output like:
 
 ```
 Forwarding                    https://6fba-2a02-c7c-50a3-a200-1402-5c1a-a7d2-174d.eu.ngrok.io -> http://localhost:3000
 ```
 
-This `ngrok.io` domain will forward to your `localhost:3000` and be accessible anywhere. In other words it'll show the home page, with a QR code that encodes eg. `https://6fba-2a02-c7c-50a3-a200-1402-5c1a-a7d2-174d.eu.ngrok.io/api/checkout`. This will work correctly with mobile wallets! 
+This `ngrok.io` domain will forward to your `localhost:3000` and will also be accessible from anywhere. For example, it will make the home page with a QR code that encodes a URL like `https://6fba-2a02-c7c-50a3-a200-1402-5c1a-a7d2-174d.eu.ngrok.io/api/checkout` work correctly with mobile wallets.
+
+By using Tunnelmole or ngrok, you can quickly and securely expose your local development server to the internet for testing and sharing with others.
