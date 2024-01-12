@@ -84,7 +84,7 @@ The `GET` endpoint should respond with two properties. `label` describes the sou
 The second part of the transaction request spec is the `POST` request.
 
 ```javascript
-import { clusterApiUrl, Connection, Keypair, PublicKey, Transaction } from '@solana/web3.js';
+import { clusterApiUrl, Connection, Keypair, PublicKey, VersionedTransaction } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 import { createTransferCheckedInstruction, getAccount, getAssociatedTokenAddress, getMint } from '@solana/spl-token';
 import { TEN } from '@solana/pay';
@@ -103,18 +103,18 @@ const post = async (request, response) => {
     const splTransferIx = await createSplTransferIx(sender, connection);
 
     // create the transaction
-    const transaction = new Transaction();
+    const transaction = new VersionedTransaction(
+        new TransactionMessage({
+            payerKey: sender,
+            recentBlockhash: '11111111111111111111111111111111',
+            // add the instruction to the transaction
+            instructions: [splTransferIx]
+        }).compileToV0Message()
+    )
 
-    // add the instruction to the transaction
-    transaction.add(splTransferIx);
+    const serializedTransaction = transaction.serialize()
 
-    // Serialize and return the unsigned transaction.
-    const serializedTransaction = transaction.serialize({
-        verifySignatures: false,
-        requireAllSignatures: false,
-    });
-
-    const base64Transaction = serializedTransaction.toString('base64');
+    const base64Transaction = Buffer.from(serializedTransaction).toString('base64');
     const message = 'Thank you for your purchase of ExiledApe #518';
 
     response.status(200).send({ transaction: base64Transaction, message });
