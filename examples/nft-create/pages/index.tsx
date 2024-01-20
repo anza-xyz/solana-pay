@@ -1,68 +1,71 @@
-import { createQR, encodeURL, TransactionRequestURLFields } from '@solana/pay'
-import { useEffect, useRef } from 'react'
+import { createQR, encodeURL, TransactionRequestURLFields } from '@solana/pay';
+import { useEffect, useRef } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import {
-  PostResponse as CheckoutPostResponse,
-  PostError as CheckoutPostError,
-} from './api/checkout'
+import { PostResponse as CheckoutPostResponse, PostError as CheckoutPostError } from './api/checkout';
 import { Transaction } from '@solana/web3.js';
 
+const generateQRCode = (url, size, bgColor) => {
+  // createQR function
+};
+
 export default function Home() {
-  const { connection } = useConnection()
-  const { publicKey, sendTransaction } = useWallet()
+  const { connection } = useConnection();
+  const { publicKey, sendTransaction } = useWallet();
+  const mintQrRef = useRef<HTMLDivElement>();
 
-  const mintQrRef = useRef<HTMLDivElement>()
-
-  // Generate the Solana Pay QR code
-  // This is a transaction request, with our checkout API as the link
-  // We can only generate a QR code on the client, so do it in the useEffect
-  useEffect(() => {
-    const { location } = window
-    const apiUrl = `${location.protocol}//${location.host}/api/checkout`
+  // Separate function for generating Solana Pay QR code
+  const generateSolanaPayQRCode = () => {
+    const { location } = window;
+    const apiUrl = `${location.protocol}//${location.host}/api/checkout`;
 
     const mintUrlFields: TransactionRequestURLFields = {
       link: new URL(apiUrl),
-    }
-    const mintUrl = encodeURL(mintUrlFields)
-    const mintQr = createQR(mintUrl, 400, 'transparent')
+    };
+    const mintUrl = encodeURL(mintUrlFields);
+    const mintQr = generateQRCode(mintUrl, 400, 'transparent');
 
-    // Set the generated QR code on the QR ref element
     if (mintQrRef.current) {
-      mintQrRef.current.innerHTML = ''
-      mintQr.append(mintQrRef.current)
+      mintQrRef.current.innerHTML = '';
+      mintQr?.append(mintQrRef.current);
     }
-  }, [])
+  };
+
+  useEffect(() => {
+    generateSolanaPayQRCode();
+  }, []);
 
   // Handler for performing the transaction with a connected wallet
   async function buy(e: React.MouseEvent) {
     e.preventDefault();
 
-    // Fetch the transaction from our checkout API
-    // We pass the connected wallet as `account`
-    const response = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ account: publicKey.toBase58() })
-    });
-
-    const responseBody = await response.json() as CheckoutPostResponse | CheckoutPostError;
-
-    if ('error' in responseBody) {
-      const error = responseBody.error
-      console.error(error)
-      alert(`Error fetching transaction: ${error}`)
-      return
-    }
-
-    // We receive the transaction serialized to base64, deserialize it to send
-    const transaction = Transaction.from(Buffer.from(responseBody.transaction, 'base64'));
     try {
-      await sendTransaction(transaction, connection)
-      alert('Purchase complete!')
+      const response = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ account: publicKey?.toBase58() }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch transaction: ${response.status}`);
+      }
+
+      const responseBody = await response.json() as CheckoutPostResponse | CheckoutPostError;
+
+      if ('error' in responseBody) {
+        const error = responseBody.error;
+        console.error(error);
+        alert(`Error fetching transaction: ${error}`);
+        return;
+      }
+
+      // Deserialize the transaction to send
+      const transaction = Transaction.from(Buffer.from(responseBody.transaction, 'base64'));
+      await sendTransaction(transaction, connection);
+      alert('Purchase complete!');
     } catch (error) {
-      console.error(error)
-      alert(`Error sending transaction: ${error}`)
+      console.error(error);
+      alert(`Error: ${error.message}`);
     }
   }
 
@@ -85,6 +88,6 @@ export default function Home() {
         <h1 className="text-3xl">Or scan QR code</h1>
         <div ref={mintQrRef} />
       </div>
-    </main >
-  )
+    </main>
+  );
 }
