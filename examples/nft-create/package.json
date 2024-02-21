@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@metaplex-foundation/js": "^0.17.2",
+    "@metaplex-foundation/js": "^0.20.1",
     "@solana/pay": "^0.2.4",
     "@solana/spl-token": "^0.3.5",
     "@solana/wallet-adapter-base": "^0.9.18",
@@ -16,7 +16,7 @@
     "@solana/wallet-adapter-react-ui": "^0.9.19-rc.9",
     "@solana/web3.js": "^1.66.2",
     "bs58": "^5.0.0",
-    "next": "13.5.6",
+    "next": "14.1.0",
     "react": "17.0.2",
     "react-dom": "17.0.2"
   },
@@ -25,7 +25,7 @@
     "@types/react": "^17.0.39",
     "autoprefixer": "^10.4.2",
     "dotenv": "^16.0.3",
-    "postcss": "^8.4.7",
+    "postcss": "^8.4.35",
     "postcss-import": "^14.0.2",
     "tailwindcss": "^3.0.23",
     "typescript": "^4.6.2"
