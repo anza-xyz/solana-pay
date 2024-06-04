@@ -1,0 +1,34 @@
+name: Pull requests
+
+on:
+  pull_request:
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./core
+
+    strategy:
+      matrix:
+        node:
+          - "current"
+          - "lts/*"
+
+    name: Run unit tests on Node ${{ matrix.node }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm test
