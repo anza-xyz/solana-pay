@@ -109,22 +109,17 @@ Both are an identical transaction. The browser wallets tend to have better error
 
 To enable your local development environment to be accessed from the internet—for example, to allow a mobile wallet to resolve and connect to your `localhost` server—you can use secure tunneling tools like Tunnelmole or ngrok.
 
-#### Using Tunnelmole
+#### Using Tunnelmole (Open Source)
 
-[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool that allows you to create a Public URL that forwards traffic to your local machine via a secure tunnel.
-
-To use Tunnelmole, install it first with the following command for Linux, Mac, and Windows Subsystem for Linux (WSL):
+[Tunnelmole](https://github.com/robbie-cahill/tunnelmole-client) is an open source tunneling tool that allows you to create a Public URL that forwards traffic to your local machine via a secure tunnel. Once installed, start the Tunnelmole service for the desired local port (e.g., 3000):
 
 ```
-curl -O https://install.tunnelmole.com/z3469/install && sudo bash install
+tmole 3000
 ```
 
-If you're using Windows without WSL, you can [Download tmole.exe](https://tunnelmole.com/downloads/tmole.exe) and place it in your [PATH](https://www.wikihow.com/Change-the-PATH-Environment-Variable-on-Windows).
-
-Once installed, start the Tunnelmole service for the desired local port (e.g., 3000):
+Tunnelmole will present an output like:
 
 ```
-➜  ~ tmole 3000
 http://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:3000
 https://bvdo5f-ip-49-183-170-144.tunnelmole.net is forwarding to localhost:3000
 ```
